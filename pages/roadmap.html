@@ -70,7 +70,8 @@
   .stage p.intro { color: var(--ink-2); font-size: 18px; line-height: 1.55; max-width: 50ch; }
 
   /* feature row */
-  .features { display: grid; gap: 0; border-top: 1px solid var(--hair-strong); }
+  .features { display: grid; gap: 0; border-top: 1px solid var(--accent-2); transition: border-color .2s; }
+  .features:hover { border-top-color: var(--accent); }
   .features .row {
     display: grid;
     grid-template-columns: 0.7fr 1.3fr;

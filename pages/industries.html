@@ -56,9 +56,11 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 0;
-    border-top: 1px solid var(--hair-strong);
-    border-bottom: 1px solid var(--hair-strong);
+    border-top: 1px solid var(--accent-2);
+    border-bottom: 1px solid var(--accent-2);
+    transition: border-color .2s;
   }
+  .index:hover { border-top-color: var(--accent); border-bottom-color: var(--accent); }
   .index a {
     display: block;
     padding: 22px 18px;
@@ -178,8 +180,10 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0;
-    border-top: 1px solid var(--hair-strong);
+    border-top: 1px solid var(--accent-2);
+    transition: border-color .2s;
   }
+  .use-cases:hover { border-top-color: var(--accent); }
   .use-case {
     padding: 28px 24px;
     border-right: 1px solid var(--hair);

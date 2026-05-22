@@ -20,10 +20,12 @@
   .hero-kpis {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    border-top: 1px solid var(--hair-strong);
-    border-bottom: 1px solid var(--hair-strong);
+    border-top: 1px solid var(--accent-2);
+    border-bottom: 1px solid var(--accent-2);
     margin: 56px 0 0;
+    transition: border-color .2s;
   }
+  .hero-kpis:hover { border-top-color: var(--accent); border-bottom-color: var(--accent); }
   .hero-kpis .k {
     padding: 28px 24px;
     border-right: 1px solid var(--hair);
@@ -97,9 +99,11 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0;
-    border-top: 1px solid var(--hair-strong);
-    border-bottom: 1px solid var(--hair-strong);
+    border-top: 1px solid var(--accent-2);
+    border-bottom: 1px solid var(--accent-2);
+    transition: border-color .2s;
   }
+  .results:hover { border-top-color: var(--accent); border-bottom-color: var(--accent); }
   .results .cell {
     padding: 22px 20px;
     border-right: 1px solid var(--hair);

@@ -119,8 +119,9 @@
     font-size: 14px;
   }
   .compare thead th {
-    border-top: 1px solid var(--hair-strong);
-    border-bottom: 1px solid var(--hair-strong);
+    border-top: 1px solid var(--accent-2);
+    border-bottom: 1px solid var(--accent-2);
+    transition: border-color .2s;
     font-family: var(--font-mono);
     font-weight: 500;
     font-size: 11px;
@@ -128,6 +129,10 @@
     text-transform: uppercase;
     color: var(--mid);
     padding: 16px 14px;
+  }
+  .compare:hover thead th {
+    border-top-color: var(--accent);
+    border-bottom-color: var(--accent);
   }
   .compare thead th:first-child { color: var(--ink); }
   .compare tbody tr:hover { background: color-mix(in oklab, var(--bone) 70%, white); }

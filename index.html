@@ -138,10 +138,12 @@
 
   /* gap cards */
   .gap-card {
-    border-top: 1px solid var(--hair-strong);
+    border-top: 1px solid var(--accent-2);
     padding-top: 24px;
     padding-right: 12px;
+    transition: border-color .2s;
   }
+  .gap-card:hover { border-top-color: var(--accent); }
   .gap-card .num {
     font-family: var(--font-mono);
     font-size: 11px;
@@ -157,8 +159,10 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 0;
-    border-top: 1px solid var(--hair-strong);
+    border-top: 1px solid var(--accent-2);
+    transition: border-color .2s;
   }
+  .spec-grid:hover { border-top-color: var(--accent); }
   .spec-cell {
     padding: 28px 24px 32px;
     border-right: 1px solid var(--hair);
@@ -281,7 +285,8 @@
     border-top: 1px solid var(--hair);
     align-items: baseline;
   }
-  .v-row:first-child { border-top: 1px solid var(--hair-strong); }
+  .v-row:first-child { border-top: 1px solid var(--accent-2); transition: border-color .2s; }
+  .v-row:first-child:hover { border-top-color: var(--accent); }
   .v-row .name {
     font-size: 22px;
     letter-spacing: -0.015em;
@@ -428,7 +433,7 @@
           <em>Flynn listens.</em>
         </h1>
         <p class="tagline">
-          Flynn is an embedded anomaly detector that turns equipment telemetry into usable local intelligence. It runs on bare-metal in 8,480 bytes, self-calibrates from normal behavior, and delivers deterministic, auditable detection for machines, tools, and edge systems where cloud-first AI latency is too high, too opaque, or unavailable.
+          Flynn catches equipment faults days before they become failures — on the device, at the point of measurement, with no cloud and no configuration. It's an embedded anomaly detector that runs bare-metal in 8,480 bytes, self-calibrates from normal behavior, and delivers deterministic, auditable detection.
         </p>
         <div class="hero-ctas">
           <a class="btn" href="#contact">
@@ -517,22 +522,22 @@
     <div class="cols-4">
       <div class="gap-card">
         <div class="num">01</div>
-        <h3 class="h3">Non-local intelligence</h3>
+        <h3 class="h3">High decision latency</h3>
         <p style="margin-top:12px">Telemetry exists. A detector you can trust close to the source does not. The decision lives far from the action it informs.</p>
       </div>
       <div class="gap-card">
         <div class="num">02</div>
-        <h3 class="h3">No labels, no joy</h3>
+        <h3 class="h3">No labeled training data</h3>
         <p style="margin-top:12px">Supervised approaches demand labeled failure data. Most equipment is designed not to fail. The training set does not exist.</p>
       </div>
       <div class="gap-card">
         <div class="num">03</div>
-        <h3 class="h3">Cloud can't reach</h3>
+        <h3 class="h3">Equipment outlives connectivity</h3>
         <p style="margin-top:12px">Most consequential equipment lives where the cloud doesn't. A cloud-dependent detector is a detector that doesn't work.</p>
       </div>
       <div class="gap-card">
         <div class="num">04</div>
-        <h3 class="h3">Can't embed</h3>
+        <h3 class="h3">Monitoring tools don't fit in firmware</h3>
         <p style="margin-top:12px">Tools built for dashboards do not belong in firmware. Too large, too dynamic, too dependent on external services.</p>
       </div>
     </div>
