@@ -32,8 +32,6 @@ pages/
   industries-print.html Print variant
   roadmap.html          Neuron → spinal cord → nervous system
   tiers.html            Engagement tiers
-uploads/                Source PDFs
-screenshots/            Design captures
 ```
 
 ## Run locally

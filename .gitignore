@@ -11,3 +11,8 @@ node_modules/
 # Logs / temp
 *.log
 .cache/
+
+# Internal assets — not part of the published site (kept in ../ outside the repo)
+uploads/
+screenshots/
+*.pptx
