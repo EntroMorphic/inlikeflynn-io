@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Tiers &amp; Engagement — Flynn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/styles.css" />
+<style>
+  .page-head { padding: clamp(48px, 7vw, 96px) 0 clamp(40px, 5vw, 64px); }
+  .page-head h1 { margin: 16px 0 24px; }
+
+  .tier-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 32px;
+  }
+  @media (max-width: 980px) { .tier-grid { grid-template-columns: 1fr; } }
+
+  .tier-card {
+    border: 1px solid var(--hair-strong);
+    border-radius: var(--r-lg);
+    padding: 36px 32px 40px;
+    display: flex; flex-direction: column;
+    background: color-mix(in oklab, var(--bone) 60%, white);
+    position: relative;
+  }
+  .tier-card.featured {
+    background: var(--ink);
+    color: var(--bone);
+    border-color: var(--ink);
+  }
+  .tier-card.featured .l, .tier-card.featured .muted { color: color-mix(in oklab, var(--bone) 60%, transparent); }
+  .tier-card .badge {
+    position: absolute; top: -10px; right: 24px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #14110d;
+  }
+  .tier-card .l {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 16px;
+  }
+  .tier-card h2 {
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin: 0 0 14px;
+  }
+  .tier-card .price {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    color: var(--ink-2);
+    margin-bottom: 8px;
+  }
+  .tier-card.featured h2, .tier-card.featured .price { color: var(--bone); }
+  .tier-card .who {
+    color: var(--mid);
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0 0 28px;
+  }
+  .tier-card.featured .who { color: color-mix(in oklab, var(--bone) 75%, transparent); }
+  .tier-card ul {
+    list-style: none; padding: 0; margin: 0 0 32px;
+    flex: 1;
+  }
+  .tier-card li {
+    padding: 14px 0 14px 24px;
+    border-top: 1px solid var(--hair);
+    font-size: 14px;
+    position: relative;
+    color: var(--ink-2);
+  }
+  .tier-card.featured li {
+    border-color: color-mix(in oklab, var(--bone) 18%, transparent);
+    color: color-mix(in oklab, var(--bone) 90%, transparent);
+  }
+  .tier-card li:last-child { border-bottom: 1px solid var(--hair); }
+  .tier-card.featured li:last-child { border-color: color-mix(in oklab, var(--bone) 18%, transparent); }
+  .tier-card li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 22px;
+    width: 10px; height: 1px;
+    background: var(--ink);
+  }
+  .tier-card.featured li::before { background: var(--accent); }
+
+  .tier-card .btn { margin-top: auto; }
+  .tier-card.featured .btn { background: var(--accent-2); border-color: var(--accent-2); color: #14110d; }
+  .tier-card.featured .btn:hover { background: var(--accent); border-color: var(--accent); color: #14110d; }
+
+  /* compare table */
+  .compare {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 64px 0;
+  }
+  .compare th, .compare td {
+    text-align: left;
+    padding: 18px 14px;
+    border-top: 1px solid var(--hair);
+    vertical-align: middle;
+    font-size: 14px;
+  }
+  .compare thead th {
+    border-top: 1px solid var(--hair-strong);
+    border-bottom: 1px solid var(--hair-strong);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid);
+    padding: 16px 14px;
+  }
+  .compare thead th:first-child { color: var(--ink); }
+  .compare tbody tr:hover { background: color-mix(in oklab, var(--bone) 70%, white); }
+  .compare td.row-l {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--mid);
+    text-transform: uppercase;
+    width: 28%;
+  }
+  .compare td.feat { background: color-mix(in oklab, var(--accent) 8%, var(--bone)); }
+  .compare .check { color: var(--accent-deep); font-family: var(--font-mono); }
+  .compare .dash { color: var(--mid); }
+  .compare tbody tr:last-child td { border-bottom: 1px solid var(--hair); }
+  @media (max-width: 880px) {
+    .compare-wrap { overflow-x: auto; }
+    .compare { min-width: 720px; }
+  }
+
+  /* services */
+  .services {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-top: 32px;
+  }
+  @media (max-width: 880px) { .services { grid-template-columns: 1fr; } }
+  .service-block {
+    padding: 28px;
+    border: 1px solid var(--hair);
+    border-radius: var(--r-lg);
+    background: color-mix(in oklab, var(--bone) 70%, white);
+  }
+  .service-block h3 {
+    font-size: 18px;
+    margin: 0 0 6px;
+    letter-spacing: -0.012em;
+  }
+  .service-block .stat {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--mid);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .service-block.live .stat { color: var(--accent-deep); }
+  .service-block ul {
+    list-style: none; padding: 0; margin: 0;
+  }
+  .service-block li {
+    padding: 12px 0;
+    border-top: 1px solid var(--hair);
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+
+  /* commitment band */
+  .commit {
+    margin: clamp(64px, 8vw, 120px) 0 clamp(40px, 6vw, 80px);
+    padding: clamp(40px, 5vw, 64px);
+    border: 1px solid var(--hair-strong);
+    border-radius: var(--r-lg);
+    background: color-mix(in oklab, var(--bone) 50%, white);
+  }
+  .commit-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 56px; align-items: start; }
+  @media (max-width: 880px) { .commit-grid { grid-template-columns: 1fr; } }
+  .commit h2 { font-size: clamp(28px, 3.2vw, 42px); letter-spacing: -0.022em; line-height: 1.08; font-weight: 500; margin: 0 0 16px; }
+
+/* Card labels: cyan base, orange on parent hover */
+  .tier-card .l,
+  .compare td.row-l {
+  color: var(--accent-2);
+  transition: color .2s;
+}
+  .tier-card:hover .l,
+  .compare tr:hover td.row-l {
+  color: var(--accent) !important;
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="../index.html">
+      <img class="brand-mark" src="../assets/flynn-logo.jpg" alt="Flynn" />
+      <span>Get in like <span class="brand-flynn">Flynn</span>.</span>
+    </a>
+    <nav class="nav-links">
+      <a href="whitepaper.html">Whitepaper</a>
+      <a href="validation.html">Validation</a>
+      <a href="industries.html">Industries</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a class="cur" href="tiers.html">Tiers</a>
+      </nav>
+  </div>
+</header>
+
+<div class="wrap crumb">
+  <a href="../index.html">Flynn</a> &nbsp;/&nbsp; Tiers &amp; Engagement
+</div>
+
+<section class="page-head" data-screen-label="01 Tiers hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span>Tiers and engagement</span>
+    <h1 class="h-display" style="font-size: clamp(48px, 6vw, 96px);">Three ways in.<br/><em>One conversation.</em></h1>
+    <p class="lede">Flynn supports multiple engagement models scaled to the user. From a single sensor on a workbench to a thousand-asset fleet in an air-gapped facility. Specific terms are formalized through direct conversation with our team.</p>
+
+    <div class="tier-grid">
+      <!-- Evaluation -->
+      <div class="tier-card">
+        <div class="l">Tier 01</div>
+        <h2>Evaluation</h2>
+        <div class="price">No cost · time-bounded</div>
+        <p class="who">For developers, researchers, and innovation groups testing Flynn against their own data to see if it works for their application.</p>
+        <ul>
+          <li>Source-level audit rights</li>
+          <li>Bounded scope, time-limited</li>
+          <li>NDA on request</li>
+          <li>Direct engineering contact</li>
+          <li>Architectural commitments per whitepaper</li>
+        </ul>
+        <a class="btn ghost" href="../index.html#contact">Request evaluation <span class="arrow">→</span></a>
+      </div>
+
+      <!-- OEM -->
+      <div class="tier-card featured">
+        <span class="badge">Most engaged</span>
+        <div class="l">Tier 02</div>
+        <h2>OEM licensing</h2>
+        <div class="price">Per-unit royalty · tailored</div>
+        <p class="who">For manufacturers embedding Flynn into commercial industrial equipment at production scale. Flynn becomes the embedded intelligence inside your product.</p>
+        <ul>
+          <li>Precompiled binary or source license</li>
+          <li>Integration support included</li>
+          <li>Long-term source-stability commitment</li>
+          <li>Per-unit royalty, scaled to volume</li>
+          <li>Co-engineered signal-conditioning advice</li>
+        </ul>
+        <a class="btn" href="../index.html#contact">Start a conversation <span class="arrow">→</span></a>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="tier-card">
+        <div class="l">Tier 03</div>
+        <h2>Enterprise</h2>
+        <div class="price">Deployment-scale · multi-year</div>
+        <p class="who">For operators deploying Flynn across fleets — retrofit instrumentation, new-build deployments, or broader operational-intelligence programs.</p>
+        <ul>
+          <li>Source access &amp; certification rights</li>
+          <li>Custom integration with existing tooling</li>
+          <li>Deployment automation</li>
+          <li>Compliance reporting packages</li>
+          <li>Direct support, multi-year terms</li>
+        </ul>
+        <a class="btn ghost" href="../index.html#contact">Talk to engineering <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule" />
+
+<!-- COMPARE -->
+<section class="section tight" data-screen-label="02 Compare">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span>Compare</span>
+    <h2 class="h1" style="margin-top: 20px; max-width: 18ch;">What you get, by tier.</h2>
+
+    <div class="compare-wrap">
+      <table class="compare">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Evaluation</th>
+            <th>OEM</th>
+            <th>Enterprise</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="row-l">License form</td><td>Evaluation license</td><td class="feat">Commercial · per-unit</td><td>Enterprise · deployment-scale</td></tr>
+          <tr><td class="row-l">Source delivery</td><td>Source · audit rights</td><td class="feat">Precompiled binary <span class="muted">(source optional)</span></td><td>Source on request</td></tr>
+          <tr><td class="row-l">Integration support</td><td class="dash">— Direct contact</td><td class="feat check">✓ Co-engineering</td><td class="check">✓ Dedicated</td></tr>
+          <tr><td class="row-l">Compliance package</td><td class="dash">—</td><td class="feat">On request</td><td class="check">✓ Included</td></tr>
+          <tr><td class="row-l">Long-term support</td><td>Time-bounded</td><td class="feat check">✓ Source-stability</td><td class="check">✓ Multi-year contracts</td></tr>
+          <tr><td class="row-l">Custom hardening</td><td class="dash">—</td><td class="feat">Case-by-case</td><td class="check">✓ Available</td></tr>
+          <tr><td class="row-l">Deployment scale</td><td>Single asset · bounded</td><td class="feat">Per-product volume</td><td>Fleet-scale</td></tr>
+          <tr><td class="row-l">NDA</td><td>On request</td><td class="feat">Required</td><td>Required</td></tr>
+          <tr><td class="row-l">Pricing</td><td>No cost</td><td class="feat">Per-unit royalty</td><td>Deployment-scale</td></tr>
+          <tr><td class="row-l">Typical onramp</td><td>Days</td><td class="feat">Weeks to months</td><td>Quarters</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<hr class="rule" />
+
+<!-- SERVICES -->
+<section class="section tight" data-screen-label="03 Services">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span>Enterprise services</span>
+    <h2 class="h1" style="margin-top: 20px; max-width: 18ch;">Direct services, distinguished by status.</h2>
+    <p class="lede" style="margin-top: 16px;">For organizations deploying Flynn at scale, direct services are available — some today, others as the engagement framework continues to formalize.</p>
+
+    <div class="services">
+      <div class="service-block live">
+        <h3>Embedded integration consultation</h3>
+        <div class="stat">Available today</div>
+        <ul>
+          <li>Source-level integration with existing firmware</li>
+          <li>Signal-conditioning advice</li>
+          <li>Sampling-rate optimization</li>
+          <li>Telemetry adapter selection</li>
+        </ul>
+      </div>
+
+      <div class="service-block live">
+        <h3>Reference deployment kits</h3>
+        <div class="stat">Available today</div>
+        <ul>
+          <li>Reference Docker stack</li>
+          <li>Telemetry collector + time-series storage</li>
+          <li>Visualization dashboards</li>
+          <li>Fleet-scale starter scaffolding</li>
+        </ul>
+      </div>
+
+      <div class="service-block live">
+        <h3>Direct technical support</h3>
+        <div class="stat">Available today</div>
+        <ul>
+          <li>Engineering-team access through integration</li>
+          <li>Support continues into operational maturity</li>
+          <li>Licensed-deployment scope</li>
+        </ul>
+      </div>
+
+      <div class="service-block live">
+        <h3>Compliance briefings</h3>
+        <div class="stat">Available today</div>
+        <ul>
+          <li>Source-level walkthroughs</li>
+          <li>Deterministic-behavior attestation</li>
+          <li>Documentation packages for safety, regulatory, procurement</li>
+        </ul>
+      </div>
+
+      <div class="service-block">
+        <h3>Multi-asset coordination layer</h3>
+        <div class="stat">In active development · 2026 pilots</div>
+        <ul>
+          <li>Spinal-cord layer of the roadmap</li>
+          <li>Pilot customer engagements engaging this year</li>
+          <li>Composes existing Flynn detectors</li>
+        </ul>
+      </div>
+
+      <div class="service-block">
+        <h3>Formalized compliance packages</h3>
+        <div class="stat">In active development</div>
+        <ul>
+          <li>Safety-system certification templates</li>
+          <li>Regulated-manufacturing audit packages</li>
+          <li>Defense-environment qualifications</li>
+          <li>Today: case-by-case · productized over the next year</li>
+        </ul>
+      </div>
+
+      <div class="service-block">
+        <h3>Fleet-management tooling</h3>
+        <div class="stat">In active development</div>
+        <ul>
+          <li>Operational dashboards for distributed deployments</li>
+          <li>Configuration management at scale</li>
+          <li>Today: reference architecture · productized version follows coordination-layer roadmap</li>
+        </ul>
+      </div>
+
+      <div class="service-block">
+        <h3>Custom hardening</h3>
+        <div class="stat">On request</div>
+        <ul>
+          <li>Configuration tuning for specific environments</li>
+          <li>Regulatory regime alignment</li>
+          <li>Hardware-profile tailoring</li>
+          <li>Decade-scale support contracts available</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMITMENT BAND -->
+<section class="section tight">
+  <div class="wrap">
+    <div class="commit">
+      <div class="commit-grid">
+        <div>
+          <span class="eyebrow"><span class="dot"></span>Long-term commitment</span>
+          <h2 style="margin-top: 16px;">The version validated today is the version that runs in production.</h2>
+        </div>
+        <div>
+          <p class="body" style="margin: 0 0 16px;">A frozen-binary architecture creates an unusual property: no model drift, no update churn, no revalidation cycle triggered by vendor-side updates. The classifier validated today is the classifier that runs in five years — byte-for-byte identical, with the same locked threshold and the same audit trail.</p>
+          <p class="body" style="margin: 0;">Flynn's long-term support commitment matches that architectural property. Security maintenance, compliance documentation, and direct support extend under the terms specified at license — for the life of the deployment.</p>
+          <p class="pull" style="margin-top: 28px;">We don't sell you a thing and walk away. We sell you a thing that keeps working when you need it to, for as long as you need it to.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section tight">
+  <div class="wrap">
+    <div style="background: var(--ink); color: var(--bone); border-radius: var(--r-lg); padding: clamp(40px, 5vw, 72px); display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 56px; align-items: center;">
+      <div>
+        <span class="eyebrow" style="color: color-mix(in oklab, var(--bone) 65%, transparent);"><span class="dot"></span>Engage</span>
+        <h2 class="h1" style="margin-top: 20px; color: var(--bone);">Tell us what you'd put it on.</h2>
+        <p class="lede" style="color: color-mix(in oklab, var(--bone) 80%, transparent); margin-top: 20px;">A short description of the asset, the signal, and the deployment context is enough to start an evaluation conversation. We'll route from there.</p>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px;">
+          <a class="btn" href="mailto:tripp@entromorphic.com" >tripp@entromorphic.com <span class="arrow">→</span></a>
+          <a class="btn ghost" href="whitepaper.html" style="background: transparent; color: var(--bone); border-color: color-mix(in oklab, var(--bone) 30%, transparent);">Read the whitepaper</a>
+        </div>
+      </div>
+      <div style="display: grid; gap: 14px; font-size: 14px;">
+        <div style="padding: 14px 0; border-top: 1px solid color-mix(in oklab, var(--bone) 15%, transparent); color: color-mix(in oklab, var(--bone) 85%, transparent);">
+          <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: color-mix(in oklab, var(--bone) 55%, transparent); text-transform: uppercase; margin-bottom: 6px;">For OEMs</div>
+          Volume, product family, integration target firmware.
+        </div>
+        <div style="padding: 14px 0; border-top: 1px solid color-mix(in oklab, var(--bone) 15%, transparent); color: color-mix(in oklab, var(--bone) 85%, transparent);">
+          <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: color-mix(in oklab, var(--bone) 55%, transparent); text-transform: uppercase; margin-bottom: 6px;">For enterprises</div>
+          Asset class, fleet size, network posture, compliance regime.
+        </div>
+        <div style="padding: 14px 0; border-top: 1px solid color-mix(in oklab, var(--bone) 15%, transparent); border-bottom: 1px solid color-mix(in oklab, var(--bone) 15%, transparent); color: color-mix(in oklab, var(--bone) 85%, transparent);">
+          <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: color-mix(in oklab, var(--bone) 55%, transparent); text-transform: uppercase; margin-bottom: 6px;">For evaluators</div>
+          Dataset on hand, signal type, target hardware.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-meta">
+      <span>© 2026 EntroMorphic · Flynn is a trademark of EntroMorphic</span>
+      <span>v.q2.2026 · audit-ready</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

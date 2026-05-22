@@ -1,0 +1,13 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*~
+.idea/
+.vscode/
+
+# Dependencies (none currently — site is dependency-free)
+node_modules/
+
+# Logs / temp
+*.log
+.cache/

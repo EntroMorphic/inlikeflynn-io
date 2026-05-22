@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Roadmap — Flynn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/styles.css" />
+<style>
+  .page-head { padding: clamp(48px, 7vw, 96px) 0 clamp(48px, 6vw, 72px); border-bottom: 1px solid var(--hair); }
+  .page-head h1 { margin: 16px 0 24px; }
+
+  .stage {
+    border-bottom: 1px solid var(--hair);
+    padding: clamp(56px, 7vw, 96px) 0;
+  }
+  .stage-grid {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: clamp(32px, 5vw, 88px);
+    align-items: start;
+  }
+  @media (max-width: 980px) { .stage-grid { grid-template-columns: 1fr; } }
+
+  .stage .meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 18px;
+  }
+  .stage .when {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border: 1px solid var(--hair-strong);
+    border-radius: 999px;
+    margin-bottom: 24px;
+  }
+  .stage.now .when { border-color: var(--accent); color: var(--accent-deep); }
+  .stage.now .when::before {
+    content: "";
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  .stage .when::before {
+    content: "";
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--mid);
+  }
+  .stage h2 {
+    font-size: clamp(36px, 5vw, 64px);
+    letter-spacing: -0.025em;
+    font-weight: 500;
+    line-height: 1.02;
+    margin: 0 0 16px;
+  }
+  .stage h2 em { font-style: normal; color: var(--mid-2); display: block; font-size: 0.55em; letter-spacing: -0.012em; margin-top: 8px; }
+  .stage p.intro { color: var(--ink-2); font-size: 18px; line-height: 1.55; max-width: 50ch; }
+
+  /* feature row */
+  .features { display: grid; gap: 0; border-top: 1px solid var(--hair-strong); }
+  .features .row {
+    display: grid;
+    grid-template-columns: 0.7fr 1.3fr;
+    gap: 32px;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--hair);
+  }
+  .features .row .l {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+  .features .row .v { color: var(--ink-2); font-size: 15px; line-height: 1.5; }
+
+  /* anatomy diagrams */
+  .anatomy {
+    border: 1px solid var(--hair-strong);
+    border-radius: var(--r-lg);
+    padding: 32px;
+    background: color-mix(in oklab, var(--bone) 60%, white);
+  }
+  .anatomy svg { width: 100%; max-width: 460px; margin: 0 auto; display: block; }
+  .anatomy-caption {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--mid);
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 16px;
+  }
+
+  .principle {
+    background: var(--ink);
+    color: var(--bone);
+    border-radius: var(--r-lg);
+    padding: clamp(40px, 6vw, 80px);
+    margin: clamp(48px, 6vw, 96px) 0;
+  }
+  .principle .eyebrow { color: color-mix(in oklab, var(--bone) 65%, transparent); }
+  .principle h2 { color: var(--bone); margin: 16px 0 24px; }
+  .principle p { color: color-mix(in oklab, var(--bone) 85%, transparent); font-size: 18px; max-width: 64ch; line-height: 1.5; }
+  .principle .pull { color: var(--bone); border-color: var(--accent); }
+
+/* Card labels: cyan base, orange on parent hover */
+  .stage .meta,
+  .features .row .l {
+  color: var(--accent-2);
+  transition: color .2s;
+}
+  .stage:hover .meta,
+  .features .row:hover .l {
+  color: var(--accent) !important;
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="../index.html">
+      <img class="brand-mark" src="../assets/flynn-logo.jpg" alt="Flynn" />
+      <span>Get in like <span class="brand-flynn">Flynn</span>.</span>
+    </a>
+    <nav class="nav-links">
+      <a href="whitepaper.html">Whitepaper</a>
+      <a href="validation.html">Validation</a>
+      <a href="industries.html">Industries</a>
+      <a class="cur" href="roadmap.html">Roadmap</a>
+      <a href="tiers.html">Tiers</a>
+      </nav>
+  </div>
+</header>
+
+<div class="wrap crumb">
+  <a href="../index.html">Flynn</a> &nbsp;/&nbsp; Roadmap
+</div>
+
+<section class="page-head" data-screen-label="01 Roadmap hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span>The Flynn Roadmap</span>
+    <h1 class="h-display" style="font-size: clamp(48px, 6vw, 96px);">From neuron,<br/><em>to nervous system.</em></h1>
+    <p class="lede">Flynn ships in stages. Each stage is buildable and useful on its own. Each is composable with what comes next. The structural-separation property propagates through every layer.</p>
+  </div>
+</section>
+
+<!-- STAGE 01 -->
+<section class="stage now" data-screen-label="02 Stage 1 Neuron">
+  <div class="wrap stage-grid">
+    <div>
+      <div class="meta">Stage 01</div>
+      <span class="when">Today · Shipping</span>
+      <h2>The neuron.<em>One signal in. One score out.</em></h2>
+      <p class="intro">The Flynn detector — the subject of the whitepaper — is the foundational unit. Deployable today as embedded firmware. Validated across five domains. Ready for production integration into industrial equipment.</p>
+
+      <div class="anatomy" style="margin-top: 28px;">
+        <svg viewBox="0 0 460 220" style="color: var(--ink);">
+          <!-- signal in -->
+          <path d="M 10 110 Q 30 90 50 110 T 90 110 T 130 110" fill="none" stroke="currentColor" stroke-width="1.4"/>
+          <text x="10" y="135" font-family="Geist Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.6" letter-spacing="0.5">SIGNAL IN</text>
+          <!-- flynn box -->
+          <rect x="160" y="60" width="140" height="100" fill="none" stroke="currentColor" stroke-width="1.5" rx="6"/>
+          <text x="230" y="100" text-anchor="middle" font-family="Geist, sans-serif" font-size="20" font-weight="500" fill="currentColor" letter-spacing="-0.5">Flynn</text>
+          <text x="230" y="120" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="currentColor" fill-opacity="0.6" letter-spacing="1">8,480 BYTES</text>
+          <text x="230" y="138" text-anchor="middle" font-family="Geist Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.5" letter-spacing="1">LOCKED THRESHOLD</text>
+          <!-- arrow -->
+          <line x1="135" y1="110" x2="155" y2="110" stroke="currentColor" stroke-width="1.5"/>
+          <polygon points="155,110 150,107 150,113" fill="currentColor"/>
+          <line x1="305" y1="110" x2="335" y2="110" stroke="currentColor" stroke-width="1.5"/>
+          <polygon points="335,110 330,107 330,113" fill="currentColor"/>
+          <!-- score out -->
+          <circle cx="365" cy="110" r="14" fill="none" stroke="oklch(0.55 0.18 45)" stroke-width="1.6"/>
+          <text x="365" y="115" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" fill="currentColor" font-weight="500">α</text>
+          <text x="395" y="115" font-family="Geist Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.6" letter-spacing="0.5">SCORE</text>
+        </svg>
+        <div class="anatomy-caption">One detector · one signal · one decision</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="features">
+        <div class="row"><div class="l">Footprint</div><div class="v">8,480 bytes. Fits on existing MCUs.</div></div>
+        <div class="row"><div class="l">Form</div><div class="v">Single C99 source file. Human-readable. Auditable line-by-line.</div></div>
+        <div class="row"><div class="l">Runtime</div><div class="v">Bare-metal. No OS, no network, no filesystem. Zero heap after init.</div></div>
+        <div class="row"><div class="l">Calibration</div><div class="v">Self-calibrating from 1,700 samples. Threshold then locked.</div></div>
+        <div class="row"><div class="l">Determinism</div><div class="v">Bit-identical output across runs and silicon.</div></div>
+        <div class="row"><div class="l">Validation</div><div class="v">Five distinct signal domains. Same source. Same flags.</div></div>
+        <div class="row"><div class="l">Availability</div><div class="v">Today. Under evaluation, OEM, and enterprise license.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRINCIPLE -->
+<div class="wrap">
+  <div class="principle">
+    <span class="eyebrow"><span class="dot"></span>The constant</span>
+    <h2 class="h1">Structural separation propagates.</h2>
+    <p>At every layer of composition, the same architectural property holds. The learning that happens at higher layers can shape what gets attended to. It cannot shape what gets judged. The detector validated today remains valid at every layer of composition — byte-for-byte identical, audit trail intact.</p>
+    <p class="pull" style="margin-top: 24px;">The signal dominates at the moment of conflict. The prior persists. The two never share the wire.</p>
+  </div>
+</div>
+
+<!-- STAGE 02 -->
+<section class="stage" data-screen-label="03 Stage 2 Spinal cord">
+  <div class="wrap stage-grid">
+    <div>
+      <div class="meta">Stage 02</div>
+      <span class="when">In development · Pilots engaging 2026</span>
+      <h2>The spinal cord.<em>Coordinate detectors per asset.</em></h2>
+      <p class="intro">A coordination layer that composes multiple Flynn detectors on the same asset into a single integrated view. Three to ten detectors covering different sensors on one piece of equipment, with a fabric node maintaining operational-regime memory and providing cross-sensor context.</p>
+
+      <div class="anatomy" style="margin-top: 28px;">
+        <svg viewBox="0 0 460 240" style="color: var(--ink);">
+          <!-- multiple flynns -->
+          <g>
+            <rect x="20" y="20" width="100" height="36" fill="none" stroke="currentColor" stroke-width="1.3" rx="4"/>
+            <text x="70" y="42" text-anchor="middle" font-family="Geist, sans-serif" font-size="12" fill="currentColor">Flynn · vib</text>
+            <rect x="20" y="74" width="100" height="36" fill="none" stroke="currentColor" stroke-width="1.3" rx="4"/>
+            <text x="70" y="96" text-anchor="middle" font-family="Geist, sans-serif" font-size="12" fill="currentColor">Flynn · temp</text>
+            <rect x="20" y="128" width="100" height="36" fill="none" stroke="currentColor" stroke-width="1.3" rx="4"/>
+            <text x="70" y="150" text-anchor="middle" font-family="Geist, sans-serif" font-size="12" fill="currentColor">Flynn · current</text>
+            <rect x="20" y="182" width="100" height="36" fill="none" stroke="currentColor" stroke-width="1.3" rx="4"/>
+            <text x="70" y="204" text-anchor="middle" font-family="Geist, sans-serif" font-size="12" fill="currentColor">Flynn · flow</text>
+          </g>
+          <!-- arrows to fabric -->
+          <g stroke="currentColor" stroke-opacity="0.5" stroke-width="1.2">
+            <path d="M 125 38 L 240 100"/>
+            <path d="M 125 92 L 240 110"/>
+            <path d="M 125 146 L 240 130"/>
+            <path d="M 125 200 L 240 140"/>
+          </g>
+          <!-- fabric node -->
+          <rect x="240" y="80" width="140" height="80" fill="none" stroke="oklch(0.55 0.18 45)" stroke-width="1.6" rx="6"/>
+          <text x="310" y="115" text-anchor="middle" font-family="Geist, sans-serif" font-size="14" font-weight="500" fill="currentColor">Fabric node</text>
+          <text x="310" y="135" text-anchor="middle" font-family="Geist Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.6" letter-spacing="1">REGIME MEMORY</text>
+          <!-- output -->
+          <line x1="385" y1="120" x2="420" y2="120" stroke="currentColor" stroke-width="1.5"/>
+          <polygon points="420,120 415,117 415,123" fill="currentColor"/>
+          <text x="395" y="140" font-family="Geist Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.6">ASSET</text>
+        </svg>
+        <div class="anatomy-caption">3–10 detectors · one asset · regime-aware coordination</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="features">
+        <div class="row"><div class="l">Topology</div><div class="v">3–10 detectors per asset. Multi-sensor coverage.</div></div>
+        <div class="row"><div class="l">Coordination</div><div class="v">Fabric node maintains operational-regime memory. Cross-sensor context.</div></div>
+        <div class="row"><div class="l">Authority</div><div class="v">Detector layer remains authoritative on what is anomalous.</div></div>
+        <div class="row"><div class="l">Adds</div><div class="v">Which deviations are real faults vs. regime-related. What the asset's current operating state actually is.</div></div>
+        <div class="row"><div class="l">Separation</div><div class="v">Coordination layer can bias attention. It cannot modify what underlying detectors classify.</div></div>
+        <div class="row"><div class="l">Status</div><div class="v">In active engineering. Pilot deployments engaging in 2026.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STAGE 03 -->
+<section class="stage" data-screen-label="04 Stage 3 Nervous system">
+  <div class="wrap stage-grid">
+    <div>
+      <div class="meta">Stage 03</div>
+      <span class="when">Multi-year roadmap</span>
+      <h2>The nervous system.<em>Facility-wide distributed cognition.</em></h2>
+      <p class="intro">At full scope, Flynn becomes a facility-wide distributed nervous system — hierarchical composition of asset-level coordination into process-level, plant-level, and ultimately enterprise-level cognition.</p>
+
+      <div class="anatomy" style="margin-top: 28px;">
+        <svg viewBox="0 0 460 260" style="color: var(--ink);">
+          <!-- enterprise -->
+          <rect x="160" y="10" width="140" height="34" fill="none" stroke="currentColor" stroke-width="1.5" rx="4"/>
+          <text x="230" y="32" text-anchor="middle" font-family="Geist, sans-serif" font-size="13" font-weight="500" fill="currentColor">Enterprise</text>
+          <!-- plants -->
+          <rect x="50" y="80" width="120" height="30" fill="none" stroke="currentColor" stroke-width="1.3" rx="4"/>
+          <text x="110" y="100" text-anchor="middle" font-family="Geist, sans-serif" font-size="12" fill="currentColor">Plant A</text>
+          <rect x="290" y="80" width="120" height="30" fill="none" stroke="currentColor" stroke-width="1.3" rx="4"/>
+          <text x="350" y="100" text-anchor="middle" font-family="Geist, sans-serif" font-size="12" fill="currentColor">Plant B</text>
+          <!-- assets -->
+          <g font-family="Geist Mono, monospace" font-size="9" letter-spacing="0.5">
+            <rect x="20" y="148" width="60" height="22" fill="none" stroke="currentColor" stroke-opacity="0.5" rx="3"/>
+            <text x="50" y="163" text-anchor="middle" fill="currentColor" fill-opacity="0.7">ASSET</text>
+            <rect x="90" y="148" width="60" height="22" fill="none" stroke="currentColor" stroke-opacity="0.5" rx="3"/>
+            <text x="120" y="163" text-anchor="middle" fill="currentColor" fill-opacity="0.7">ASSET</text>
+            <rect x="160" y="148" width="60" height="22" fill="none" stroke="currentColor" stroke-opacity="0.5" rx="3"/>
+            <text x="190" y="163" text-anchor="middle" fill="currentColor" fill-opacity="0.7">ASSET</text>
+            <rect x="260" y="148" width="60" height="22" fill="none" stroke="currentColor" stroke-opacity="0.5" rx="3"/>
+            <text x="290" y="163" text-anchor="middle" fill="currentColor" fill-opacity="0.7">ASSET</text>
+            <rect x="330" y="148" width="60" height="22" fill="none" stroke="currentColor" stroke-opacity="0.5" rx="3"/>
+            <text x="360" y="163" text-anchor="middle" fill="currentColor" fill-opacity="0.7">ASSET</text>
+            <rect x="400" y="148" width="40" height="22" fill="none" stroke="currentColor" stroke-opacity="0.3" rx="3"/>
+            <text x="420" y="163" text-anchor="middle" fill="currentColor" fill-opacity="0.5">…</text>
+          </g>
+          <!-- detectors dots -->
+          <g fill="oklch(0.55 0.18 45)">
+            <circle cx="35" cy="195" r="2.5"/><circle cx="45" cy="195" r="2.5"/><circle cx="55" cy="195" r="2.5"/><circle cx="65" cy="195" r="2.5"/>
+            <circle cx="105" cy="195" r="2.5"/><circle cx="115" cy="195" r="2.5"/><circle cx="125" cy="195" r="2.5"/><circle cx="135" cy="195" r="2.5"/>
+            <circle cx="175" cy="195" r="2.5"/><circle cx="185" cy="195" r="2.5"/><circle cx="195" cy="195" r="2.5"/><circle cx="205" cy="195" r="2.5"/>
+            <circle cx="275" cy="195" r="2.5"/><circle cx="285" cy="195" r="2.5"/><circle cx="295" cy="195" r="2.5"/><circle cx="305" cy="195" r="2.5"/>
+            <circle cx="345" cy="195" r="2.5"/><circle cx="355" cy="195" r="2.5"/><circle cx="365" cy="195" r="2.5"/><circle cx="375" cy="195" r="2.5"/>
+          </g>
+          <text x="230" y="220" text-anchor="middle" font-family="Geist Mono, monospace" font-size="9" fill="currentColor" fill-opacity="0.55" letter-spacing="1">FLYNN DETECTORS · BARE-METAL · ON-SILICON</text>
+          <!-- connecting lines -->
+          <g stroke="currentColor" stroke-opacity="0.25" stroke-width="1">
+            <line x1="230" y1="44" x2="110" y2="80"/>
+            <line x1="230" y1="44" x2="350" y2="80"/>
+            <line x1="110" y1="110" x2="50" y2="148"/>
+            <line x1="110" y1="110" x2="120" y2="148"/>
+            <line x1="110" y1="110" x2="190" y2="148"/>
+            <line x1="350" y1="110" x2="290" y2="148"/>
+            <line x1="350" y1="110" x2="360" y2="148"/>
+          </g>
+          <!-- labels -->
+          <text x="455" y="32" text-anchor="end" font-family="Geist Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.5" letter-spacing="1">CORTEX</text>
+          <text x="455" y="100" text-anchor="end" font-family="Geist Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.5" letter-spacing="1">CEREBELLUM</text>
+          <text x="455" y="163" text-anchor="end" font-family="Geist Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.5" letter-spacing="1">SPINAL CORD</text>
+          <text x="455" y="222" text-anchor="end" font-family="Geist Mono, monospace" font-size="8" fill="currentColor" fill-opacity="0.5" letter-spacing="1">REFLEX</text>
+        </svg>
+        <div class="anatomy-caption">Hierarchical cognition · Reflex through cortex</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="features">
+        <div class="row"><div class="l">Reflex</div><div class="v">Sub-millisecond response at the equipment.</div></div>
+        <div class="row"><div class="l">Cerebellum</div><div class="v">Operational-regime memory across weeks of unseen states.</div></div>
+        <div class="row"><div class="l">Cortex</div><div class="v">Site-wide decision-making across processes and plants.</div></div>
+        <div class="row"><div class="l">Long-term memory</div><div class="v">Forensic replay back to any moment in equipment history.</div></div>
+        <div class="row"><div class="l">Composition</div><div class="v">Built from primitives that already exist. Silicon-verified in parallel research.</div></div>
+        <div class="row"><div class="l">Status</div><div class="v">Multi-year. Spinal cord lays the foundation.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section tight">
+  <div class="wrap">
+    <div style="background: var(--ink); color: var(--bone); border-radius: var(--r-lg); padding: clamp(40px, 5vw, 72px); display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 56px; align-items: center;">
+      <div>
+        <span class="eyebrow" style="color: color-mix(in oklab, var(--bone) 65%, transparent);"><span class="dot"></span>Roadmap conversations</span>
+        <h2 class="h1" style="margin-top: 20px; color: var(--bone);">Pilot the spinal cord.</h2>
+        <p class="lede" style="color: color-mix(in oklab, var(--bone) 80%, transparent); margin-top: 20px;">Operators with multi-sensor assets and clear regime structure are good candidates for 2026 pilot deployments of the coordination layer.</p>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px;">
+          <a class="btn" href="../index.html#contact" >Talk to engineering <span class="arrow">→</span></a>
+          <a class="btn ghost" href="tiers.html" style="background: transparent; color: var(--bone); border-color: color-mix(in oklab, var(--bone) 30%, transparent);">See engagement tiers</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in oklab, var(--bone) 55%, transparent); margin-bottom: 14px;">Architectural brief on request</div>
+        <p style="color: color-mix(in oklab, var(--bone) 75%, transparent); font-size: 14px; line-height: 1.55;">A deeper architectural conversation about the structural-separation property and how it composes into the longer Flynn roadmap. Available to qualified engagements.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-meta">
+      <span>© 2026 EntroMorphic · Flynn is a trademark of EntroMorphic</span>
+      <span>v.q2.2026 · audit-ready</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

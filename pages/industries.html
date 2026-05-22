@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Industries — Flynn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/styles.css" />
+<style>
+  .page-head {
+    padding: clamp(48px, 7vw, 96px) 0 clamp(40px, 5vw, 64px);
+    border-bottom: 1px solid var(--hair);
+  }
+  .page-head h1 { margin: 16px 0 24px; }
+
+  /* Universal spec strip echoing the landing's marquee */
+  .strip {
+    border-top: 1px solid var(--hair);
+    border-bottom: 1px solid var(--hair);
+    padding: 22px 0;
+    background: color-mix(in oklab, var(--bone) 90%, var(--ink));
+    overflow: hidden;
+  }
+  .strip-row {
+    display: flex;
+    gap: 56px;
+    align-items: center;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid);
+    animation: marquee 60s linear infinite;
+  }
+  .strip-row span { display: inline-flex; align-items: center; gap: 12px; }
+  .strip-row span::before {
+    content: "";
+    display: inline-block;
+    width: 6px; height: 6px; transform: rotate(45deg);
+    background: var(--accent);
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* Industry index */
+  .index-wrap {
+    padding: clamp(40px, 5vw, 64px) 0 clamp(16px, 2vw, 24px);
+    border-bottom: 1px solid var(--hair);
+  }
+  .index {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--hair-strong);
+    border-bottom: 1px solid var(--hair-strong);
+  }
+  .index a {
+    display: block;
+    padding: 22px 18px;
+    border-right: 1px solid var(--hair);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    transition: color .2s, background .2s;
+  }
+  .index a:last-child { border-right: 0; }
+  .index a:hover {
+    color: var(--accent);
+    background: color-mix(in oklab, var(--bone) 90%, var(--ink));
+  }
+  .index a .n {
+    display: block;
+    color: var(--mid);
+    margin-bottom: 6px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+  @media (max-width: 880px) {
+    .index { grid-template-columns: 1fr 1fr; }
+    .index a:nth-child(2n) { border-right: 0; }
+    .index a { border-bottom: 1px solid var(--hair); }
+  }
+
+  /* Industry section */
+  .industry {
+    padding: clamp(56px, 8vw, 112px) 0;
+    border-bottom: 1px solid var(--hair);
+    scroll-margin-top: 80px;
+  }
+  .industry-head {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: clamp(32px, 5vw, 88px);
+    align-items: start;
+    margin-bottom: clamp(40px, 5vw, 72px);
+  }
+  @media (max-width: 980px) { .industry-head { grid-template-columns: 1fr; } }
+
+  .industry-head .meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    margin-bottom: 16px;
+  }
+  .industry:hover .industry-head .meta { color: var(--accent); }
+  .industry-head h2 {
+    font-size: clamp(36px, 5vw, 64px);
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+    font-weight: 500;
+    margin: 0 0 16px;
+  }
+  .industry-head .deck {
+    font-size: clamp(18px, 1.6vw, 22px);
+    line-height: 1.45;
+    color: var(--ink-2);
+    margin: 0;
+    letter-spacing: -0.01em;
+    max-width: 52ch;
+  }
+  .industry-head .right-col {
+    padding-top: 72px;
+  }
+  @media (max-width: 980px) { .industry-head .right-col { padding-top: 0; } }
+
+  /* Challenge box */
+  .challenge {
+    padding: 32px;
+    border: 1px solid var(--hair);
+    border-radius: var(--r-lg);
+    background: color-mix(in oklab, var(--bone) 65%, white);
+    margin-bottom: 32px;
+  }
+  .challenge h4 {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    margin: 0 0 18px;
+    font-weight: 500;
+    transition: color .2s;
+  }
+  .industry:hover .challenge h4 { color: var(--accent); }
+  .challenge ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .challenge li {
+    padding: 12px 0 12px 22px;
+    border-top: 1px solid var(--hair);
+    position: relative;
+    color: var(--ink-2);
+    font-size: 15px;
+    line-height: 1.45;
+  }
+  .challenge li:last-child { border-bottom: 1px solid var(--hair); }
+  .challenge li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 22px;
+    width: 10px; height: 1px;
+    background: var(--mid);
+  }
+
+  /* Use cases grid */
+  .use-cases {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid var(--hair-strong);
+  }
+  .use-case {
+    padding: 28px 24px;
+    border-right: 1px solid var(--hair);
+    border-bottom: 1px solid var(--hair);
+    transition: background .2s;
+  }
+  .use-case:nth-child(2n) { border-right: 0; }
+  .use-case .l {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    margin-bottom: 12px;
+    transition: color .2s;
+  }
+  .use-case:hover .l { color: var(--accent); }
+  .use-case h3 {
+    font-size: 18px;
+    letter-spacing: -0.012em;
+    margin: 0 0 8px;
+    font-weight: 500;
+  }
+  .use-case p {
+    font-size: 14px;
+    color: var(--ink-2);
+    line-height: 1.5;
+    margin: 0;
+  }
+  @media (max-width: 720px) {
+    .use-cases { grid-template-columns: 1fr; }
+    .use-case { border-right: 0; }
+  }
+
+  /* Fit chips */
+  .fit {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+  }
+  .fit .chip {
+    border-color: color-mix(in oklab, var(--accent-2) 35%, transparent);
+    color: var(--accent-2);
+    transition: color .2s, border-color .2s;
+  }
+  .industry:hover .fit .chip {
+    border-color: color-mix(in oklab, var(--accent) 35%, transparent);
+    color: var(--accent);
+  }
+
+  /* Closing band */
+  .universal {
+    background: var(--ink);
+    color: var(--bone);
+    border-radius: var(--r-lg);
+    padding: clamp(40px, 5vw, 80px);
+    margin: clamp(48px, 6vw, 96px) 0;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .universal h2 { color: var(--bone); margin: 16px 0 0; }
+  .universal .muted { color: color-mix(in oklab, var(--bone) 65%, transparent); }
+  .universal .lede { color: color-mix(in oklab, var(--bone) 82%, transparent); max-width: none; margin-top: 18px; }
+  .universal .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+  @media (max-width: 880px) { .universal { grid-template-columns: 1fr; } }
+
+  .universal .stat-list { display: grid; gap: 14px; }
+  .universal .stat-row {
+    padding: 14px 0;
+    border-top: 1px solid color-mix(in oklab, var(--bone) 15%, transparent);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .universal .stat-row:last-child { border-bottom: 1px solid color-mix(in oklab, var(--bone) 15%, transparent); }
+  .universal .stat-row .l {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: color-mix(in oklab, var(--bone) 60%, transparent);
+  }
+  .universal .stat-row .v {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    color: var(--bone);
+  }
+  .universal .stat-row .v.accent { color: var(--accent-2); }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="../index.html">
+      <img class="brand-mark" src="../assets/flynn-logo.jpg" alt="Flynn" />
+      <span>Get in like <span class="brand-flynn">Flynn</span>.</span>
+    </a>
+    <nav class="nav-links">
+      <a href="whitepaper.html">Whitepaper</a>
+      <a href="validation.html">Validation</a>
+      <a class="cur" href="industries.html">Industries</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="tiers.html">Tiers</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap crumb">
+  <a href="../index.html">Flynn</a> &nbsp;/&nbsp; Industries
+</div>
+
+<section class="page-head" data-screen-label="01 Industries hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span>Industries</span>
+    <h1 class="h-display" style="font-size: clamp(48px, 6vw, 96px);">One detector.<br/><em>Every vertical.</em></h1>
+    <p class="lede">The same 8,480-byte source compiles into every equipment class — automotive ECUs, consumer device firmware, satellite and shipboard payloads, embedded medical systems, factory-floor PLCs and drives. Self-calibrating, deterministic, audit-ready. The detector you license is the detector that runs anywhere you point a signal.</p>
+  </div>
+</section>
+
+<div class="strip">
+  <div class="strip-row">
+    <span>AUTOMOTIVE</span>
+    <span>CONSUMER ELECTRONICS</span>
+    <span>SEA · AIR · SPACE</span>
+    <span>HEALTHCARE</span>
+    <span>INDUSTRIAL ROBOTICS</span>
+    <span>AUTOMOTIVE</span>
+    <span>CONSUMER ELECTRONICS</span>
+    <span>SEA · AIR · SPACE</span>
+    <span>HEALTHCARE</span>
+    <span>INDUSTRIAL ROBOTICS</span>
+  </div>
+</div>
+
+<!-- Index -->
+<div class="index-wrap">
+  <div class="wrap">
+    <div class="index">
+      <a href="#automotive"><span class="n">01</span>Automotive</a>
+      <a href="#consumer"><span class="n">02</span>Consumer&nbsp;Electronics</a>
+      <a href="#critical"><span class="n">03</span>Sea, Air &amp; Space</a>
+      <a href="#healthcare"><span class="n">04</span>Healthcare &amp; Life&nbsp;Sciences</a>
+      <a href="#robotics"><span class="n">05</span>Industrial Robotics</a>
+    </div>
+  </div>
+</div>
+
+<!-- 01 AUTOMOTIVE -->
+<section class="industry" id="automotive" data-screen-label="02 Automotive">
+  <div class="wrap">
+    <div class="industry-head">
+      <div>
+        <div class="meta">01 · Automotive</div>
+        <h2>The software-defined vehicle, listened to from inside.</h2>
+        <p class="deck">A modern vehicle is a fleet of microcontrollers — powertrain, ADAS, body, infotainment, gateway. Each one already emits telemetry the OEM cannot afford to ignore once it leaves the line.</p>
+        <div class="fit">
+          <span class="chip">MCU-class</span>
+          <span class="chip">AUTOSAR-friendly</span>
+          <span class="chip">Bare-metal</span>
+        </div>
+      </div>
+      <div class="right-col">
+        <div class="challenge">
+          <h4>The Challenge</h4>
+          <ul>
+            <li>Hundreds of resource-constrained ECUs designed before continuous monitoring was an option.</li>
+            <li>Safety-critical control loops where decisions cannot wait for a cloud round-trip.</li>
+            <li>Long lifecycle (10–15 years on the road) with no path for re-validation of changing models.</li>
+            <li>Behaviour anomalies — sensor drift, control-loop deviation, bus contention — manifest in the signal long before they manifest on the road.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="use-cases">
+      <div class="use-case">
+        <div class="l">Use case</div>
+        <h3>ECU health monitoring</h3>
+        <p>Continuous baseline on every computational node from powertrain to body electronics — without changing the silicon.</p>
+      </div>
+      <div class="use-case">
+        <div class="l">Use case</div>
+        <h3>ADAS sensor integrity</h3>
+        <p>Detect drift, dropout, and out-of-envelope behaviour in camera, radar, lidar, and IMU feeds before they reach the planner.</p>
+      </div>
+      <div class="use-case">
+        <div class="l">Use case</div>
+        <h3>V2X anomaly detection</h3>
+        <p>Flag departures from normal vehicle-to-vehicle and vehicle-to-infrastructure communication patterns at the gateway.</p>
+      </div>
+      <div class="use-case">
+        <div class="l">Use case</div>
+        <h3>IVI behaviour monitoring</h3>
+        <p>Isolate infotainment-domain anomalies before they propagate into safety-critical domains across the gateway.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 CONSUMER ELECTRONICS -->
+<section class="industry" id="consumer" data-screen-label="03 Consumer">
+  <div class="wrap">
+    <div class="industry-head">
+      <div>
+        <div class="meta">02 · Consumer Electronics</div>
+        <h2>On-device detection. No cloud round-trip, no battery tax.</h2>
+        <p class="deck">Detection that lives on the device is detection that works offline, runs in the existing power envelope, and never sends a sample anywhere it doesn't need to go.</p>
+        <div class="fit">
+          <span class="chip">8,480 bytes</span>
+          <span class="chip">Zero heap</span>
+          <span class="chip">Offline by default</span>
+        </div>
+      </div>
+      <div class="right-col">
+        <div class="challenge">
+          <h4>The Challenge</h4>
+          <ul>
+            <li>Cloud-based detection introduces latency, connectivity dependency, and battery cost on power-constrained devices.</li>
+            <li>Hundreds of millions of units shipped per product line — per-device licensing must scale economically.</li>
+            <li>On-device AI/ML accelerators need lightweight watchdogs that don't compete for compute.</li>
+            <li>Privacy posture means many users will never opt into telemetry leaving the device at all.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="use-cases">
+      <div class="use-case">
+        <div class="l">Use case</div>
+        <h3>Smartphone subsystem health</h3>
+        <p>Local anomaly detection on power-rail, thermal, and modem telemetry — without phoning home.</p>
+      </div>
+      <div class="use-case">
+        <div class="l">Use case</div>
+        <h3>AI PCs &amp; tablets</h3>
+        <p>Watch on-device LLM and multimodal inference for runaway behaviour, throttling drift, or memory-bandwidth anomalies.</p>
+      </div>
+      <div class="use-case">
+        <div class="l">Use case</div>
+        <h3>Wearables</h3>
+        <p>Continuous low-power baseline on biometric streams; flag departures without burning the budget.</p>
+      </div>
+      <div class="use-case">
+        <div class="l">Use case</div>
+        <h3>Gaming consoles</h3>
+        <p>Detect hardware-class anomalies (thermal, voltage, controller-bus) without instrumenting customer behaviour.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 CRITICAL SYSTEMS -->
+<section class="industry" id="critical" data-screen-label="04 Sea Air Space">
+  <div class="wrap">
+    <div class="industry-head">
+      <div>
+        <div class="meta">03 · Sea, Air &amp; Space</div>
+        <h2>Where the cloud doesn't reach and the silicon doesn't come back.</h2>
+        <p class="deck">Most consequential equipment operates in environments where backhaul is impossible by physics, update cycles are measured in years, and the asset under measurement cannot be reached for maintenance. Flynn was designed for it.</p>
+        <div class="fit">
+          <span class="chip">Air-gapped</span>
+          <span class="chip">Rad-tolerant compatible</span>
+          <span class="chip">Decade lifecycle</span>
+        </div>
+      </div>
+      <div class="right-col">
+        <div class="challenge">
+          <h4>The Challenge</h4>
+          <ul>
+            <li>Connectivity is intermittent, expensive, or absent — offshore platforms, deep-mine ventilation, remote energy, orbital assets.</li>
+            <li>Decision latency must be sub-millisecond; round-trips to a ground station or shore-side data centre are not an option.</li>
+            <li>Equipment lifecycles are decades. The detector that ships today must still be valid — and identical — in 2036.</li>
+            <li>Defense, aerospace, and maritime regulators demand deterministic, replayable, source-auditable behaviour.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="use-cases">
+      <div class="use-case">
+        <div class="l">Use case</div>
+        <h3>Satellite payload telemetry</h3>
+        <p>Component-level baselines with autonomous flagging — no ground intervention required, no model drift on orbit.</p>
+      </div>
+      <div class="use-case">
+        <div class="l">Use case</div>
+        <h3>Avionics &amp; UAV</h3>
+        <p>Sub-millisecond anomaly response on flight-control, propulsion, and IMU streams; deterministic for certification.</p>
+      </div>
+      <div class="use-case">
+        <div class="l">Use case</div>
+        <h3>Shipboard OT &amp; ECDIS</h3>
+        <p>Low-footprint defence-in-depth for engineering plant and navigation systems on contested or disconnected vessels.</p>
+      </div>
+      <div class="use-case">
+        <div class="l">Use case</div>
+        <h3>Communications integrity</h3>
+        <p>Anomaly detection on real-time data links across contested environments — no external trust anchor required.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 HEALTHCARE -->
+<section class="industry" id="healthcare" data-screen-label="05 Healthcare">
+  <div class="wrap">
+    <div class="industry-head">
+      <div>
+        <div class="meta">04 · Healthcare &amp; Life Sciences</div>
+        <h2>Auditable integrity for the equipment patients depend on.</h2>
+        <p class="deck">SaMD, HIPAA, and clinical workflows demand transparent, deterministic, and replayable detection. Flynn's single-file source and locked-threshold architecture are designed for the documentation packages regulators ask for.</p>
+        <div class="fit">
+          <span class="chip">SaMD-ready</span>
+          <span class="chip">Source-auditable</span>
+          <span class="chip">No PHI leaves the device</span>
+        </div>
+      </div>
+      <div class="right-col">
+        <div class="challenge">
+          <h4>The Challenge</h4>
+          <ul>
+            <li>Regulatory mandates for transparency, auditability, and reproducible behaviour over the life of the deployment.</li>
+            <li>Network drops in clinical settings cannot interrupt monitoring of life-critical equipment.</li>
+            <li>Large, opaque AI models stall approval; auditors want every line of detection logic on the table.</li>
+            <li>PHI protection means many architectures cannot send raw signal anywhere — the listener has to live on the device.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="use-cases">
+      <div class="use-case">
+        <div class="l">Use case</div>
+        <h3>Remote patient monitoring</h3>
+        <p>Real-time anomaly detection on home medical devices — bare-metal, no cloud, no data egress required.</p>
+      </div>
+      <div class="use-case">
+        <div class="l">Use case</div>
+        <h3>Clinical decision support</h3>
+        <p>Sub-10ms anomaly feedback on surgical robotics and diagnostic instruments, with replayable forensic trace.</p>
+      </div>
+      <div class="use-case">
+        <div class="l">Use case</div>
+        <h3>Pharma manufacturing</h3>
+        <p>Line-integrity monitoring for fill-finish, fermentation, and packaging — flagging departures from validated normal.</p>
+      </div>
+      <div class="use-case">
+        <div class="l">Use case</div>
+        <h3>Imaging &amp; diagnostics</h3>
+        <p>Detect calibration drift and sensor anomalies in CT, MRI, and ultrasound front-ends before they reach the radiologist.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 INDUSTRIAL ROBOTICS -->
+<section class="industry" id="robotics" data-screen-label="06 Industrial Robotics">
+  <div class="wrap">
+    <div class="industry-head">
+      <div>
+        <div class="meta">05 · Industrial Robotics</div>
+        <h2>Industry 4.0 at the speed of the actuator.</h2>
+        <p class="deck">Sub-millisecond control loops, 24/7 duty cycles, and cascading-failure topologies are not compatible with cloud-centric detection. Flynn sits on the drive, the PLC, the cell controller — where the decisions actually need to be made.</p>
+        <div class="fit">
+          <span class="chip">PLC / drive-resident</span>
+          <span class="chip">Sub-ms response</span>
+          <span class="chip">IT/OT bridge</span>
+        </div>
+      </div>
+      <div class="right-col">
+        <div class="challenge">
+          <h4>The Challenge</h4>
+          <ul>
+            <li>Cloud-dependent AI introduces operational fragility at the edge — exactly where reliability matters most.</li>
+            <li>Siloed IT/OT data prevents scalable factory automation; the detector has to live on both sides of the wall.</li>
+            <li>Sub-millisecond control loops are structurally incompatible with off-asset detection.</li>
+            <li>One compromised robotic cell cascades — bearing, drive, conveyor, line — within seconds.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="use-cases">
+      <div class="use-case">
+        <div class="l">Use case</div>
+        <h3>Micro-deviation detection</h3>
+        <p>Catch axis-level torque, current, and vibration deviations before they propagate to fault or line stop.</p>
+      </div>
+      <div class="use-case">
+        <div class="l">Use case</div>
+        <h3>Drive &amp; motor health</h3>
+        <p>Embed Flynn on the drive's MCU — bearing vibration and phase telemetry monitored on the silicon that already reads them.</p>
+      </div>
+      <div class="use-case">
+        <div class="l">Use case</div>
+        <h3>IT / OT integration</h3>
+        <p>Deterministic intelligence at the cell controller, with bit-identical replay across IT-side audit and OT-side response.</p>
+      </div>
+      <div class="use-case">
+        <div class="l">Use case</div>
+        <h3>Autonomous isolation</h3>
+        <p>Cell-level anomaly flags drive deterministic cell-isolation logic, containing the cascade at the equipment layer.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Universal closing band -->
+<section class="section tight">
+  <div class="wrap">
+    <div class="universal">
+      <div>
+        <span class="eyebrow" style="color: color-mix(in oklab, var(--bone) 65%, transparent);"><span class="dot"></span>Universal foundation</span>
+        <h2 class="h1">The same 8,480 bytes, across every vertical.</h2>
+        <p class="lede">From a microcontroller in a wearable to a payload on a satellite, Flynn is the same source file with the same locked threshold. Validated once, replayable forever, audit-ready every line.</p>
+        <div class="actions">
+          <a class="btn" href="../index.html#contact">Talk to engineering <span class="arrow">→</span></a>
+          <a class="btn ghost" href="whitepaper.html">Read the whitepaper</a>
+        </div>
+      </div>
+      <div class="stat-list">
+        <div class="stat-row">
+          <span class="l">Footprint</span>
+          <span class="v accent">8,480 bytes</span>
+        </div>
+        <div class="stat-row">
+          <span class="l">Calibration</span>
+          <span class="v">1,700 samples</span>
+        </div>
+        <div class="stat-row">
+          <span class="l">Heap</span>
+          <span class="v">Zero</span>
+        </div>
+        <div class="stat-row">
+          <span class="l">Source files</span>
+          <span class="v">One</span>
+        </div>
+        <div class="stat-row">
+          <span class="l">Behaviour</span>
+          <span class="v accent">Bit-identical</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-meta">
+      <span>© 2026 EntroMorphic · Flynn is a trademark of EntroMorphic</span>
+      <span>v.q2.2026 · audit-ready</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

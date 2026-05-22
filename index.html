@@ -1,0 +1,912 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Flynn — Telemetry talks. Flynn listens.</title>
+<meta name="description" content="Flynn is an embedded, self-calibrating anomaly detector for industrial telemetry. 8,480 bytes. Deterministic. Bare-metal. Auditable." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<style>
+  /* page-specific */
+  .hero {
+    padding: 24px 0 0;
+  }
+  .hero-stack {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: clamp(40px, 6vw, 96px);
+    align-items: end;
+    padding: clamp(56px, 9vw, 120px) 0 clamp(40px, 6vw, 72px);
+  }
+  @media (max-width: 980px) {
+    .hero-stack { grid-template-columns: 1fr; align-items: start; }
+  }
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .tagline {
+    font-size: clamp(20px, 1.7vw, 24px);
+    color: var(--ink-2);
+    margin-top: 28px;
+    max-width: 44ch;
+    letter-spacing: -0.01em;
+    line-height: 1.4;
+  }
+  .hero-ctas {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    margin-top: 36px;
+  }
+
+  .scope {
+    border: 1px solid var(--hair-strong);
+    border-radius: var(--r-md);
+    background: color-mix(in oklab, var(--bone) 55%, white);
+    overflow: hidden;
+    position: relative;
+  }
+  .scope-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--hair);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+  .scope-head .left { display: flex; align-items: center; gap: 12px; }
+  .scope-head .left .led {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--good);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--good) 25%, transparent);
+    transition: background .3s, box-shadow .3s;
+  }
+  [data-flynn-phase][data-state="learn"] ~ * .led,
+  .scope-head[data-state="learn"] .led { background: var(--mid); box-shadow: 0 0 0 3px color-mix(in oklab, var(--mid) 25%, transparent); }
+  .scope canvas { width: 100%; height: 360px; display: block; background: color-mix(in oklab, var(--bone) 60%, white); }
+  @media (max-width: 980px) { .scope canvas { height: 280px; } }
+  .scope-foot {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--hair);
+  }
+  .scope-foot .cell {
+    padding: 14px 16px;
+    border-right: 1px solid var(--hair);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .scope-foot .cell:last-child { border-right: 0; }
+  .scope-foot .cell .l {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .scope-foot .cell .v {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  [data-flynn-phase][data-state="learn"],
+  .scope-foot .cell .v[data-flynn-phase][data-state="learn"],
+  [data-flynn-state][data-state="learn"],
+  .scope-foot .cell .v[data-flynn-state][data-state="learn"] { color: var(--accent-2); }
+  [data-flynn-phase][data-state="alert"],
+  .scope-foot .cell .v[data-flynn-phase][data-state="alert"],
+  [data-flynn-state][data-state="alert"],
+  .scope-foot .cell .v[data-flynn-state][data-state="alert"] { color: var(--accent); }
+
+  /* marquee strip */
+  .strip {
+    border-top: 1px solid var(--hair);
+    border-bottom: 1px solid var(--hair);
+    padding: 22px 0;
+    background: color-mix(in oklab, var(--bone) 90%, var(--ink));
+    overflow: hidden;
+  }
+  .strip-row {
+    display: flex;
+    gap: 64px;
+    align-items: center;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid);
+    animation: marquee 40s linear infinite;
+  }
+  .strip-row span { display: inline-flex; align-items: center; gap: 12px; }
+  .strip-row span::before {
+    content: "";
+    display: inline-block;
+    width: 6px; height: 6px; transform: rotate(45deg);
+    background: var(--accent);
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* gap cards */
+  .gap-card {
+    border-top: 1px solid var(--hair-strong);
+    padding-top: 24px;
+    padding-right: 12px;
+  }
+  .gap-card .num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--mid);
+    margin-bottom: 16px;
+  }
+  .gap-card h3 { margin-bottom: 12px; }
+  .gap-card p { color: var(--ink-2); margin: 0; }
+
+  /* spec rows */
+  .spec-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid var(--hair-strong);
+  }
+  .spec-cell {
+    padding: 28px 24px 32px;
+    border-right: 1px solid var(--hair);
+    border-bottom: 1px solid var(--hair);
+  }
+  .spec-cell:nth-child(3n) { border-right: 0; }
+  .spec-cell .mono-l {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 18px;
+  }
+  .spec-cell .big {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: clamp(36px, 4vw, 56px);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+  .spec-cell p { color: var(--mid); font-size: 14px; margin: 0; }
+  @media (max-width: 880px) {
+    .spec-grid { grid-template-columns: 1fr; }
+    .spec-cell { border-right: 0; }
+  }
+
+  /* timeline */
+  .flow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--hair-strong);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+  }
+  .flow-cell { padding: 36px; border-right: 1px solid var(--hair); position: relative; }
+  .flow-cell:last-child { border-right: 0; }
+  .flow-cell .step {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--mid);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .flow-cell h3 { margin-bottom: 12px; }
+  .flow-cell p { margin: 0; color: var(--ink-2); }
+  .flow-cell .meter {
+    margin-top: 24px;
+    height: 6px;
+    background: var(--hair);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .flow-cell .meter span {
+    display: block; height: 100%;
+    background: var(--ink);
+    border-radius: 999px;
+  }
+  .flow-cell.alert .meter span { background: var(--accent); }
+  @media (max-width: 720px) {
+    .flow { grid-template-columns: 1fr; }
+    .flow-cell { border-right: 0; border-bottom: 1px solid var(--hair); }
+    .flow-cell:last-child { border-bottom: 0; }
+  }
+
+  /* tier cards */
+  .tier {
+    border: 1px solid var(--hair-strong);
+    border-radius: var(--r-lg);
+    padding: 32px;
+    display: flex; flex-direction: column; gap: 20px;
+    background: color-mix(in oklab, var(--bone) 60%, white);
+  }
+  .tier.featured {
+    background: var(--ink);
+    color: var(--bone);
+    border-color: var(--ink);
+  }
+  .tier.featured .muted { color: color-mix(in oklab, var(--bone) 60%, var(--ink)); }
+  .tier .tier-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .tier h3 { font-size: 22px; letter-spacing: -0.012em; }
+  .tier .price {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--mid);
+    text-transform: uppercase;
+  }
+  .tier.featured .price { color: color-mix(in oklab, var(--bone) 70%, transparent); }
+  .tier ul { list-style: none; padding: 0; margin: 0; }
+  .tier li {
+    padding: 12px 0;
+    border-top: 1px solid var(--hair);
+    font-size: 14px;
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .tier.featured li { border-color: color-mix(in oklab, var(--bone) 18%, transparent); color: color-mix(in oklab, var(--bone) 88%, transparent); }
+  .tier li::before {
+    content: "";
+    display: inline-block;
+    width: 6px; height: 6px;
+    border: 1px solid var(--ink);
+    transform: rotate(45deg);
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .tier.featured li::before { border-color: var(--accent); }
+
+  /* validation row */
+  .v-row {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr 1fr;
+    gap: 32px;
+    padding: 32px 0;
+    border-top: 1px solid var(--hair);
+    align-items: baseline;
+  }
+  .v-row:first-child { border-top: 1px solid var(--hair-strong); }
+  .v-row .name {
+    font-size: 22px;
+    letter-spacing: -0.015em;
+    font-weight: 500;
+  }
+  .v-row .desc { color: var(--mid); font-size: 14px; }
+  .v-row .metrics {
+    display: flex; gap: 24px; flex-wrap: wrap;
+    font-family: var(--font-mono);
+  }
+  .v-row .metric { display: flex; flex-direction: column; gap: 2px; }
+  .v-row .metric .lbl { font-size: 10px; letter-spacing: 0.14em; color: var(--mid); text-transform: uppercase; }
+  .v-row .metric .val { font-size: 22px; letter-spacing: -0.015em; }
+  .v-row .metric.accent .val { color: var(--accent-deep); }
+  @media (max-width: 1100px) {
+    .v-row { grid-template-columns: 1fr 1fr; }
+    .v-row > :nth-child(3) { grid-column: 1 / -1; }
+  }
+  @media (max-width: 880px) {
+    .v-row { grid-template-columns: 1fr; gap: 12px; }
+    .v-row > :nth-child(3) { grid-column: auto; }
+  }
+
+  /* roadmap cards */
+  .road {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: 1px solid var(--hair-strong);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+  }
+  .road-cell { padding: 36px; border-right: 1px solid var(--hair); }
+  .road-cell:last-child { border-right: 0; }
+  .road-cell .stage {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 8px;
+  }
+  .road-cell h3 { margin-bottom: 8px; }
+  .road-cell .when {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    color: var(--ink-2);
+  }
+  .road-cell.now .when { color: var(--accent-deep); }
+  .road-cell p { margin: 0; color: var(--ink-2); font-size: 14px; line-height: 1.5; }
+  @media (max-width: 880px) {
+    .road { grid-template-columns: 1fr; }
+    .road-cell { border-right: 0; border-bottom: 1px solid var(--hair); }
+    .road-cell:last-child { border-bottom: 0; }
+  }
+
+  /* contact panel */
+  .contact {
+    background: var(--ink);
+    color: var(--bone);
+    border-radius: var(--r-lg);
+    padding: clamp(40px, 5vw, 72px);
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .contact h2 { color: var(--bone); }
+  .contact .muted { color: color-mix(in oklab, var(--bone) 65%, transparent); }
+  .contact .btn { background: var(--accent-2); border-color: var(--accent-2); color: #14110d; }
+  .contact .btn:hover { background: var(--accent); border-color: var(--accent); color: #14110d; }
+  .contact .btn.ghost {
+    background: transparent;
+    color: var(--bone);
+    border-color: color-mix(in oklab, var(--bone) 30%, transparent);
+  }
+  .contact-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .contact-routes { display: grid; gap: 18px; }
+  .contact-routes .row { padding: 14px 0; border-top: 1px solid color-mix(in oklab, var(--bone) 15%, transparent); }
+  .contact-routes .row:last-child { border-bottom: 1px solid color-mix(in oklab, var(--bone) 15%, transparent); }
+  .contact-routes .lbl {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: color-mix(in oklab, var(--bone) 55%, transparent); text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  @media (max-width: 880px) {
+    .contact { grid-template-columns: 1fr; }
+  }
+
+/* Card labels: cyan base, orange on parent hover */
+  .gap-card .num,
+  .spec-cell .mono-l,
+  .flow-cell .step,
+  .road-cell .stage,
+  .tier .price,
+  .v-row .metric .lbl {
+  color: var(--accent-2);
+  transition: color .2s;
+}
+  .gap-card:hover .num,
+  .spec-cell:hover .mono-l,
+  .flow-cell:hover .step,
+  .road-cell:hover .stage,
+  .tier:hover .price,
+  .v-row:hover .metric .lbl {
+  color: var(--accent) !important;
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="index.html">
+      <img class="brand-mark" src="assets/flynn-logo.jpg" alt="Flynn" />
+      <span>Get in like <span class="brand-flynn">Flynn</span>.</span>
+    </a>
+    <nav class="nav-links">
+      <a href="pages/whitepaper.html">Whitepaper</a>
+      <a href="pages/validation.html">Validation</a>
+      <a href="pages/industries.html">Industries</a>
+      <a href="pages/roadmap.html">Roadmap</a>
+      <a href="pages/tiers.html">Tiers</a>
+      </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" data-screen-label="01 Hero">
+  <div class="wrap">
+
+    <div class="hero-meta">
+      <span class="chip live">Whitepaper · Q2 2026</span>
+      <span class="eyebrow"><span class="dot"></span>Embedded anomaly detection · Bare-metal · 8,480 bytes</span>
+    </div>
+
+    <div class="hero-stack">
+      <div>
+        <h1 class="h-display">
+          Telemetry talks.<br/>
+          <em>Flynn listens.</em>
+        </h1>
+        <p class="tagline">
+          Flynn is an embedded anomaly detector that turns equipment telemetry into usable local intelligence. It runs on bare-metal in 8,480 bytes, self-calibrates from normal behavior, and delivers deterministic, auditable detection for machines, tools, and edge systems where cloud-first AI latency is too high, too opaque, or unavailable.
+        </p>
+        <div class="hero-ctas">
+          <a class="btn" href="#contact">
+            Request evaluation access
+            <span class="arrow">→</span>
+          </a>
+          <a class="btn ghost" href="pages/whitepaper.html">
+            Read the whitepaper
+          </a>
+        </div>
+      </div>
+
+      <!-- LIVE WAVEFORM SCOPE -->
+      <div class="scope" aria-label="Live anomaly detection visualization">
+        <div class="scope-head">
+          <div class="left">
+            <span class="led"></span>
+            <span><span style="color: var(--accent-2);">FLYNN</span><span style="color: var(--ink);"> · </span><span style="color: var(--accent);">MCU-EMBEDDED</span><span style="color: var(--ink);"> · STREAM 01</span></span>
+          </div>
+          <div><span style="color: var(--accent-2);">SR</span><span style="color: var(--ink);"> · </span><span style="color: var(--accent);">1 kHz</span></div>
+        </div>
+        <canvas data-flynn-wave></canvas>
+        <div class="scope-foot">
+          <div class="cell">
+            <span class="l">Phase</span>
+            <span class="v" data-flynn-phase>LEARNING</span>
+          </div>
+          <div class="cell">
+            <span class="l">Sample</span>
+            <span class="v" data-flynn-sample>0000</span>
+          </div>
+          <div class="cell">
+            <span class="l">Threshold</span>
+            <span class="v" data-flynn-threshold>—</span>
+          </div>
+          <div class="cell">
+            <span class="l">State</span>
+            <span class="v" data-flynn-state>CALIBRATING</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE STRIP -->
+<div class="strip">
+  <div class="strip-row">
+    <span>BEARING VIBRATION</span>
+    <span>PUMP CAVITATION</span>
+    <span>MOTOR PHASE DRIFT</span>
+    <span>ELECTRICAL BUS</span>
+    <span>THERMAL ENVELOPE</span>
+    <span>PRESSURE</span>
+    <span>FLOW</span>
+    <span>TIMING</span>
+    <span>AMBIENT</span>
+    <span>SUB-SEA</span>
+    <span>DEEP SPACE</span>
+    <span>BEARING VIBRATION</span>
+    <span>PUMP CAVITATION</span>
+    <span>MOTOR PHASE DRIFT</span>
+    <span>ELECTRICAL BUS</span>
+    <span>THERMAL ENVELOPE</span>
+    <span>PRESSURE</span>
+    <span>FLOW</span>
+    <span>TIMING</span>
+    <span>AMBIENT</span>
+    <span>SUB-SEA</span>
+    <span>DEEP SPACE</span>
+  </div>
+</div>
+
+<!-- THE FOUR GAPS -->
+<section class="section" data-screen-label="02 Problem">
+  <div class="wrap">
+    <div class="cols-2" style="margin-bottom: 64px;">
+      <div>
+        <span class="eyebrow"><span class="dot"></span>The Problem</span>
+        <h2 class="h1" style="margin-top: 20px;">Equipment talks in telemetry. Most of it goes unheard.</h2>
+      </div>
+      <p class="lede" style="margin-top: 72px;">From sub-sea to deep-space, equipment talks in telemetry. Vibration, current, temperature, pressure, flow, timing. The signals are there. The local, deterministic, auditable early detection rarely is — a detector small enough to embed, smart enough to self-calibrate, and reliable enough to act on without a cloud stack, a labeled dataset, or an ML team behind it.</p>
+    </div>
+
+    <div class="cols-4">
+      <div class="gap-card">
+        <div class="num">01</div>
+        <h3 class="h3">Non-local intelligence</h3>
+        <p style="margin-top:12px">Telemetry exists. A detector you can trust close to the source does not. The decision lives far from the action it informs.</p>
+      </div>
+      <div class="gap-card">
+        <div class="num">02</div>
+        <h3 class="h3">No labels, no joy</h3>
+        <p style="margin-top:12px">Supervised approaches demand labeled failure data. Most equipment is designed not to fail. The training set does not exist.</p>
+      </div>
+      <div class="gap-card">
+        <div class="num">03</div>
+        <h3 class="h3">Cloud can't reach</h3>
+        <p style="margin-top:12px">Most consequential equipment lives where the cloud doesn't. A cloud-dependent detector is a detector that doesn't work.</p>
+      </div>
+      <div class="gap-card">
+        <div class="num">04</div>
+        <h3 class="h3">Can't embed</h3>
+        <p style="margin-top:12px">Tools built for dashboards do not belong in firmware. Too large, too dynamic, too dependent on external services.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule" />
+
+<!-- WHY FLYNN IS DIFFERENT -->
+<section class="section" data-screen-label="03 Why Flynn">
+  <div class="wrap">
+    <div class="cols-2" style="margin-bottom: 64px;">
+      <div>
+        <span class="eyebrow"><span class="dot"></span>Flynn's Differential</span>
+        <h2 class="h1" style="margin-top: 20px;">Industrial-grade, zero-latency, local anomaly detection.</h2>
+      </div>
+      <p class="lede" style="margin-top: 72px;">Designed from first principles for MCU-class hardware, for enterprise-scale deployments. The numbers below are entry conditions.</p>
+    </div>
+
+    <div class="spec-grid">
+      <div class="spec-cell">
+        <div class="mono-l">Footprint</div>
+        <div class="big">8,480<span class="muted" style="font-size: 0.4em; margin-left: 6px;">bytes</span></div>
+        <p>Not 8 GB or 8 MB — eight thousand four hundred and eighty bytes. Fits on the MCU already inside the equipment.</p>
+      </div>
+      <div class="spec-cell">
+        <div class="mono-l">Calibration</div>
+        <div class="big">1,700<span class="muted" style="font-size: 0.4em; margin-left: 6px;">samples</span></div>
+        <p>Self-calibrates from normal behavior in under two seconds at kilohertz-class rates. No labels. No tuning.</p>
+      </div>
+      <div class="spec-cell">
+        <div class="mono-l">Heap allocations</div>
+        <div class="big">0</div>
+        <p>Zero dynamic memory allocation after init. Hard requirement for safety-critical firmware — achieved by design.</p>
+      </div>
+      <div class="spec-cell">
+        <div class="mono-l">Source files</div>
+        <div class="big">1</div>
+        <p>The entire detector is a single human-readable C source file. No model blob, no binary, no opaque runtime.</p>
+      </div>
+      <div class="spec-cell">
+        <div class="mono-l">False positives</div>
+        <div class="big">0<span class="muted" style="font-size: 0.36em; margin-left: 6px;">/ 120 h</span></div>
+        <p>Zero false positives across 120 hours of bearing-class soak. Bounded above 0.025/hr at 95% confidence.</p>
+      </div>
+      <div class="spec-cell">
+        <div class="mono-l">Behaviour</div>
+        <div class="big">Bit-identical</div>
+        <p>Deterministic across runs and silicon. Replayable. Auditable. Eligible for safety-certified voting architectures.</p>
+      </div>
+    </div>
+
+    <p class="pull" style="margin-top: 56px;">
+      The signal dominates at the moment of conflict. The prior persists. The two never share the wire.
+    </p>
+  </div>
+</section>
+
+<hr class="rule" />
+
+<!-- HOW IT WORKS -->
+<section class="section" data-screen-label="04 How it works">
+  <div class="wrap">
+    <div class="cols-2" style="margin-bottom: 56px;">
+      <div>
+        <span class="eyebrow"><span class="dot"></span>How Flynn works</span>
+        <h2 class="h1" style="margin-top: 20px;">Learn &amp; detect. Fire &amp; forget.</h2>
+      </div>
+      <p class="lede" style="margin-top: 72px;">Install. Deploy. Walk away. After 1,700 samples, the threshold is locked — and an alert from Flynn means a real and sustained departure from the conditions present at installation.</p>
+    </div>
+
+    <div class="flow">
+      <div class="flow-cell">
+        <div class="step">Phase 01 · Learning</div>
+        <h3 class="h2" style="font-size: clamp(24px, 2.6vw, 36px); margin-bottom: 14px;">Observe nominal. Lock-in thresholds.</h3>
+        <p>For the first 1,700 samples after deployment, Flynn observes the signal without producing alerts. It accumulates a statistical model of the signal's normal behavior — variability, autocorrelation, distribution shape, dynamical character — and commits a conservative detection threshold.</p>
+        <div class="meter"><span style="width: 100%"></span></div>
+      </div>
+      <div class="flow-cell alert">
+        <div class="step">Phase 02 · Detection</div>
+        <h3 class="h2" style="font-size: clamp(24px, 2.6vw, 36px); margin-bottom: 14px;">Zero-latency, real-time sampling.</h3>
+        <p>Every subsequent sample passes through the detection pipeline and is scored against the calibrated model. The locked threshold refuses adaptive drift by construction: a slow-developing fault cannot be quietly absorbed into the new normal.</p>
+        <div class="meter"><span style="width: 70%"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule" />
+
+<!-- VALIDATION -->
+<section class="section" data-screen-label="05 Validation">
+  <div class="wrap">
+    <div class="cols-2" style="margin-bottom: 56px;">
+      <div>
+        <span class="eyebrow"><span class="dot"></span>Validated across domains</span>
+        <h2 class="h1" style="margin-top: 20px;">One binary. Infinite domains. Zero configuration.</h2>
+      </div>
+      <p class="lede" style="margin-top: 72px;">Five-domain validation on the same binary and works across signal domains that share no domain assumptions.</p>
+    </div>
+
+    <div class="v-list">
+      <div class="v-row">
+        <div>
+          <div class="name">Bearing vibration</div>
+          <div class="desc">CWRU benchmark · 27 fault pairs · standard operating point</div>
+        </div>
+        <div class="metrics">
+          <div class="metric accent"><span class="lbl">Precision</span><span class="val">0.988</span></div>
+          <div class="metric"><span class="lbl">F1</span><span class="val">0.829</span></div>
+          <div class="metric"><span class="lbl">Recall</span><span class="val">0.996</span></div>
+        </div>
+        <div class="desc">Tandem mode (single compile flag): precision 0.972 · recall 0.996.</div>
+      </div>
+
+      <div class="v-row">
+        <div>
+          <div class="name">Run-to-failure</div>
+          <div class="desc">30+ days continuous · 4 bearings · 8 channels · NASA IMS Bearing dataset</div>
+        </div>
+        <div class="metrics">
+          <div class="metric accent"><span class="lbl">Lead time</span><span class="val">3–4 d</span></div>
+          <div class="metric"><span class="lbl">False alarms</span><span class="val">0</span></div>
+        </div>
+        <div class="desc">Identified the two failing bearings ahead of documented failure. The healthy bearings remained silent.</div>
+      </div>
+
+      <div class="v-row">
+        <div>
+          <div class="name">Ambient &amp; diurnal</div>
+          <div class="desc">336 hours · temperature, environmental, process-control signals</div>
+        </div>
+        <div class="metrics">
+          <div class="metric accent"><span class="lbl">FP / hour</span><span class="val">0.074–0.080</span></div>
+        </div>
+        <div class="desc">Operationally compatible with shift-cycle review — a small number of alerts per day, reviewable within normal rhythm.</div>
+      </div>
+
+      <div class="v-row">
+        <div>
+          <div class="name">Electrical grid stability</div>
+          <div class="desc">10,000 instances · 12 features</div>
+        </div>
+        <div class="metrics">
+          <div class="metric accent"><span class="lbl">F1</span><span class="val">0.532</span></div>
+        </div>
+        <div class="desc">Same source, same flags, no per-domain configuration.</div>
+      </div>
+
+      <div class="v-row">
+        <div>
+          <div class="name">Soak · synthetic vibration</div>
+          <div class="desc">120 hours · 5 seeds × 24 hours</div>
+        </div>
+        <div class="metrics">
+          <div class="metric accent"><span class="lbl">False positives</span><span class="val">0</span></div>
+          <div class="metric"><span class="lbl">95% CI bound</span><span class="val">&lt;0.025/h</span></div>
+        </div>
+        <div class="desc">On normal-operation bearing traces: zero false positives across 1.2M samples.</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 48px;">
+      <a class="btn ghost" href="pages/validation.html">See the full validation set <span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+<hr class="rule" />
+
+<!-- ROADMAP -->
+<section class="section" data-screen-label="06 Roadmap">
+  <div class="wrap">
+    <div class="cols-2" style="margin-bottom: 56px;">
+      <div>
+        <span class="eyebrow"><span class="dot"></span>The Flynn roadmap</span>
+        <h2 class="h1" style="margin-top: 20px;">From neuron to nervous system.</h2>
+      </div>
+      <p class="lede" style="margin-top: 72px;">Each stage is buildable and useful on its own. Each is composable with what comes next. The structural-separation property propagates through every layer.</p>
+    </div>
+
+    <div class="road">
+      <div class="road-cell now">
+        <div class="stage">Stage 01 · The neuron</div>
+        <div class="when">Today · shipping</div>
+        <h3 class="h3" style="margin-bottom: 14px;">One signal in. One score out.</h3>
+        <p>Deployable today as embedded firmware. Validated across five domains. Ready for production integration into industrial equipment.</p>
+      </div>
+      <div class="road-cell">
+        <div class="stage">Stage 02 · The spinal cord</div>
+        <div class="when">2026 · pilots engaging</div>
+        <h3 class="h3" style="margin-bottom: 14px;">Coordinate detectors per asset.</h3>
+        <p>Three to ten Flynn detectors across one asset, with a fabric node maintaining operational-regime memory. Detector layer remains authoritative.</p>
+      </div>
+      <div class="road-cell">
+        <div class="stage">Stage 03 · The nervous system</div>
+        <div class="when">Multi-year</div>
+        <h3 class="h3" style="margin-bottom: 14px;">A facility-wide distributed cognition.</h3>
+        <p>Reflex-class response. Cerebellar memory of operational regimes. Cortical decisions across the site. Forensic replay back to any moment.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule" />
+
+<!-- TIERS -->
+<section class="section" data-screen-label="07 Tiers">
+  <div class="wrap">
+    <div class="cols-2" style="margin-bottom: 56px;">
+      <div>
+        <span class="eyebrow"><span class="dot"></span>Engagement</span>
+        <h2 class="h1" style="margin-top: 20px;">Three ways in.</h2>
+      </div>
+      <p class="lede" style="margin-top: 72px;">From a single sensor on an engineer's bench to a thousand-asset fleet in an air-gapped facility. Specific terms are formalized through direct conversation.</p>
+    </div>
+
+    <div class="cols-3">
+      <div class="tier">
+        <div class="tier-head">
+          <h3>Evaluation</h3>
+          <span class="price">No cost</span>
+        </div>
+        <p class="muted">For developers, researchers, and innovation groups testing Flynn against their own data.</p>
+        <ul>
+          <li>Source-level audit rights</li>
+          <li>Bounded scope, time-limited</li>
+          <li>NDA on request</li>
+          <li>Direct engineering contact</li>
+        </ul>
+        <a class="btn ghost" href="#contact">Request access <span class="arrow">→</span></a>
+      </div>
+      <div class="tier featured">
+        <div class="tier-head">
+          <h3>OEM licensing</h3>
+          <span class="price">Per-unit royalty</span>
+        </div>
+        <p class="muted">For manufacturers embedding Flynn into commercial equipment at production scale.</p>
+        <ul>
+          <li>Precompiled binary or source</li>
+          <li>Integration support included</li>
+          <li>Long-term source-stability</li>
+          <li>Tailored to integration depth</li>
+        </ul>
+        <a class="btn" href="#contact" >Start a conversation <span class="arrow">→</span></a>
+      </div>
+      <div class="tier">
+        <div class="tier-head">
+          <h3>Enterprise</h3>
+          <span class="price">Deployment-scale</span>
+        </div>
+        <p class="muted">For operators deploying Flynn across fleets, retrofit or new-build, on or off network.</p>
+        <ul>
+          <li>Source access &amp; certification</li>
+          <li>Custom integration tooling</li>
+          <li>Compliance documentation</li>
+          <li>Multi-year support contracts</li>
+        </ul>
+        <a class="btn ghost" href="#contact">Talk to engineering <span class="arrow">→</span></a>
+      </div>
+    </div>
+
+    <div style="margin-top: 48px;">
+      <a class="btn ghost" href="pages/tiers.html">Compare engagement in detail <span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+<hr class="rule" />
+
+<!-- CONTACT -->
+<section class="section" id="contact" data-screen-label="08 Contact">
+  <div class="wrap">
+    <div class="contact">
+      <div>
+        <span class="eyebrow" style="color: color-mix(in oklab, var(--bone) 65%, transparent);"><span class="dot"></span>Next steps</span>
+        <h2 class="h1" style="margin-top: 20px;">Get in like Flynn.</h2>
+        <p class="lede" style="color: color-mix(in oklab, var(--bone) 80%, transparent); margin-top: 20px;">
+          Evaluation access, OEM licensing, enterprise deployment — every engagement starts with a direct conversation. We don't sell you a thing and walk away. We sell you a thing that keeps working when you need it to, for as long as you need it to.
+        </p>
+        <div class="contact-actions" style="margin-top: 32px;">
+          <a class="btn" href="mailto:tripp@entromorphic.com">tripp@entromorphic.com <span class="arrow">→</span></a>
+          <a class="btn ghost" href="pages/whitepaper.html">Read the whitepaper</a>
+        </div>
+      </div>
+      <div class="contact-routes">
+        <div class="row">
+          <div class="lbl">Evaluation license</div>
+          <div>Free, bounded scope. Source audit rights included.</div>
+        </div>
+        <div class="row">
+          <div class="lbl">OEM &amp; Integrator</div>
+          <div>Commercial license, per-unit royalty, integration support.</div>
+        </div>
+        <div class="row">
+          <div class="lbl">Enterprise deployment</div>
+          <div>Direct support, compliance packages, multi-year terms.</div>
+        </div>
+        <div class="row">
+          <div class="lbl">Architectural brief</div>
+          <div>Source-level walkthrough of the structural-separation property.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="index.html">
+          <img class="brand-mark" src="assets/flynn-logo.jpg" alt="Flynn" />
+          <span>Flynn</span>
+        </a>
+        <p class="muted" style="font-size: 14px; max-width: 32ch; margin-top: 16px;">Deterministic anomaly detection embedded at the edge of the world and beyond.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="pages/whitepaper.html">Whitepaper</a></li>
+          <li><a href="pages/validation.html">Validation</a></li>
+          <li><a href="pages/industries.html">Industries</a></li>
+          <li><a href="pages/roadmap.html">Roadmap</a></li>
+          <li><a href="pages/tiers.html">Tiers</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Engage</h4>
+        <ul>
+          <li><a href="#contact">Evaluation access</a></li>
+          <li><a href="#contact">OEM licensing</a></li>
+          <li><a href="#contact">Enterprise</a></li>
+          <li><a href="mailto:tripp@entromorphic.com">tripp@entromorphic.com</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="pages/whitepaper.html">About EntroMorphic</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Trademark</a></li>
+          <li><a href="#">Legal</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-meta">
+      <span>© 2026 EntroMorphic · Flynn is a trademark of EntroMorphic</span>
+      <span>v.q2.2026 · audit-ready</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/hero-waveform.js"></script>
+
+<!-- Tweaks: React + Babel + panel -->
+<script>
+  window.FLYNN_TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "accent": [
+      "#fe7e1e",
+      "#24f7f7",
+      "oklch(0.45 0.12 50)"
+    ],
+    "speed": 5,
+    "density": "Dense",
+    "theme": "Dark"
+  }/*EDITMODE-END*/;
+</script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="assets/tweaks-panel.jsx"></script>
+<script type="text/babel" src="assets/tweaks.jsx"></script>
+
+</body>
+</html>
