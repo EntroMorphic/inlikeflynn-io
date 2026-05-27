@@ -659,10 +659,10 @@
           <div class="desc">30+ days continuous · 4 bearings · 8 channels · NASA IMS Bearing dataset</div>
         </div>
         <div class="metrics">
-          <div class="metric accent"><span class="lbl">Lead time</span><span class="val">3–4 d</span></div>
-          <div class="metric"><span class="lbl">False alarms</span><span class="val">0</span></div>
+          <div class="metric accent"><span class="lbl">Lead time</span><span class="val">~17 d</span></div>
+          <div class="metric"><span class="lbl">False alarms</span><span class="val">0<sup style="font-size: 11px; margin-left: 2px; color: var(--accent-deep);">‡</sup></span></div>
         </div>
-        <div class="desc">Identified the two failing bearings ahead of documented failure. The healthy bearings remained silent.</div>
+        <div class="desc">Identified the two failing bearings ahead of documented failure. The healthy bearings remained silent.<sup style="color: var(--accent-deep);">‡</sup></div>
       </div>
 
       <div class="v-row">
@@ -699,6 +699,10 @@
         <div class="desc">On normal-operation bearing traces: zero false positives across 1.2M samples.</div>
       </div>
     </div>
+
+    <p class="muted" style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; line-height: 1.6; margin-top: 32px; max-width: 88ch;">
+      <sup style="color: var(--accent-deep);">‡</sup> In recent updated-build testing, the healthy-bearing channels were not perfectly silent: Flynn surfaced a low-magnitude signal that directly correlated with the failing bearings — accelerometer cross-talk bleeding from the failing-bearing channels, not an independent fault. Reported as correlated cross-talk rather than a false positive. See <a class="link" href="pages/validation.html">validation</a> for detail.
+    </p>
 
     <div style="margin-top: 48px;">
       <a class="btn ghost" href="pages/validation.html">See the full validation set <span class="arrow">→</span></a>
