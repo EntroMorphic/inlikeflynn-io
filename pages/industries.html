@@ -6,12 +6,11 @@
 <title>Industries — Flynn</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Orbitron:wght@400;500;600;700;800&family=Chakra+Petch:wght@400;500;600;700&family=Michroma&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../assets/styles.css" />
 <style>
   .page-head {
     padding: clamp(48px, 7vw, 96px) 0 clamp(40px, 5vw, 64px);
-    border-bottom: 1px solid var(--hair);
   }
   .page-head h1 { margin: 16px 0 24px; }
 
@@ -20,7 +19,7 @@
     border-top: 1px solid var(--hair);
     border-bottom: 1px solid var(--hair);
     padding: 22px 0;
-    background: color-mix(in oklab, var(--bone) 90%, var(--ink));
+    background: color-mix(in oklab, var(--accent-2) 8%, transparent);
     overflow: hidden;
   }
   .strip-row {
@@ -50,7 +49,6 @@
   /* Industry index */
   .index-wrap {
     padding: clamp(40px, 5vw, 64px) 0 clamp(16px, 2vw, 24px);
-    border-bottom: 1px solid var(--hair);
   }
   .index {
     display: grid;
@@ -75,7 +73,7 @@
   .index a:last-child { border-right: 0; }
   .index a:hover {
     color: var(--accent);
-    background: color-mix(in oklab, var(--bone) 90%, var(--ink));
+    background: color-mix(in oklab, var(--accent-2) 8%, transparent);
   }
   .index a .n {
     display: block;
@@ -93,7 +91,6 @@
   /* Industry section */
   .industry {
     padding: clamp(56px, 8vw, 112px) 0;
-    border-bottom: 1px solid var(--hair);
     scroll-margin-top: 80px;
   }
   .industry-head {
@@ -139,7 +136,7 @@
     padding: 32px;
     border: 1px solid var(--hair);
     border-radius: var(--r-lg);
-    background: color-mix(in oklab, var(--bone) 65%, white);
+    background: linear-gradient(180deg, rgba(12,18,30,0.6), rgba(6,10,18,0.6));
     margin-bottom: 32px;
   }
   .challenge h4 {
@@ -237,8 +234,8 @@
 
   /* Closing band */
   .universal {
-    background: var(--ink);
-    color: var(--bone);
+    background: linear-gradient(180deg, rgba(12,18,30,0.82), rgba(6,10,18,0.86));
+    color: var(--ink);
     border-radius: var(--r-lg);
     padding: clamp(40px, 5vw, 80px);
     margin: clamp(48px, 6vw, 96px) 0;
@@ -247,38 +244,41 @@
     gap: 56px;
     align-items: center;
   }
-  .universal h2 { color: var(--bone); margin: 16px 0 0; }
-  .universal .muted { color: color-mix(in oklab, var(--bone) 65%, transparent); }
-  .universal .lede { color: color-mix(in oklab, var(--bone) 82%, transparent); max-width: none; margin-top: 18px; }
+  .universal h2 { color: var(--ink); margin: 16px 0 0; }
+  .universal .muted { color: color-mix(in oklab, var(--ink) 65%, transparent); }
+  .universal .lede { color: color-mix(in oklab, var(--ink) 82%, transparent); max-width: none; margin-top: 18px; }
   .universal .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
   @media (max-width: 880px) { .universal { grid-template-columns: 1fr; } }
 
   .universal .stat-list { display: grid; gap: 14px; }
   .universal .stat-row {
     padding: 14px 0;
-    border-top: 1px solid color-mix(in oklab, var(--bone) 15%, transparent);
+    border-top: 1px solid color-mix(in oklab, var(--ink) 15%, transparent);
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     gap: 16px;
   }
-  .universal .stat-row:last-child { border-bottom: 1px solid color-mix(in oklab, var(--bone) 15%, transparent); }
+  .universal .stat-row:last-child { border-bottom: 1px solid color-mix(in oklab, var(--ink) 15%, transparent); }
   .universal .stat-row .l {
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: color-mix(in oklab, var(--bone) 60%, transparent);
+    color: color-mix(in oklab, var(--ink) 60%, transparent);
   }
   .universal .stat-row .v {
     font-family: var(--font-mono);
     font-size: 18px;
-    color: var(--bone);
+    color: var(--ink);
   }
   .universal .stat-row .v.accent { color: var(--accent-2); }
 </style>
+<link rel="stylesheet" href="../assets/tron.css" />
 </head>
 <body>
+<canvas id="grid-void"></canvas>
+<div class="void-haze"></div>
 
 <header class="nav">
   <div class="wrap nav-inner">
@@ -323,6 +323,8 @@
   </div>
 </div>
 
+<hr class="rule" />
+
 <!-- Index -->
 <div class="index-wrap">
   <div class="wrap">
@@ -335,6 +337,8 @@
     </div>
   </div>
 </div>
+
+<hr class="rule" />
 
 <!-- 01 AUTOMOTIVE -->
 <section class="industry" id="automotive" data-screen-label="02 Automotive">
@@ -388,6 +392,8 @@
   </div>
 </section>
 
+<hr class="rule" />
+
 <!-- 02 CONSUMER ELECTRONICS -->
 <section class="industry" id="consumer" data-screen-label="03 Consumer">
   <div class="wrap">
@@ -395,7 +401,7 @@
       <div>
         <div class="meta">02 · Consumer Electronics</div>
         <h2>On-device detection. No cloud round-trip, no battery tax.</h2>
-        <p class="deck">Detection that lives on the device is detection that works offline, runs in the existing power envelope, and never sends a sample anywhere it doesn't need to go.</p>
+        <p class="deck">On-device detection works offline, runs inside the existing power envelope, and sends no sample beyond the chip.</p>
         <div class="fit">
           <span class="chip">8,480 bytes</span>
           <span class="chip">Zero heap</span>
@@ -439,6 +445,8 @@
     </div>
   </div>
 </section>
+
+<hr class="rule" />
 
 <!-- 03 CRITICAL SYSTEMS -->
 <section class="industry" id="critical" data-screen-label="04 Sea Air Space">
@@ -492,6 +500,8 @@
   </div>
 </section>
 
+<hr class="rule" />
+
 <!-- 04 HEALTHCARE -->
 <section class="industry" id="healthcare" data-screen-label="05 Healthcare">
   <div class="wrap">
@@ -543,6 +553,8 @@
     </div>
   </div>
 </section>
+
+<hr class="rule" />
 
 <!-- 05 INDUSTRIAL ROBOTICS -->
 <section class="industry" id="robotics" data-screen-label="06 Industrial Robotics">
@@ -596,12 +608,14 @@
   </div>
 </section>
 
+<hr class="rule" />
+
 <!-- Universal closing band -->
 <section class="section tight">
   <div class="wrap">
     <div class="universal">
       <div>
-        <span class="eyebrow" style="color: color-mix(in oklab, var(--bone) 65%, transparent);"><span class="dot"></span>Universal foundation</span>
+        <span class="eyebrow" style="color: color-mix(in oklab, var(--ink) 65%, transparent);"><span class="dot"></span>Universal foundation</span>
         <h2 class="h1">The same 8,480 bytes, across every vertical.</h2>
         <p class="lede">From a microcontroller in a wearable to a payload on a satellite, Flynn is the same source file with the same locked threshold. Validated once, replayable forever, audit-ready every line.</p>
         <div class="actions">
@@ -616,7 +630,7 @@
         </div>
         <div class="stat-row">
           <span class="l">Calibration</span>
-          <span class="v">1,700 samples</span>
+          <span class="v">1,700 samples<sup style="font-size: 0.7em; color: var(--accent-deep); margin-left: 1px; vertical-align: super;">†</sup></span>
         </div>
         <div class="stat-row">
           <span class="l">Heap</span>
@@ -631,12 +645,51 @@
           <span class="v accent">Bit-identical</span>
         </div>
       </div>
+      <p style="margin-top: 16px; font-family: var(--font-mono); font-size: 12px; line-height: 1.65; letter-spacing: 0.02em; color: var(--mid);"><span style="color: var(--accent-deep);">†</span> Samples required for complete enrollment will vary by equipment type, state, and operational envelope.</p>
     </div>
   </div>
 </section>
 
 <footer class="footer">
+  <canvas id="grid-bg"></canvas>
   <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="../index.html">
+          <img class="brand-mark" src="../assets/flynn-logo.jpg" alt="Flynn" />
+          <span>Flynn</span>
+        </a>
+        <p class="muted" style="font-size: 14px; max-width: 32ch; margin-top: 16px;">Deterministic anomaly detection embedded at the edge of the world and beyond.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="whitepaper.html">Whitepaper</a></li>
+          <li><a href="validation.html">Validation</a></li>
+          <li><a href="industries.html">Industries</a></li>
+          <li><a href="roadmap.html">Roadmap</a></li>
+          <li><a href="tiers.html">Tiers</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Engage</h4>
+        <ul>
+          <li><a href="../index.html#contact">Evaluation access</a></li>
+          <li><a href="../index.html#contact">OEM licensing</a></li>
+          <li><a href="../index.html#contact">Enterprise</a></li>
+          <li><a href="mailto:tripp@entromorphic.com">tripp@entromorphic.com</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="whitepaper.html">About EntroMorphic</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Trademark</a></li>
+          <li><a href="#">Legal</a></li>
+        </ul>
+      </div>
+    </div>
     <div class="footer-meta">
       <span>© 2026 EntroMorphic · Flynn is a trademark of EntroMorphic</span>
       <span>v.q2.2026 · audit-ready</span>
@@ -644,5 +697,11 @@
   </div>
 </footer>
 
+<script src="../assets/tron-fx.js"></script>
+
+<!-- Volumetric grid void (three.js) -->
+<script>window.FLYNN_GRID_CONFIG = { variant: 'industries' };</script>
+<script src="https://unpkg.com/three@0.149.0/build/three.min.js"></script>
+<script src="../assets/grid-void.js"></script>
 </body>
 </html>

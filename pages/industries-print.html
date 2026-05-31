@@ -11,7 +11,6 @@
 <style>
   .page-head {
     padding: clamp(48px, 7vw, 96px) 0 clamp(40px, 5vw, 64px);
-    border-bottom: 1px solid var(--hair);
   }
   .page-head h1 { margin: 16px 0 24px; }
 
@@ -50,7 +49,6 @@
   /* Industry index */
   .index-wrap {
     padding: clamp(40px, 5vw, 64px) 0 clamp(16px, 2vw, 24px);
-    border-bottom: 1px solid var(--hair);
   }
   .index {
     display: grid;
@@ -91,7 +89,6 @@
   /* Industry section */
   .industry {
     padding: clamp(56px, 8vw, 112px) 0;
-    border-bottom: 1px solid var(--hair);
     scroll-margin-top: 80px;
   }
   .industry-head {
@@ -284,6 +281,7 @@
     .nav, .strip, .index-wrap { display: none !important; }
     .crumb { display: none !important; }
     .footer { display: none !important; }
+    hr.rule { display: none !important; }
 
     /* layout reset for print */
     .wrap { max-width: none !important; padding: 0 !important; }
@@ -393,6 +391,8 @@
   </div>
 </div>
 
+<hr class="rule" />
+
 <!-- Index -->
 <div class="index-wrap">
   <div class="wrap">
@@ -405,6 +405,8 @@
     </div>
   </div>
 </div>
+
+<hr class="rule" />
 
 <!-- 01 AUTOMOTIVE -->
 <section class="industry" id="automotive" data-screen-label="02 Automotive">
@@ -458,6 +460,8 @@
   </div>
 </section>
 
+<hr class="rule" />
+
 <!-- 02 CONSUMER ELECTRONICS -->
 <section class="industry" id="consumer" data-screen-label="03 Consumer">
   <div class="wrap">
@@ -509,6 +513,8 @@
     </div>
   </div>
 </section>
+
+<hr class="rule" />
 
 <!-- 03 CRITICAL SYSTEMS -->
 <section class="industry" id="critical" data-screen-label="04 Sea Air Space">
@@ -562,6 +568,8 @@
   </div>
 </section>
 
+<hr class="rule" />
+
 <!-- 04 HEALTHCARE -->
 <section class="industry" id="healthcare" data-screen-label="05 Healthcare">
   <div class="wrap">
@@ -613,6 +621,8 @@
     </div>
   </div>
 </section>
+
+<hr class="rule" />
 
 <!-- 05 INDUSTRIAL ROBOTICS -->
 <section class="industry" id="robotics" data-screen-label="06 Industrial Robotics">
@@ -666,6 +676,8 @@
   </div>
 </section>
 
+<hr class="rule" />
+
 <!-- Universal closing band -->
 <section class="section tight">
   <div class="wrap">
@@ -686,7 +698,7 @@
         </div>
         <div class="stat-row">
           <span class="l">Calibration</span>
-          <span class="v">1,700 samples</span>
+          <span class="v">1,700 samples<sup style="font-size: 0.7em; color: var(--accent-deep); margin-left: 1px; vertical-align: super;">†</sup></span>
         </div>
         <div class="stat-row">
           <span class="l">Heap</span>
@@ -701,6 +713,7 @@
           <span class="v accent">Bit-identical</span>
         </div>
       </div>
+      <p style="margin-top: 16px; font-family: var(--font-mono); font-size: 12px; line-height: 1.65; letter-spacing: 0.02em; color: var(--mid);"><span style="color: var(--accent-deep);">†</span> Samples required for complete enrollment will vary by equipment type, state, and operational envelope.</p>
     </div>
   </div>
 </section>

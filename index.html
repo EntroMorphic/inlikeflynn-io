@@ -7,7 +7,7 @@
 <meta name="description" content="Flynn is an embedded, self-calibrating anomaly detector for industrial telemetry. 8,480 bytes. Deterministic. Bare-metal. Auditable." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Orbitron:wght@400;500;600;700;800&family=Chakra+Petch:wght@400;500;600;700&family=Michroma&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="assets/styles.css" />
 <style>
   /* page-specific */
@@ -15,14 +15,21 @@
     padding: 24px 0 0;
   }
   .hero-stack {
-    display: grid;
-    grid-template-columns: 1.05fr 0.95fr;
-    gap: clamp(40px, 6vw, 96px);
-    align-items: end;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(44px, 5vw, 76px);
     padding: clamp(56px, 9vw, 120px) 0 clamp(40px, 6vw, 72px);
   }
-  @media (max-width: 980px) {
-    .hero-stack { grid-template-columns: 1fr; align-items: start; }
+  .hero-head {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: clamp(32px, 5vw, 72px);
+    align-items: start;
+  }
+  .hero-head .h-display { font-size: clamp(40px, 5.6vw, 88px); line-height: 1.0; }
+  @media (max-width: 860px) {
+    .hero-head { grid-template-columns: 1fr; align-items: start; gap: 24px; }
+    .hero-head .h-display { font-size: clamp(44px, 9vw, 92px); }
   }
   .hero-meta {
     display: flex;
@@ -33,14 +40,17 @@
   .tagline {
     font-size: clamp(20px, 1.7vw, 24px);
     color: var(--ink-2);
-    margin-top: 28px;
-    max-width: 44ch;
+    margin-top: 0;
+    max-width: 46ch;
     letter-spacing: -0.01em;
     line-height: 1.4;
   }
   .hero-ctas {
     display: flex; gap: 12px; flex-wrap: wrap;
     margin-top: 36px;
+  }
+  .hero-cta-left {
+    margin-top: clamp(28px, 4vw, 44px);
   }
 
   .scope {
@@ -397,8 +407,14 @@
   color: var(--accent) !important;
 }
 </style>
+<!-- TRON theme layer loads LAST so it wins on equal specificity -->
+<link rel="stylesheet" href="assets/tron.css" />
 </head>
 <body>
+
+<!-- Volumetric grid void backdrop (three.js) -->
+<canvas id="grid-void"></canvas>
+<div class="void-haze"></div>
 
 <!-- NAV -->
 <header class="nav">
@@ -422,27 +438,33 @@
   <div class="wrap">
 
     <div class="hero-meta">
-      <span class="chip live">Whitepaper · Q2 2026</span>
+      <a class="chip live" href="pages/whitepaper.html">Whitepaper · Q2 2026</a>
       <span class="eyebrow"><span class="dot"></span>Embedded anomaly detection · Bare-metal · 8,480 bytes</span>
     </div>
 
     <div class="hero-stack">
-      <div>
+      <div class="hero-head">
+        <div class="hero-headline">
         <h1 class="h-display">
           Telemetry talks.<br/>
           <em>Flynn listens.</em>
         </h1>
+        <div class="hero-cta-left">
+          <a class="btn ghost" href="pages/whitepaper.html">
+            Read the whitepaper
+          </a>
+        </div>
+        </div>
+        <div class="hero-copy">
         <p class="tagline">
-          Flynn catches equipment faults days before they become failures — on the device, at the point of measurement, with no cloud and no configuration. It's an embedded anomaly detector that runs bare-metal in 8,480 bytes, self-calibrates from normal behavior, and delivers deterministic, auditable detection.
+          Flynn catches equipment faults days before they become failures — on the device, at the point of measurement. It runs bare-metal in 8,480 bytes, calibrates itself from normal operation, and delivers deterministic, auditable detection on standalone hardware.
         </p>
         <div class="hero-ctas">
           <a class="btn" href="#contact">
             Request evaluation access
             <span class="arrow">→</span>
           </a>
-          <a class="btn ghost" href="pages/whitepaper.html">
-            Read the whitepaper
-          </a>
+        </div>
         </div>
       </div>
 
@@ -514,31 +536,31 @@
     <div class="cols-2" style="margin-bottom: 64px;">
       <div>
         <span class="eyebrow"><span class="dot"></span>The Problem</span>
-        <h2 class="h1" style="margin-top: 20px;">Equipment talks in telemetry. Most of it goes unheard.</h2>
+        <h2 class="h1" style="margin-top: 20px;">Equipment talks in telemetry.</h2>
       </div>
-      <p class="lede" style="margin-top: 72px;">From sub-sea to deep-space, equipment talks in telemetry. Vibration, current, temperature, pressure, flow, timing. The signals are there. The local, deterministic, auditable early detection rarely is — a detector small enough to embed, smart enough to self-calibrate, and reliable enough to act on without a cloud stack, a labeled dataset, or an ML team behind it.</p>
+      <p class="lede" style="margin-top: 72px;">From sub-sea to deep space, equipment talks in telemetry: vibration, current, temperature, pressure, flow, timing. The signals are everywhere. The on-device detector that listens to the equipment has been missing. Until now.</p>
     </div>
 
     <div class="cols-4">
       <div class="gap-card">
         <div class="num">01</div>
         <h3 class="h3">High decision latency</h3>
-        <p style="margin-top:12px">Telemetry exists. A detector you can trust close to the source does not. The decision lives far from the action it informs.</p>
+        <p style="margin-top:12px">The signal travels to a distant server and the verdict travels back. For a pump that can wreck itself in seconds, the round trip is the failure.</p>
       </div>
       <div class="gap-card">
         <div class="num">02</div>
         <h3 class="h3">No labeled training data</h3>
-        <p style="margin-top:12px">Supervised approaches demand labeled failure data. Most equipment is designed not to fail. The training set does not exist.</p>
+        <p style="margin-top:12px">Supervised models demand labeled failures. Industrial equipment runs for years between them, so the labels never accumulate. The training set does not exist.</p>
       </div>
       <div class="gap-card">
         <div class="num">03</div>
-        <h3 class="h3">Equipment outlives connectivity</h3>
-        <p style="margin-top:12px">Most consequential equipment lives where the cloud doesn't. A cloud-dependent detector is a detector that doesn't work.</p>
+        <h3 class="h3">Equipment lacks connectivity</h3>
+        <p style="margin-top:12px">The most consequential machines run where backhaul is intermittent, costly, or gone. A cloud-bound detector goes dark exactly when it is needed most.</p>
       </div>
       <div class="gap-card">
         <div class="num">04</div>
-        <h3 class="h3">Monitoring tools don't fit in firmware</h3>
-        <p style="margin-top:12px">Tools built for dashboards do not belong in firmware. Too large, too dynamic, too dependent on external services.</p>
+        <h3 class="h3">Monitoring tools exceed firmware constraints</h3>
+        <p style="margin-top:12px">Monitoring stacks are built for dashboards: large, dynamic, hungry for external services. A microcontroller offers kilobytes and a fixed budget.</p>
       </div>
     </div>
   </div>
@@ -549,39 +571,36 @@
 <!-- WHY FLYNN IS DIFFERENT -->
 <section class="section" data-screen-label="03 Why Flynn">
   <div class="wrap">
-    <div class="cols-2" style="margin-bottom: 64px;">
-      <div>
-        <span class="eyebrow"><span class="dot"></span>Flynn's Differential</span>
-        <h2 class="h1" style="margin-top: 20px;">Industrial-grade, zero-latency, local anomaly detection.</h2>
-      </div>
-      <p class="lede" style="margin-top: 72px;">Designed from first principles for MCU-class hardware, for enterprise-scale deployments. The numbers below are entry conditions.</p>
+    <div style="margin-bottom: 64px;">
+      <span class="eyebrow"><span class="dot"></span>Flynn's Differential</span>
+      <h2 class="h1" style="margin-top: 20px;">Industrial-grade, zero-latency, local anomaly detection.</h2>
     </div>
 
     <div class="spec-grid">
       <div class="spec-cell">
         <div class="mono-l">Footprint</div>
         <div class="big">8,480<span class="muted" style="font-size: 0.4em; margin-left: 6px;">bytes</span></div>
-        <p>Not 8 GB or 8 MB — eight thousand four hundred and eighty bytes. Fits on the MCU already inside the equipment.</p>
+        <p>Eight thousand four hundred and eighty bytes — not 8 MB, not 8 GB. It fits on the microcontroller already inside the machine.</p>
       </div>
       <div class="spec-cell">
         <div class="mono-l">Calibration</div>
-        <div class="big">1,700<span class="muted" style="font-size: 0.4em; margin-left: 6px;">samples</span></div>
-        <p>Self-calibrates from normal behavior in under two seconds at kilohertz-class rates. No labels. No tuning.</p>
+        <div class="big">1,700<span class="muted" style="font-size: 0.4em; margin-left: 6px;">samples</span><sup style="font-size: 0.28em; color: var(--accent-deep); margin-left: 2px; vertical-align: super;">†</sup></div>
+        <p>Learns normal behavior in 1,700 samples — under two seconds at kilohertz rates — then locks. No labels, no tuning.</p>
       </div>
       <div class="spec-cell">
         <div class="mono-l">Heap allocations</div>
         <div class="big">0</div>
-        <p>Zero dynamic memory allocation after init. Hard requirement for safety-critical firmware — achieved by design.</p>
+        <p>Zero dynamic allocation after initialization. Safety-critical firmware forbids the heap; Flynn meets that rule by construction.</p>
       </div>
       <div class="spec-cell">
         <div class="mono-l">Source files</div>
         <div class="big">1</div>
-        <p>The entire detector is a single human-readable C source file. No model blob, no binary, no opaque runtime.</p>
+        <p>The entire detector is one file of human-readable C. Every line that makes a decision is open to audit.</p>
       </div>
       <div class="spec-cell">
         <div class="mono-l">False positives</div>
         <div class="big">0<span class="muted" style="font-size: 0.36em; margin-left: 6px;">/ 120 h</span></div>
-        <p>Zero false positives across 120 hours of bearing-class soak. Bounded above 0.025/hr at 95% confidence.</p>
+        <p>Zero false positives across 120 hours of soak testing, with a 95%-confidence ceiling of 0.025 per hour.</p>
       </div>
       <div class="spec-cell">
         <div class="mono-l">Behaviour</div>
@@ -590,8 +609,12 @@
       </div>
     </div>
 
+    <p style="margin-top: 20px; font-family: var(--font-mono); font-size: 12px; line-height: 1.65; letter-spacing: 0.02em; color: var(--mid); max-width: 88ch;">
+      <span style="color: var(--accent-deep);">†</span> Samples required for complete enrollment will vary by equipment type, state, and operational envelope.
+    </p>
+
     <p class="pull" style="margin-top: 56px;">
-      The signal dominates at the moment of conflict. The prior persists. The two never share the wire.
+      Once the equipment’s nominal signal envelope is learned through enrollment, it’s locked in permanently. When the equipment telemetry trends towards a threshold it does not change the enrollment data.
     </p>
   </div>
 </section>
@@ -606,20 +629,20 @@
         <span class="eyebrow"><span class="dot"></span>How Flynn works</span>
         <h2 class="h1" style="margin-top: 20px;">Learn &amp; detect. Fire &amp; forget.</h2>
       </div>
-      <p class="lede" style="margin-top: 72px;">Install. Deploy. Walk away. After 1,700 samples, the threshold is locked — and an alert from Flynn means a real and sustained departure from the conditions present at installation.</p>
+      <p class="lede" style="margin-top: 72px;">Install. Deploy. Walk away. After the equipment normal operation envelope has been learned, and every alert marks a real, sustained departure from the conditions present at installation.</p>
     </div>
 
     <div class="flow">
       <div class="flow-cell">
         <div class="step">Phase 01 · Learning</div>
         <h3 class="h2" style="font-size: clamp(24px, 2.6vw, 36px); margin-bottom: 14px;">Observe nominal. Lock-in thresholds.</h3>
-        <p>For the first 1,700 samples after deployment, Flynn observes the signal without producing alerts. It accumulates a statistical model of the signal's normal behavior — variability, autocorrelation, distribution shape, dynamical character — and commits a conservative detection threshold.</p>
+        <p>Post enrollment, Flynn watches in silence. It builds a statistical model of normal behavior — variance, autocorrelation, distribution shape, dynamics — and commits to one conservative threshold.</p>
         <div class="meter"><span style="width: 100%"></span></div>
       </div>
       <div class="flow-cell alert">
         <div class="step">Phase 02 · Detection</div>
         <h3 class="h2" style="font-size: clamp(24px, 2.6vw, 36px); margin-bottom: 14px;">Zero-latency, real-time sampling.</h3>
-        <p>Every subsequent sample passes through the detection pipeline and is scored against the calibrated model. The locked threshold refuses adaptive drift by construction: a slow-developing fault cannot be quietly absorbed into the new normal.</p>
+        <p>Thereafter every sample is scored against that model. The threshold never moves, so a slow-developing fault cannot dissolve quietly into a new normal.</p>
         <div class="meter"><span style="width: 70%"></span></div>
       </div>
     </div>
@@ -636,7 +659,7 @@
         <span class="eyebrow"><span class="dot"></span>Validated across domains</span>
         <h2 class="h1" style="margin-top: 20px;">One binary. Infinite domains. Zero configuration.</h2>
       </div>
-      <p class="lede" style="margin-top: 72px;">Five-domain validation on the same binary and works across signal domains that share no domain assumptions.</p>
+      <p class="lede" style="margin-top: 72px;">One binary, validated across five signal domains that share no common assumptions.</p>
     </div>
 
     <div class="v-list">
@@ -660,9 +683,9 @@
         </div>
         <div class="metrics">
           <div class="metric accent"><span class="lbl">Lead time</span><span class="val">~17 d</span></div>
-          <div class="metric"><span class="lbl">False alarms</span><span class="val">0<sup style="font-size: 11px; margin-left: 2px; color: var(--accent-deep);">‡</sup></span></div>
+          <div class="metric"><span class="lbl">False alarms</span><span class="val">0<sup style="font-size: 0.55em; color: var(--accent-deep); margin-left: 1px; vertical-align: super;">‡</sup></span></div>
         </div>
-        <div class="desc">Identified the two failing bearings ahead of documented failure. The healthy bearings remained silent.<sup style="color: var(--accent-deep);">‡</sup></div>
+        <div class="desc">Flagged both failing bearings ahead of documented failure; the healthy pair stayed silent.<sup style="font-size: 0.7em; color: var(--accent-deep); margin-left: 1px;">‡</sup></div>
       </div>
 
       <div class="v-row">
@@ -673,7 +696,7 @@
         <div class="metrics">
           <div class="metric accent"><span class="lbl">FP / hour</span><span class="val">0.074–0.080</span></div>
         </div>
-        <div class="desc">Operationally compatible with shift-cycle review — a small number of alerts per day, reviewable within normal rhythm.</div>
+        <div class="desc">Fewer than two alerts a day — reviewable on a normal shift cycle.</div>
       </div>
 
       <div class="v-row">
@@ -700,8 +723,8 @@
       </div>
     </div>
 
-    <p class="muted" style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; line-height: 1.6; margin-top: 32px; max-width: 88ch;">
-      <sup style="color: var(--accent-deep);">‡</sup> In recent updated-build testing, the healthy-bearing channels were not perfectly silent: Flynn surfaced a low-magnitude signal that directly correlated with the failing bearings — accelerometer cross-talk bleeding from the failing-bearing channels, not an independent fault. Reported as correlated cross-talk rather than a false positive. See <a class="link" href="pages/validation.html">validation</a> for detail.
+    <p style="margin-top: 28px; font-family: var(--font-mono); font-size: 12px; line-height: 1.65; letter-spacing: 0.02em; color: var(--mid); max-width: 88ch;">
+      <span style="color: var(--accent-deep);">‡</span> In updated-build testing, the healthy-bearing channels carried a faint signal that tracked the failing bearings — accelerometer cross-talk from the failing channels, not an independent fault. We report it as correlated cross-talk rather than a false positive. <a class="link" href="pages/validation.html">See validation for detail.</a>
     </p>
 
     <div style="margin-top: 48px;">
@@ -720,7 +743,7 @@
         <span class="eyebrow"><span class="dot"></span>The Flynn roadmap</span>
         <h2 class="h1" style="margin-top: 20px;">From neuron to nervous system.</h2>
       </div>
-      <p class="lede" style="margin-top: 72px;">Each stage is buildable and useful on its own. Each is composable with what comes next. The structural-separation property propagates through every layer.</p>
+      <p class="lede" style="margin-top: 72px;">Each stage stands on its own and composes into the next. The structural-separation property carries through every layer.</p>
     </div>
 
     <div class="road">
@@ -728,13 +751,13 @@
         <div class="stage">Stage 01 · The neuron</div>
         <div class="when">Today · shipping</div>
         <h3 class="h3" style="margin-bottom: 14px;">One signal in. One score out.</h3>
-        <p>Deployable today as embedded firmware. Validated across five domains. Ready for production integration into industrial equipment.</p>
+        <p>Shipping today as embedded firmware, validated across five domains, ready to integrate into production equipment.</p>
       </div>
       <div class="road-cell">
-        <div class="stage">Stage 02 · The spinal cord</div>
+        <div class="stage">Stage 02 · The deterministic, auditable, neural network</div>
         <div class="when">2026 · pilots engaging</div>
         <h3 class="h3" style="margin-bottom: 14px;">Coordinate detectors per asset.</h3>
-        <p>Three to ten Flynn detectors across one asset, with a fabric node maintaining operational-regime memory. Detector layer remains authoritative.</p>
+        <p>Three to ten detectors on one asset, with a fabric node that remembers operational regimes. The detector layer stays authoritative.</p>
       </div>
       <div class="road-cell">
         <div class="stage">Stage 03 · The nervous system</div>
@@ -754,9 +777,9 @@
     <div class="cols-2" style="margin-bottom: 56px;">
       <div>
         <span class="eyebrow"><span class="dot"></span>Engagement</span>
-        <h2 class="h1" style="margin-top: 20px;">Three ways in.</h2>
+        <h2 class="h1" style="margin-top: 20px;">Three paths.</h2>
       </div>
-      <p class="lede" style="margin-top: 72px;">From a single sensor on an engineer's bench to a thousand-asset fleet in an air-gapped facility. Specific terms are formalized through direct conversation.</p>
+      <p class="lede" style="margin-top: 72px;">From one sensor on an engineer's bench to a thousand-asset fleet behind an air gap. Whatever you need, let’s talk.</p>
     </div>
 
     <div class="cols-3">
@@ -767,9 +790,8 @@
         </div>
         <p class="muted">For developers, researchers, and innovation groups testing Flynn against their own data.</p>
         <ul>
-          <li>Source-level audit rights</li>
           <li>Bounded scope, time-limited</li>
-          <li>NDA on request</li>
+          <li>NDA required</li>
           <li>Direct engineering contact</li>
         </ul>
         <a class="btn ghost" href="#contact">Request access <span class="arrow">→</span></a>
@@ -820,7 +842,7 @@
         <span class="eyebrow" style="color: color-mix(in oklab, var(--bone) 65%, transparent);"><span class="dot"></span>Next steps</span>
         <h2 class="h1" style="margin-top: 20px;">Get in like Flynn.</h2>
         <p class="lede" style="color: color-mix(in oklab, var(--bone) 80%, transparent); margin-top: 20px;">
-          Evaluation access, OEM licensing, enterprise deployment — every engagement starts with a direct conversation. We don't sell you a thing and walk away. We sell you a thing that keeps working when you need it to, for as long as you need it to.
+          Evaluation access, OEM licensing, enterprise deployment — every engagement begins with a conversation. We support what we ship, for as long as you run it.
         </p>
         <div class="contact-actions" style="margin-top: 32px;">
           <a class="btn" href="mailto:tripp@entromorphic.com">tripp@entromorphic.com <span class="arrow">→</span></a>
@@ -830,7 +852,7 @@
       <div class="contact-routes">
         <div class="row">
           <div class="lbl">Evaluation license</div>
-          <div>Free, bounded scope. Source audit rights included.</div>
+          <div>Free, bounded scope.</div>
         </div>
         <div class="row">
           <div class="lbl">OEM &amp; Integrator</div>
@@ -842,7 +864,7 @@
         </div>
         <div class="row">
           <div class="lbl">Architectural brief</div>
-          <div>Source-level walkthrough of the structural-separation property.</div>
+          <div>A walkthrough of the structural-separation property and more are available in the whitepaper.</div>
         </div>
       </div>
     </div>
@@ -851,6 +873,7 @@
 
 <!-- FOOTER -->
 <footer class="footer">
+  <canvas id="grid-bg"></canvas>
   <div class="wrap">
     <div class="footer-grid">
       <div>
@@ -897,25 +920,27 @@
 </footer>
 
 <script src="assets/hero-waveform.js"></script>
+<script src="assets/tron-fx.js"></script>
+
+<!-- Volumetric grid void (three.js) -->
+<script>window.FLYNN_GRID_CONFIG = { variant: 'home' };</script>
+<script src="https://unpkg.com/three@0.149.0/build/three.min.js"></script>
+<script src="assets/grid-void.js"></script>
 
 <!-- Tweaks: React + Babel + panel -->
 <script>
   window.FLYNN_TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-    "accent": [
-      "#fe7e1e",
-      "#24f7f7",
-      "oklch(0.45 0.12 50)"
-    ],
-    "speed": 5,
-    "density": "Dense",
-    "theme": "Dark"
+    "headlineFont": "Orbitron",
+    "glow": 1,
+    "motion": true,
+    "speed": 6
   }/*EDITMODE-END*/;
 </script>
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 <script type="text/babel" src="assets/tweaks-panel.jsx"></script>
-<script type="text/babel" src="assets/tweaks.jsx"></script>
+<script type="text/babel" src="assets/tron-tweaks.jsx"></script>
 
 </body>
 </html>

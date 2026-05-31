@@ -6,7 +6,7 @@
 <title>Tiers &amp; Engagement — Flynn</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Orbitron:wght@400;500;600;700;800&family=Chakra+Petch:wght@400;500;600;700&family=Michroma&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../assets/styles.css" />
 <style>
   .page-head { padding: clamp(48px, 7vw, 96px) 0 clamp(40px, 5vw, 64px); }
@@ -25,15 +25,15 @@
     border-radius: var(--r-lg);
     padding: 36px 32px 40px;
     display: flex; flex-direction: column;
-    background: color-mix(in oklab, var(--bone) 60%, white);
+    background: linear-gradient(180deg, rgba(12,18,30,0.6), rgba(6,10,18,0.6));
     position: relative;
   }
   .tier-card.featured {
-    background: var(--ink);
-    color: var(--bone);
-    border-color: var(--ink);
+    background: linear-gradient(180deg, rgba(12,18,30,0.82), rgba(6,10,18,0.86));
+    color: var(--ink);
+    border-color: color-mix(in oklab, var(--accent) 55%, transparent);
   }
-  .tier-card.featured .l, .tier-card.featured .muted { color: color-mix(in oklab, var(--bone) 60%, transparent); }
+  .tier-card.featured .l, .tier-card.featured .muted { color: color-mix(in oklab, var(--ink) 60%, transparent); }
   .tier-card .badge {
     position: absolute; top: -10px; right: 24px;
     font-family: var(--font-mono);
@@ -67,14 +67,14 @@
     color: var(--ink-2);
     margin-bottom: 8px;
   }
-  .tier-card.featured h2, .tier-card.featured .price { color: var(--bone); }
+  .tier-card.featured h2, .tier-card.featured .price { color: var(--ink); }
   .tier-card .who {
     color: var(--mid);
     font-size: 14px;
     line-height: 1.5;
     margin: 0 0 28px;
   }
-  .tier-card.featured .who { color: color-mix(in oklab, var(--bone) 75%, transparent); }
+  .tier-card.featured .who { color: color-mix(in oklab, var(--ink) 75%, transparent); }
   .tier-card ul {
     list-style: none; padding: 0; margin: 0 0 32px;
     flex: 1;
@@ -87,17 +87,17 @@
     color: var(--ink-2);
   }
   .tier-card.featured li {
-    border-color: color-mix(in oklab, var(--bone) 18%, transparent);
-    color: color-mix(in oklab, var(--bone) 90%, transparent);
+    border-color: color-mix(in oklab, var(--ink) 18%, transparent);
+    color: color-mix(in oklab, var(--ink) 90%, transparent);
   }
   .tier-card li:last-child { border-bottom: 1px solid var(--hair); }
-  .tier-card.featured li:last-child { border-color: color-mix(in oklab, var(--bone) 18%, transparent); }
+  .tier-card.featured li:last-child { border-color: color-mix(in oklab, var(--ink) 18%, transparent); }
   .tier-card li::before {
     content: "";
     position: absolute;
     left: 0; top: 22px;
     width: 10px; height: 1px;
-    background: var(--ink);
+    background: linear-gradient(180deg, rgba(12,18,30,0.82), rgba(6,10,18,0.86));
   }
   .tier-card.featured li::before { background: var(--accent); }
 
@@ -135,7 +135,7 @@
     border-bottom-color: var(--accent);
   }
   .compare thead th:first-child { color: var(--ink); }
-  .compare tbody tr:hover { background: color-mix(in oklab, var(--bone) 70%, white); }
+  .compare tbody tr:hover { background: linear-gradient(180deg, rgba(12,18,30,0.6), rgba(6,10,18,0.6)); }
   .compare td.row-l {
     font-family: var(--font-mono);
     font-size: 12px;
@@ -144,7 +144,7 @@
     text-transform: uppercase;
     width: 28%;
   }
-  .compare td.feat { background: color-mix(in oklab, var(--accent) 8%, var(--bone)); }
+  .compare td.feat { background: color-mix(in oklab, var(--accent) 14%, transparent); }
   .compare .check { color: var(--accent-deep); font-family: var(--font-mono); }
   .compare .dash { color: var(--mid); }
   .compare tbody tr:last-child td { border-bottom: 1px solid var(--hair); }
@@ -165,7 +165,7 @@
     padding: 28px;
     border: 1px solid var(--hair);
     border-radius: var(--r-lg);
-    background: color-mix(in oklab, var(--bone) 70%, white);
+    background: linear-gradient(180deg, rgba(12,18,30,0.6), rgba(6,10,18,0.6));
   }
   .service-block h3 {
     font-size: 18px;
@@ -197,7 +197,7 @@
     padding: clamp(40px, 5vw, 64px);
     border: 1px solid var(--hair-strong);
     border-radius: var(--r-lg);
-    background: color-mix(in oklab, var(--bone) 50%, white);
+    background: linear-gradient(180deg, rgba(12,18,30,0.6), rgba(6,10,18,0.6));
   }
   .commit-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 56px; align-items: start; }
   @media (max-width: 880px) { .commit-grid { grid-template-columns: 1fr; } }
@@ -214,8 +214,11 @@
   color: var(--accent) !important;
 }
 </style>
+<link rel="stylesheet" href="../assets/tron.css" />
 </head>
 <body>
+<canvas id="grid-void"></canvas>
+<div class="void-haze"></div>
 
 <header class="nav">
   <div class="wrap nav-inner">
@@ -240,7 +243,7 @@
 <section class="page-head" data-screen-label="01 Tiers hero">
   <div class="wrap">
     <span class="eyebrow"><span class="dot"></span>Tiers and engagement</span>
-    <h1 class="h-display" style="font-size: clamp(48px, 6vw, 96px);">Three ways in.<br/><em>One conversation.</em></h1>
+    <h1 class="h-display" style="font-size: clamp(48px, 6vw, 96px);">Three paths.<br/><em>One conversation.</em></h1>
     <p class="lede">Flynn supports multiple engagement models scaled to the user. From a single sensor on a workbench to a thousand-asset fleet in an air-gapped facility. Specific terms are formalized through direct conversation with our team.</p>
 
     <div class="tier-grid">
@@ -251,9 +254,8 @@
         <div class="price">No cost · time-bounded</div>
         <p class="who">For developers, researchers, and innovation groups testing Flynn against their own data to see if it works for their application.</p>
         <ul>
-          <li>Source-level audit rights</li>
           <li>Bounded scope, time-limited</li>
-          <li>NDA on request</li>
+          <li>NDA required</li>
           <li>Direct engineering contact</li>
           <li>Architectural commitments per whitepaper</li>
         </ul>
@@ -302,7 +304,7 @@
 <section class="section tight" data-screen-label="02 Compare">
   <div class="wrap">
     <span class="eyebrow"><span class="dot"></span>Compare</span>
-    <h2 class="h1" style="margin-top: 20px; max-width: 18ch;">What you get, by tier.</h2>
+    <h2 class="h1" style="margin-top: 20px; max-width: 18ch;">Tier by tier.</h2>
 
     <div class="compare-wrap">
       <table class="compare">
@@ -316,7 +318,7 @@
         </thead>
         <tbody>
           <tr><td class="row-l">License form</td><td>Evaluation license</td><td class="feat">Commercial · per-unit</td><td>Enterprise · deployment-scale</td></tr>
-          <tr><td class="row-l">Source delivery</td><td>Source · audit rights</td><td class="feat">Precompiled binary <span class="muted">(source optional)</span></td><td>Source on request</td></tr>
+          <tr><td class="row-l">Source delivery</td><td>Precompiled binary</td><td class="feat">Precompiled binary <span class="muted">(source optional)</span></td><td>Source on request</td></tr>
           <tr><td class="row-l">Integration support</td><td class="dash">— Direct contact</td><td class="feat check">✓ Co-engineering</td><td class="check">✓ Dedicated</td></tr>
           <tr><td class="row-l">Compliance package</td><td class="dash">—</td><td class="feat">On request</td><td class="check">✓ Included</td></tr>
           <tr><td class="row-l">Long-term support</td><td>Time-bounded</td><td class="feat check">✓ Source-stability</td><td class="check">✓ Multi-year contracts</td></tr>
@@ -337,7 +339,7 @@
 <section class="section tight" data-screen-label="03 Services">
   <div class="wrap">
     <span class="eyebrow"><span class="dot"></span>Enterprise services</span>
-    <h2 class="h1" style="margin-top: 20px; max-width: 18ch;">Direct services, distinguished by status.</h2>
+    <h2 class="h1" style="margin-top: 20px; max-width: 18ch;">Direct services.</h2>
     <p class="lede" style="margin-top: 16px;">For organizations deploying Flynn at scale, direct services are available — some today, others as the engagement framework continues to formalize.</p>
 
     <div class="services">
@@ -438,9 +440,9 @@
           <h2 style="margin-top: 16px;">The version validated today is the version that runs in production.</h2>
         </div>
         <div>
-          <p class="body" style="margin: 0 0 16px;">A frozen-binary architecture creates an unusual property: no model drift, no update churn, no revalidation cycle triggered by vendor-side updates. The classifier validated today is the classifier that runs in five years — byte-for-byte identical, with the same locked threshold and the same audit trail.</p>
+          <p class="body" style="margin: 0 0 16px;">A frozen-binary architecture holds everything still: the model never drifts, updates never churn, and no vendor-side change triggers a revalidation cycle. The classifier validated today is the classifier that runs in five years — byte-for-byte identical, with the same locked threshold and the same audit trail.</p>
           <p class="body" style="margin: 0;">Flynn's long-term support commitment matches that architectural property. Security maintenance, compliance documentation, and direct support extend under the terms specified at license — for the life of the deployment.</p>
-          <p class="pull" style="margin-top: 28px;">We don't sell you a thing and walk away. We sell you a thing that keeps working when you need it to, for as long as you need it to.</p>
+          <p class="pull" style="margin-top: 28px;">We support what we ship, for as long as you run it.</p>
         </div>
       </div>
     </div>
@@ -450,27 +452,27 @@
 <!-- CTA -->
 <section class="section tight">
   <div class="wrap">
-    <div style="background: var(--ink); color: var(--bone); border-radius: var(--r-lg); padding: clamp(40px, 5vw, 72px); display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 56px; align-items: center;">
+    <div style="background: linear-gradient(180deg, rgba(12,18,30,0.82), rgba(6,10,18,0.86)); color: var(--ink); border-radius: var(--r-lg); padding: clamp(40px, 5vw, 72px); display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 56px; align-items: center;">
       <div>
-        <span class="eyebrow" style="color: color-mix(in oklab, var(--bone) 65%, transparent);"><span class="dot"></span>Engage</span>
-        <h2 class="h1" style="margin-top: 20px; color: var(--bone);">Tell us what you'd put it on.</h2>
-        <p class="lede" style="color: color-mix(in oklab, var(--bone) 80%, transparent); margin-top: 20px;">A short description of the asset, the signal, and the deployment context is enough to start an evaluation conversation. We'll route from there.</p>
+        <span class="eyebrow" style="color: color-mix(in oklab, var(--ink) 65%, transparent);"><span class="dot"></span>Engage</span>
+        <h2 class="h1" style="margin-top: 20px; color: var(--ink);">Tell us what you'd put it on.</h2>
+        <p class="lede" style="color: color-mix(in oklab, var(--ink) 80%, transparent); margin-top: 20px;">A short description of the asset, the signal, and the deployment context is enough to start an evaluation conversation. We'll route from there.</p>
         <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px;">
           <a class="btn" href="mailto:tripp@entromorphic.com" >tripp@entromorphic.com <span class="arrow">→</span></a>
-          <a class="btn ghost" href="whitepaper.html" style="background: transparent; color: var(--bone); border-color: color-mix(in oklab, var(--bone) 30%, transparent);">Read the whitepaper</a>
+          <a class="btn ghost" href="whitepaper.html" style="background: transparent; color: var(--ink); border-color: color-mix(in oklab, var(--ink) 30%, transparent);">Read the whitepaper</a>
         </div>
       </div>
       <div style="display: grid; gap: 14px; font-size: 14px;">
-        <div style="padding: 14px 0; border-top: 1px solid color-mix(in oklab, var(--bone) 15%, transparent); color: color-mix(in oklab, var(--bone) 85%, transparent);">
-          <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: color-mix(in oklab, var(--bone) 55%, transparent); text-transform: uppercase; margin-bottom: 6px;">For OEMs</div>
+        <div style="padding: 14px 0; border-top: 1px solid color-mix(in oklab, var(--ink) 15%, transparent); color: color-mix(in oklab, var(--ink) 85%, transparent);">
+          <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: color-mix(in oklab, var(--ink) 55%, transparent); text-transform: uppercase; margin-bottom: 6px;">For OEMs</div>
           Volume, product family, integration target firmware.
         </div>
-        <div style="padding: 14px 0; border-top: 1px solid color-mix(in oklab, var(--bone) 15%, transparent); color: color-mix(in oklab, var(--bone) 85%, transparent);">
-          <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: color-mix(in oklab, var(--bone) 55%, transparent); text-transform: uppercase; margin-bottom: 6px;">For enterprises</div>
+        <div style="padding: 14px 0; border-top: 1px solid color-mix(in oklab, var(--ink) 15%, transparent); color: color-mix(in oklab, var(--ink) 85%, transparent);">
+          <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: color-mix(in oklab, var(--ink) 55%, transparent); text-transform: uppercase; margin-bottom: 6px;">For enterprises</div>
           Asset class, fleet size, network posture, compliance regime.
         </div>
-        <div style="padding: 14px 0; border-top: 1px solid color-mix(in oklab, var(--bone) 15%, transparent); border-bottom: 1px solid color-mix(in oklab, var(--bone) 15%, transparent); color: color-mix(in oklab, var(--bone) 85%, transparent);">
-          <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: color-mix(in oklab, var(--bone) 55%, transparent); text-transform: uppercase; margin-bottom: 6px;">For evaluators</div>
+        <div style="padding: 14px 0; border-top: 1px solid color-mix(in oklab, var(--ink) 15%, transparent); border-bottom: 1px solid color-mix(in oklab, var(--ink) 15%, transparent); color: color-mix(in oklab, var(--ink) 85%, transparent);">
+          <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: color-mix(in oklab, var(--ink) 55%, transparent); text-transform: uppercase; margin-bottom: 6px;">For evaluators</div>
           Dataset on hand, signal type, target hardware.
         </div>
       </div>
@@ -479,7 +481,45 @@
 </section>
 
 <footer class="footer">
+  <canvas id="grid-bg"></canvas>
   <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="../index.html">
+          <img class="brand-mark" src="../assets/flynn-logo.jpg" alt="Flynn" />
+          <span>Flynn</span>
+        </a>
+        <p class="muted" style="font-size: 14px; max-width: 32ch; margin-top: 16px;">Deterministic anomaly detection embedded at the edge of the world and beyond.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="whitepaper.html">Whitepaper</a></li>
+          <li><a href="validation.html">Validation</a></li>
+          <li><a href="industries.html">Industries</a></li>
+          <li><a href="roadmap.html">Roadmap</a></li>
+          <li><a href="tiers.html">Tiers</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Engage</h4>
+        <ul>
+          <li><a href="../index.html#contact">Evaluation access</a></li>
+          <li><a href="../index.html#contact">OEM licensing</a></li>
+          <li><a href="../index.html#contact">Enterprise</a></li>
+          <li><a href="mailto:tripp@entromorphic.com">tripp@entromorphic.com</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="whitepaper.html">About EntroMorphic</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Trademark</a></li>
+          <li><a href="#">Legal</a></li>
+        </ul>
+      </div>
+    </div>
     <div class="footer-meta">
       <span>© 2026 EntroMorphic · Flynn is a trademark of EntroMorphic</span>
       <span>v.q2.2026 · audit-ready</span>
@@ -487,5 +527,11 @@
   </div>
 </footer>
 
+<script src="../assets/tron-fx.js"></script>
+
+<!-- Volumetric grid void (three.js) -->
+<script>window.FLYNN_GRID_CONFIG = { variant: 'tiers' };</script>
+<script src="https://unpkg.com/three@0.149.0/build/three.min.js"></script>
+<script src="../assets/grid-void.js"></script>
 </body>
 </html>

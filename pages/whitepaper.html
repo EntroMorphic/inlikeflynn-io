@@ -6,7 +6,7 @@
 <title>Whitepaper — Flynn</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Orbitron:wght@400;500;600;700;800&family=Chakra+Petch:wght@400;500;600;700&family=Michroma&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../assets/styles.css" />
 <style>
   .wp-layout {
@@ -23,6 +23,27 @@
     top: 88px;
     align-self: start;
   }
+  .toc-list {
+    position: relative;
+    padding-left: 18px;
+  }
+  .toc-list::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 6px; bottom: 6px;
+    width: 2px;
+    background: var(--hair);
+  }
+  .toc-progress {
+    position: absolute;
+    left: 0; top: 6px;
+    width: 2px;
+    height: 0;
+    background: var(--accent-2);
+    box-shadow: 0 0 9px color-mix(in oklab, var(--accent-2) 65%, transparent);
+    transition: height .4s cubic-bezier(.4,0,.2,1);
+    pointer-events: none;
+  }
   .toc ol {
     list-style: none;
     padding: 0;
@@ -31,22 +52,24 @@
   }
   .toc li {
     counter-increment: t;
-    border-top: 1px solid var(--hair);
-    padding: 10px 0;
+    padding: 9px 0;
     font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     display: flex;
-    gap: 12px;
+    gap: 10px;
+    align-items: baseline;
   }
-  .toc li:last-child { border-bottom: 1px solid var(--hair); }
   .toc li::before {
     content: counter(t, decimal-leading-zero);
     color: var(--mid);
+    transition: color .25s;
   }
-  .toc a { color: var(--ink-2); }
+  .toc a { color: var(--ink-2); transition: color .25s; }
   .toc a:hover { color: var(--accent-deep); }
+  .toc li.active::before { color: var(--accent-2); }
+  .toc li.active a { color: var(--accent-2); }
   .toc h4 {
     font-family: var(--font-mono);
     font-size: 11px;
@@ -89,6 +112,7 @@
     margin: 64px 0 18px;
     padding-top: 32px;
     border-top: 1px solid var(--hair);
+    scroll-margin-top: 96px;
   }
   article.wp h2:first-of-type { border-top: 0; padding-top: 0; }
   article.wp h3 {
@@ -128,7 +152,7 @@
     position: absolute;
     left: 0; top: 18px;
     width: 8px; height: 1px;
-    background: var(--ink);
+    background: linear-gradient(180deg, rgba(12,18,30,0.82), rgba(6,10,18,0.86));
   }
   .wp-table {
     width: 100%;
@@ -158,7 +182,7 @@
     padding: 32px;
     border: 1px solid var(--hair-strong);
     border-radius: var(--r-lg);
-    background: color-mix(in oklab, var(--bone) 60%, white);
+    background: linear-gradient(180deg, rgba(12,18,30,0.6), rgba(6,10,18,0.6));
   }
   .wp-cta h3 {
     margin: 0 0 8px;
@@ -166,8 +190,15 @@
     letter-spacing: -0.012em;
   }
 </style>
+<link rel="stylesheet" href="../assets/tron.css" />
+<style>
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
 </head>
 <body>
+<canvas id="grid-void"></canvas>
+<div class="void-haze"></div>
 
 <header class="nav">
   <div class="wrap nav-inner">
@@ -193,126 +224,127 @@
 
   <aside class="toc">
     <h4>Contents</h4>
-    <ol>
-      <li><a href="#summary">Executive summary</a></li>
-      <li><a href="#telemetry">The telemetry era</a></li>
-      <li><a href="#gaps">The four gaps</a></li>
-      <li><a href="#different">Why Flynn is different</a></li>
-      <li><a href="#how">How Flynn works</a></li>
-      <li><a href="#trust">Architecture of trust</a></li>
-      <li><a href="#validated">Validated across domains</a></li>
-      <li><a href="#runs">Where Flynn runs</a></li>
-      <li><a href="#roadmap">The Flynn roadmap</a></li>
-      <li><a href="#tiers">Tiers and engagement</a></li>
-      <li><a href="#about">About Flynn</a></li>
-    </ol>
+    <div class="toc-list">
+      <span class="toc-progress"></span>
+      <ol>
+        <li><a href="#summary">Executive summary</a></li>
+        <li><a href="#telemetry">The telemetry era</a></li>
+        <li><a href="#gaps">The four gaps</a></li>
+        <li><a href="#different">Why Flynn is different</a></li>
+        <li><a href="#how">How Flynn works</a></li>
+        <li><a href="#trust">Architecture of trust</a></li>
+        <li><a href="#validated">Validated across domains</a></li>
+        <li><a href="#runs">Where Flynn runs</a></li>
+        <li><a href="#roadmap">The Flynn roadmap</a></li>
+        <li><a href="#tiers">Tiers and engagement</a></li>
+        <li><a href="#about">About Flynn</a></li>
+      </ol>
+    </div>
   </aside>
 
   <article class="wp">
-    <div class="meta">Whitepaper · Q2 2026 · 15 pages</div>
+    <div class="meta">Whitepaper · Q2 2026 · 11 sections</div>
     <h1 class="title">Telemetry talks. Flynn listens.</h1>
     <p class="deck">A whitepaper on deterministic, embedded anomaly detection — in telemetry, at the edge of the world.</p>
 
     <h2 id="summary">Executive summary</h2>
-    <p>Industrial equipment fails for reasons that are almost always visible in the signal before they become visible in the world. A bearing wears. A pump cavitates. A motor drifts out of phase. The data is there. The listener almost never is.</p>
-    <p>This whitepaper introduces <strong>Flynn</strong>, an embedded anomaly detector that turns equipment telemetry into usable local intelligence. Flynn runs bare-metal on the microcontroller already inside the equipment, in <strong>8,480 bytes of deterministic C</strong>. It self-calibrates from normal behavior in 1,700 samples — under two seconds at kilohertz-class sampling rates — with no labels, no cloud, and no per-deployment tuning.</p>
-    <p class="pull">Flynn is what happens when you stop trying to send the signal somewhere else, and start trusting what the equipment already knows about itself.</p>
+    <p>Industrial equipment fails for reasons that show up in the signal long before they show up in the world. A bearing wears. A pump cavitates. A motor drifts out of phase. The data is there. The listener is not.</p>
+    <p>This whitepaper introduces <strong>Flynn</strong>, an embedded anomaly detector that turns equipment telemetry into local intelligence. Flynn runs bare-metal on the microcontroller already inside the machine, in <strong>8,480 bytes of deterministic C</strong>. It calibrates itself from normal operation in 1,700 samples<sup style="font-size: 0.7em; color: var(--accent-deep); margin-left: 1px; vertical-align: super;">†</sup> — under two seconds at kilohertz sampling rates — with no labels, no cloud, and no per-deployment tuning.</p>
+    <p class="pull">Flynn reads the signal where it lives.</p>
 
     <h2 id="telemetry">The telemetry era</h2>
     <h3>The signal is everywhere</h3>
     <p>From sub-sea to deep space, telemetry talks. Vibration. Current. Temperature. Pressure. Flow. Timing. Every rotating asset, every fluid system, every electrical bus, every thermal envelope emits signal continuously. A modern industrial site instruments ten thousand sensor channels, each emitting hundreds to thousands of samples per second.</p>
-    <h3>The listener almost never is</h3>
-    <p>The infrastructure for converting telemetry into action remains overwhelmingly centralized: a sensor reads, transmits, accumulates in a historian or a cloud data lake, and is eventually analyzed by humans or by models running on infrastructure far from where the signal originated. A vast and growing class of applications cannot accept this architecture, for reasons that are structural rather than incidental:</p>
+    <h3>The listener is missing</h3>
+    <p>The infrastructure that turns telemetry into action is overwhelmingly centralized: a sensor reads, transmits, and accumulates in a historian or cloud data lake, to be analyzed later by people or models far from where the signal began. A large and growing class of applications cannot accept this, for structural reasons:</p>
     <ul>
-      <li><strong>Connectivity is not guaranteed.</strong> The most consequential equipment operates where backhaul is intermittent, slow, expensive, or absent.</li>
-      <li><strong>Decision latency matters.</strong> A pump dry-running can destroy itself in seconds. The decision cannot wait for a round trip to a cloud.</li>
+      <li><strong>Connectivity is unreliable.</strong> The most consequential equipment runs where backhaul is intermittent, slow, expensive, or absent.</li>
+      <li><strong>Decision latency matters.</strong> A dry-running pump destroys itself in seconds; the decision cannot wait for a round trip to the cloud.</li>
       <li><strong>Trust cannot be outsourced.</strong> Decisions affecting safety, compliance, or product integrity must be auditable and reproducible.</li>
       <li><strong>Cost-per-decision matters at fleet scale.</strong> Sending every sensor reading to a cloud collapses economically at ten thousand assets.</li>
     </ul>
 
     <h2 id="gaps">The four gaps</h2>
-    <p>The state of the art in anomaly detection leaves four specific gaps unaddressed. Each one prevents a class of equipment from being instrumented usefully today.</p>
-    <h3>Non-local intelligence</h3>
-    <p>Telemetry exists. A detector you can trust close to the source does not. The decision lives far from the action it informs.</p>
-    <h3>No labels, no joy</h3>
-    <p>The dominant supervised approach demands labeled failure data — which most real equipment cannot supply. Most equipment is designed to not fail; when it does, the failure mode is rare, expensive, and often catastrophic.</p>
-    <h3>Cloud can't reach</h3>
-    <p>Cloud-first systems assume connectivity. Most consequential equipment does not. The cloud is slow. Or worse, gone when you need it most.</p>
-    <h3>Can't embed</h3>
-    <p>Detection tools built for dashboards do not belong in firmware. Determinism and minimal footprint are not optional in embedded systems. They are entry conditions.</p>
+    <p>Conventional anomaly detection leaves four gaps. Each one keeps a class of equipment uninstrumented today.</p>
+    <h3>High decision latency</h3>
+    <p>The signal travels to a distant server and the verdict travels back. For a pump that can wreck itself in seconds, the round trip is the failure.</p>
+    <h3>No labeled training data</h3>
+    <p>Supervised models demand labeled failures. Industrial equipment runs for years between them, and when it fails the event is rare, costly, and often catastrophic. The labels never accumulate.</p>
+    <h3>Equipment lacks connectivity</h3>
+    <p>Cloud-first systems assume connectivity; the most consequential equipment runs without it. The cloud is slow, or gone exactly when it is needed.</p>
+    <h3>Monitoring tools exceed firmware constraints</h3>
+    <p>Detection tools built for dashboards are too large for firmware. In embedded systems, determinism and a small footprint are entry conditions.</p>
     <p class="pull">Flynn closes that gap in 8,480 bytes — self-calibrating, embedded, bare-metal anomaly detection that turns telemetry into deterministic, auditable intelligence.</p>
 
     <h2 id="different">Why Flynn is different</h2>
     <h3>8,480 bytes</h3>
-    <p>Flynn's runtime memory footprint is 8,480 bytes. Not eight kilobytes — eight thousand four hundred and eighty bytes. The exact number matters because the size of the deployed detector determines the silicon it can run on, the equipment it can be embedded inside, and the cost-per-node of a fleet deployment.</p>
+    <p>Flynn's runtime footprint is 8,480 bytes — eight thousand four hundred and eighty, not eight kilobytes. The figure decides the silicon it runs on, the equipment it embeds inside, and the cost per node across a fleet.</p>
     <h3>Self-calibrating</h3>
-    <p>Flynn learns the statistical signature of normal operation from the first sampling period of the signal itself. There is no labeled training data, no per-deployment configuration, no machine-learning team behind it. The deployment workflow for an integrator is: install, power on, walk away.</p>
+    <p>Flynn learns the statistical signature of normal operation from the signal's first sampling period — the only input it requires. The integrator's workflow: install, power on, walk away.</p>
     <h3>Deterministic</h3>
     <p>Flynn produces bit-identical output for bit-identical input, across runs and across silicon. This determinism is the structural property that allows Flynn to participate in safety-certified voting architectures, to be replayed forensically after an incident, and to be audited line-by-line.</p>
     <h3>Auditable</h3>
-    <p>Flynn is delivered to commercial licensees as a single human-readable C source file. No model blob, no opaque binary, no proprietary runtime. Auditability is not a feature — it is the file format.</p>
+    <p>Flynn ships to commercial licensees as one human-readable C source file. Every decision it makes is open to inspection, line by line. Auditability is the file format.</p>
     <h3>Bare-metal</h3>
-    <p>Flynn runs without an operating system. It does not require a network stack, a filesystem, a process scheduler, or any external dependencies beyond a basic math library.</p>
+    <p>Flynn runs on bare metal. Its only dependency is a basic math library — no operating system, no network stack, no filesystem, no scheduler.</p>
 
     <h2 id="how">How Flynn works</h2>
     <p>Flynn's operating model is two phases. Learning. Detection. The transition between them is automatic and one-way.</p>
     <h3>Learning</h3>
-    <p>For the first 1,700 samples after deployment, Flynn observes the signal without producing alerts. The detector accumulates a statistical model of the signal's normal behavior. At the end of the warmup, Flynn commits a detection threshold based on what it has observed. The committed threshold is then locked. It does not move. It does not adapt. It does not drift.</p>
+    <p>For its first 1,700 samples<sup style="font-size: 0.7em; color: var(--accent-deep); margin-left: 1px; vertical-align: super;">†</sup>, Flynn watches in silence and builds a statistical model of the signal's normal behavior. At the end of enrollment it commits one detection threshold and locks it. The threshold does not move, adapt, or drift.</p>
     <h3>Detection</h3>
-    <p>After warmup, every subsequent sample passes through the detection pipeline. A score below the threshold is normal. A score at or above the threshold is anomalous. The magnitude of the score indicates the severity of the deviation.</p>
-    <p>The locked threshold is not a limitation — it is a design choice with consequences. Adaptive thresholds have a well-documented failure mode: a slow-developing fault gradually drifts the baseline upward, the threshold tracks it, and the fault is silently absorbed into the new "normal." Flynn refuses this failure mode by construction.</p>
+    <p>After enrollment, every sample passes through the detection pipeline. A score below the threshold is normal; a score at or above it is anomalous. The magnitude of the score measures the severity of the deviation.</p>
+    <p>The locked threshold is a deliberate design choice. Adaptive thresholds carry a well-documented failure mode: a slow-developing fault gradually drifts the baseline upward, the threshold follows, and the fault dissolves into a new "normal." Flynn refuses that by construction.</p>
+    <p style="font-family: var(--font-mono); font-size: 12px; line-height: 1.65; letter-spacing: 0.02em; color: var(--mid);"><span style="color: var(--accent-deep);">†</span> Samples required for complete enrollment will vary by equipment type, state, and operational envelope.</p>
 
     <h2 id="trust">The architecture of trust</h2>
-    <h3>The prior should be a voice, not a verdict</h3>
-    <p>In any learning system, two things must coexist: the accumulated experience that lets the system get better at its job, and the direct measurement that lets the system notice when something has changed. The common failure mode is that the prior wins when it should yield.</p>
+    <h3>Evidence outranks the prior</h3>
+    <p>Every learning system must hold two things at once: the accumulated experience that sharpens its judgment, and the direct measurement that reveals when something has changed. The common failure is that experience overrides the measurement.</p>
     <h3>Flynn separates them by locking</h3>
-    <p>In Flynn, the structural separation between prior and evidence is enforced by the locked-threshold design. There is no feedback path from accumulated experience back into the classifier. The system that judges each new sample is, by construction, isolated from any updating influence after deployment.</p>
-    <p class="pull">The signal dominates at the moment of conflict. The prior persists. The two never share the wire.</p>
+    <p>Flynn's locked-threshold design enforces that separation. After deployment, no feedback path runs from accumulated experience back into the classifier; the judge of each new sample stays isolated from any later influence.</p>
+    <p class="pull">Once the equipment’s nominal signal envelope is learned through enrollment, it’s locked in permanently. When the equipment telemetry trends towards a threshold it does not change the enrollment data.</p>
 
     <h2 id="validated">Validated across domains</h2>
     <p>Flynn has been validated across five distinct industrial signal domains, with zero configuration changes between them.</p>
     <table class="wp-table">
       <tr><th>Domain</th><th>Headline</th><th>Notes</th></tr>
       <tr><td>Bearing vibration (CWRU)</td><td class="spec">P 0.988 · F1 0.829 · R 0.996</td><td>Tandem mode: P 0.972 · R 0.996.</td></tr>
-      <tr><td>Run-to-failure</td><td class="spec">~17 day lead</td><td>30+ days · 8 channels · zero healthy-bearing alerts<sup style="color: var(--accent-deep);">‡</sup>. NASA IMS Bearing dataset.</td></tr>
+      <tr><td>Run-to-failure</td><td class="spec">~17 day lead</td><td>30+ days · 8 channels · both failing bearings caught; healthy channels showed only correlated cross-talk, no independent alerts. NASA IMS Bearing dataset.</td></tr>
       <tr><td>Ambient &amp; diurnal</td><td class="spec">0.074–0.080 FP/h</td><td>336 hours across environmental signals.</td></tr>
       <tr><td>Electrical grid</td><td class="spec">F1 0.532</td><td>10,000 instances · 12 features.</td></tr>
       <tr><td>Synthetic soak (vibration)</td><td class="spec">0 FP / 120 h</td><td>5 seeds · bounded &lt;0.025/h at 95% CI.</td></tr>
     </table>
-    <p style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; line-height: 1.6; color: var(--mid); margin: -2px 0 24px;">
-      <sup style="color: var(--accent-deep);">‡</sup> In recent updated-build testing, the healthy-bearing channels were not perfectly silent: Flynn surfaced a low-magnitude signal that directly correlated with the failing bearings — accelerometer cross-talk bleeding from the failing-bearing channels, not an independent fault. Recorded as correlated cross-talk, not a false positive.
-    </p>
-    <p class="pull">Zero false positives on bearing data. Operationally low on diurnal. The numbers operators actually care about.</p>
+    <p class="pull">Zero false positives on bearing data. Operationally low on diurnal.</p>
 
     <h2 id="runs">Where Flynn runs</h2>
     <h3>Any compliant microcontroller</h3>
     <p>Flynn is a single C99 source file. It compiles with any C99-compliant compiler. It has been hardware-validated on commodity 32-bit MCU architectures including both proprietary and open instruction sets.</p>
     <h3>Bare-metal C</h3>
-    <p>Flynn requires no operating system, no network stack, no filesystem, no process scheduler. It does not allocate memory after initialization.</p>
+    <p>Flynn runs on bare metal: no operating system, no network stack, no filesystem, no scheduler, and no memory allocation after initialization.</p>
     <h3>Zero heap</h3>
-    <p>Flynn performs no dynamic memory allocation after initialization. Its working set is fixed at compile time — a hard requirement for safety-critical firmware where dynamic allocation is forbidden by certification.</p>
+    <p>Flynn fixes its entire working set at compile time and allocates nothing afterward — the hard requirement of safety-critical firmware, where certification forbids dynamic allocation.</p>
     <h3>From sub-sea to deep space</h3>
     <p>The same source file runs on commodity industrial silicon, on radiation-tolerant microcontrollers, and on power-constrained sensor nodes.</p>
 
     <h2 id="roadmap">The Flynn roadmap</h2>
     <h3>Today · the neuron</h3>
-    <p>The Flynn detector is the foundational unit. One signal in, one score out. Deployable today as embedded firmware. Validated across five domains.</p>
-    <h3>In development · the spinal cord</h3>
-    <p>A coordination layer that composes multiple Flynn detectors on the same asset. Three to ten detectors covering different sensors on one piece of equipment, with a fabric node maintaining operational-regime memory. Pilot deployments are engaging in 2026.</p>
+    <p>The Flynn detector is the foundational unit: one signal in, one score out. It ships today as embedded firmware, validated across five domains.</p>
+    <h3>In development · the deterministic, auditable, neural network</h3>
+    <p>A coordination layer that composes multiple Flynn detectors on one asset — three to ten, covering different sensors, with a fabric node that remembers operational regimes. Pilot deployments begin in 2026.</p>
     <h3>Beyond · the nervous system</h3>
     <p>A facility-wide distributed cognition. Reflex-class response to sub-millisecond events. Cerebellar memory of operational regimes. Cortical decision-making across the whole site. Long-term memory with forensic replay back to any moment in the equipment's history.</p>
 
     <h2 id="tiers">Tiers and engagement</h2>
-    <p>Flynn supports multiple engagement models, scaled to the needs of the user. Specific terms are formalized through direct conversation.</p>
+    <p>Flynn supports several engagement models, scaled to the user. Whatever you need, let’s talk.</p>
     <ul>
-      <li><strong>Evaluation access</strong> — no-cost, source-level audit rights, bounded scope.</li>
+      <li><strong>Evaluation access</strong> — no-cost, bounded scope, NDA required.</li>
       <li><strong>OEM licensing</strong> — per-unit royalty, integration support, long-term source stability.</li>
       <li><strong>Enterprise deployment</strong> — direct support, custom integration, compliance reporting, multi-year maintenance.</li>
     </ul>
 
     <h2 id="about">About Flynn</h2>
-    <p>Flynn is developed by <strong>EntroMorphic</strong>, an embedded-systems and machine-intelligence company founded on the conviction that the most consequential equipment in the world should not need the cloud to stay safe. EntroMorphic's engineering leadership brings deep experience in high-performance computing, embedded firmware, and applied machine-intelligence architecture.</p>
-    <p>Flynn validates the principle that small, deterministic, auditable, structurally-separated detectors can serve the operational reality of industrial equipment better than the centralized analytics architectures that have dominated the last decade.</p>
+    <p>Flynn is built by <strong>EntroMorphic</strong>, an embedded-systems and machine-intelligence company founded on one conviction: the most consequential equipment in the world should stay safe without the cloud. Its engineering leadership brings deep experience in high-performance computing, embedded firmware, and applied machine-intelligence architecture.</p>
+    <p>Flynn proves a principle: small, deterministic, auditable, structurally-separated detectors serve industrial equipment better than the centralized analytics that have dominated the past decade.</p>
 
     <div class="wp-cta">
       <h3>Next steps</h3>
@@ -324,7 +356,45 @@
 </div>
 
 <footer class="footer">
+  <canvas id="grid-bg"></canvas>
   <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="../index.html">
+          <img class="brand-mark" src="../assets/flynn-logo.jpg" alt="Flynn" />
+          <span>Flynn</span>
+        </a>
+        <p class="muted" style="font-size: 14px; max-width: 32ch; margin-top: 16px;">Deterministic anomaly detection embedded at the edge of the world and beyond.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="whitepaper.html">Whitepaper</a></li>
+          <li><a href="validation.html">Validation</a></li>
+          <li><a href="industries.html">Industries</a></li>
+          <li><a href="roadmap.html">Roadmap</a></li>
+          <li><a href="tiers.html">Tiers</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Engage</h4>
+        <ul>
+          <li><a href="../index.html#contact">Evaluation access</a></li>
+          <li><a href="../index.html#contact">OEM licensing</a></li>
+          <li><a href="../index.html#contact">Enterprise</a></li>
+          <li><a href="mailto:tripp@entromorphic.com">tripp@entromorphic.com</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="whitepaper.html">About EntroMorphic</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Trademark</a></li>
+          <li><a href="#">Legal</a></li>
+        </ul>
+      </div>
+    </div>
     <div class="footer-meta">
       <span>© 2026 EntroMorphic · Flynn is a trademark of EntroMorphic</span>
       <span>v.q2.2026 · audit-ready</span>
@@ -332,5 +402,47 @@
   </div>
 </footer>
 
+<script src="../assets/tron-fx.js"></script>
+
+<!-- Volumetric grid void (three.js) -->
+<script>window.FLYNN_GRID_CONFIG = { variant: 'whitepaper' };</script>
+<script src="https://unpkg.com/three@0.149.0/build/three.min.js"></script>
+<script src="../assets/grid-void.js"></script>
+<script>
+  (function () {
+    var items = Array.prototype.slice.call(document.querySelectorAll('.toc li'));
+    if (!items.length) return;
+    var progress = document.querySelector('.toc-progress');
+    var headings = items.map(function (li) {
+      var a = li.querySelector('a');
+      var id = a && a.getAttribute('href').slice(1);
+      return id ? document.getElementById(id) : null;
+    });
+    var activeIndex = -1;
+
+    function setActive(i) {
+      if (i === activeIndex || i < 0) return;
+      activeIndex = i;
+      items.forEach(function (li, idx) { li.classList.toggle('active', idx === i); });
+      var li = items[i];
+      if (li && progress) {
+        progress.style.height = (li.offsetTop + li.offsetHeight - 6) + 'px';
+      }
+    }
+
+    var visible = new Set();
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        var idx = headings.indexOf(e.target);
+        if (idx < 0) return;
+        if (e.isIntersecting) visible.add(idx); else visible.delete(idx);
+      });
+      if (visible.size) setActive(Math.min.apply(null, Array.from(visible)));
+    }, { rootMargin: '-84px 0px -64% 0px', threshold: 0 });
+
+    headings.forEach(function (h) { if (h) obs.observe(h); });
+    setActive(0);
+  })();
+</script>
 </body>
 </html>

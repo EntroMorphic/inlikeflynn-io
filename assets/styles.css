@@ -3,6 +3,7 @@
    warm bone surface, deep ink type, signal-amber accent reserved for
    anomaly / detection moments. Geist + Geist Mono via Google Fonts.
 */
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
 :root {
   /* light theme (fallback) */
@@ -84,7 +85,7 @@ img, svg { display: block; max-width: 100%; }
 /* ----- type ----- */
 .eyebrow {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 16px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--mid);
@@ -215,9 +216,10 @@ img, svg { display: block; max-width: 100%; }
   align-items: center;
 }
 .nav-links a {
-  font-size: 14px;
+  font-family: "Share Tech Mono", var(--font-mono);
+  font-size: 15px;
   color: var(--accent-2);
-  letter-spacing: -0.005em;
+  letter-spacing: 0.02em;
   transition: color .2s;
 }
 .nav-links a:hover { color: var(--accent); }
@@ -305,6 +307,7 @@ img, svg { display: block; max-width: 100%; }
 .footer ul { list-style: none; padding: 0; margin: 0; }
 .footer li { margin-bottom: 8px; }
 .footer a { font-size: 14px; color: var(--accent-2); transition: color .2s; }
+.footer li a { font-family: "Share Tech Mono", var(--font-mono); letter-spacing: 0.02em; }
 .footer a:hover { color: var(--accent); }
 .footer-meta {
   display: flex;
@@ -354,7 +357,7 @@ img, svg { display: block; max-width: 100%; }
   align-items: center;
   gap: 6px;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 16px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 4px 10px;
@@ -369,6 +372,8 @@ img, svg { display: block; max-width: 100%; }
   background: var(--accent);
   animation: pulse 1.6s ease-in-out infinite;
 }
+a.chip.live { transition: color .2s, border-color .2s; }
+a.chip.live:hover { color: var(--accent); border-color: var(--accent); }
 @keyframes pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.4; transform: scale(0.8); }

@@ -6,14 +6,13 @@
 <title>Roadmap — Flynn</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Orbitron:wght@400;500;600;700;800&family=Chakra+Petch:wght@400;500;600;700&family=Michroma&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../assets/styles.css" />
 <style>
-  .page-head { padding: clamp(48px, 7vw, 96px) 0 clamp(48px, 6vw, 72px); border-bottom: 1px solid var(--hair); }
+  .page-head { padding: clamp(48px, 7vw, 96px) 0 clamp(48px, 6vw, 72px); }
   .page-head h1 { margin: 16px 0 24px; }
 
   .stage {
-    border-bottom: 1px solid var(--hair);
     padding: clamp(56px, 7vw, 96px) 0;
   }
   .stage-grid {
@@ -93,7 +92,7 @@
     border: 1px solid var(--hair-strong);
     border-radius: var(--r-lg);
     padding: 32px;
-    background: color-mix(in oklab, var(--bone) 60%, white);
+    background: linear-gradient(180deg, rgba(12,18,30,0.6), rgba(6,10,18,0.6));
   }
   .anatomy svg { width: 100%; max-width: 460px; margin: 0 auto; display: block; }
   .anatomy-caption {
@@ -107,16 +106,16 @@
   }
 
   .principle {
-    background: var(--ink);
-    color: var(--bone);
+    background: linear-gradient(180deg, rgba(12,18,30,0.82), rgba(6,10,18,0.86));
+    color: var(--ink);
     border-radius: var(--r-lg);
     padding: clamp(40px, 6vw, 80px);
     margin: clamp(48px, 6vw, 96px) 0;
   }
-  .principle .eyebrow { color: color-mix(in oklab, var(--bone) 65%, transparent); }
-  .principle h2 { color: var(--bone); margin: 16px 0 24px; }
-  .principle p { color: color-mix(in oklab, var(--bone) 85%, transparent); font-size: 18px; max-width: 64ch; line-height: 1.5; }
-  .principle .pull { color: var(--bone); border-color: var(--accent); }
+  .principle .eyebrow { color: color-mix(in oklab, var(--ink) 65%, transparent); }
+  .principle h2 { color: var(--ink); margin: 16px 0 24px; }
+  .principle p { color: color-mix(in oklab, var(--ink) 85%, transparent); font-size: 18px; max-width: 64ch; line-height: 1.5; }
+  .principle .pull { color: var(--ink); border-color: var(--accent); }
 
 /* Card labels: cyan base, orange on parent hover */
   .stage .meta,
@@ -129,8 +128,11 @@
   color: var(--accent) !important;
 }
 </style>
+<link rel="stylesheet" href="../assets/tron.css" />
 </head>
 <body>
+<canvas id="grid-void"></canvas>
+<div class="void-haze"></div>
 
 <header class="nav">
   <div class="wrap nav-inner">
@@ -156,9 +158,11 @@
   <div class="wrap">
     <span class="eyebrow"><span class="dot"></span>The Flynn Roadmap</span>
     <h1 class="h-display" style="font-size: clamp(48px, 6vw, 96px);">From neuron,<br/><em>to nervous system.</em></h1>
-    <p class="lede">Flynn ships in stages. Each stage is buildable and useful on its own. Each is composable with what comes next. The structural-separation property propagates through every layer.</p>
+    <p class="lede">Flynn ships in stages. Each stage stands on its own and composes into the next. Atomic equipment intelligence composes into unit, facility, and enterprise-scale systemic-awareness.</p>
   </div>
 </section>
+
+<hr class="rule" />
 
 <!-- STAGE 01 -->
 <section class="stage now" data-screen-label="02 Stage 1 Neuron">
@@ -167,7 +171,7 @@
       <div class="meta">Stage 01</div>
       <span class="when">Today · Shipping</span>
       <h2>The neuron.<em>One signal in. One score out.</em></h2>
-      <p class="intro">The Flynn detector — the subject of the whitepaper — is the foundational unit. Deployable today as embedded firmware. Validated across five domains. Ready for production integration into industrial equipment.</p>
+      <p class="intro">The Flynn detector — the subject of the whitepaper — is the foundational unit. It ships today as embedded firmware, validated across five domains and ready to integrate into production equipment.</p>
 
       <div class="anatomy" style="margin-top: 28px;">
         <svg viewBox="0 0 460 220" style="color: var(--ink);">
@@ -198,33 +202,35 @@
         <div class="row"><div class="l">Footprint</div><div class="v">8,480 bytes. Fits on existing MCUs.</div></div>
         <div class="row"><div class="l">Form</div><div class="v">Single C99 source file. Human-readable. Auditable line-by-line.</div></div>
         <div class="row"><div class="l">Runtime</div><div class="v">Bare-metal. No OS, no network, no filesystem. Zero heap after init.</div></div>
-        <div class="row"><div class="l">Calibration</div><div class="v">Self-calibrating from 1,700 samples. Threshold then locked.</div></div>
+        <div class="row"><div class="l">Calibration</div><div class="v">Self-calibrating from 1,700 samples<sup style="font-size: 0.7em; color: var(--accent-deep); margin-left: 1px; vertical-align: super;">†</sup>. Threshold then locked.</div></div>
         <div class="row"><div class="l">Determinism</div><div class="v">Bit-identical output across runs and silicon.</div></div>
         <div class="row"><div class="l">Validation</div><div class="v">Five distinct signal domains. Same source. Same flags.</div></div>
         <div class="row"><div class="l">Availability</div><div class="v">Today. Under evaluation, OEM, and enterprise license.</div></div>
       </div>
+      <p style="margin-top: 16px; font-family: var(--font-mono); font-size: 12px; line-height: 1.65; letter-spacing: 0.02em; color: var(--mid);"><span style="color: var(--accent-deep);">†</span> Samples required for complete enrollment will vary by equipment type, state, and operational envelope.</p>
     </div>
   </div>
 </section>
+
+<hr class="rule" />
 
 <!-- PRINCIPLE -->
 <div class="wrap">
   <div class="principle">
     <span class="eyebrow"><span class="dot"></span>The constant</span>
-    <h2 class="h1">Structural separation propagates.</h2>
-    <p>At every layer of composition, the same architectural property holds. The learning that happens at higher layers can shape what gets attended to. It cannot shape what gets judged. The detector validated today remains valid at every layer of composition — byte-for-byte identical, audit trail intact.</p>
-    <p class="pull" style="margin-top: 24px;">The signal dominates at the moment of conflict. The prior persists. The two never share the wire.</p>
+    <h2 class="h1">Structural integrity at scale.</h2>
+    <p>Flynn is composable — from a single detector on one asset to coordinated intelligence across a facility. As it is scaled, one principle holds at every layer: the layers above can decide which signals deserve attention, but they can never reach down and change a detector’s enrollment data. The detector you validate today stays exactly the same, no matter the depth of composition or how the equipment degrades.</p>
   </div>
 </div>
 
 <!-- STAGE 02 -->
-<section class="stage" data-screen-label="03 Stage 2 Spinal cord">
+<section class="stage" data-screen-label="03 Stage 2 Neural network">
   <div class="wrap stage-grid">
     <div>
       <div class="meta">Stage 02</div>
       <span class="when">In development · Pilots engaging 2026</span>
-      <h2>The spinal cord.<em>Coordinate detectors per asset.</em></h2>
-      <p class="intro">A coordination layer that composes multiple Flynn detectors on the same asset into a single integrated view. Three to ten detectors covering different sensors on one piece of equipment, with a fabric node maintaining operational-regime memory and providing cross-sensor context.</p>
+      <h2>The deterministic, auditable, neural network.<em>Coordinate detectors per asset.</em></h2>
+      <p class="intro">A coordination layer that composes multiple Flynn detectors on one asset into a single view — three to ten detectors across different sensors, with a fabric node that holds operational-regime memory and supplies cross-sensor context.</p>
 
       <div class="anatomy" style="margin-top: 28px;">
         <svg viewBox="0 0 460 240" style="color: var(--ink);">
@@ -272,6 +278,8 @@
   </div>
 </section>
 
+<hr class="rule" />
+
 <!-- STAGE 03 -->
 <section class="stage" data-screen-label="04 Stage 3 Nervous system">
   <div class="wrap stage-grid">
@@ -279,7 +287,7 @@
       <div class="meta">Stage 03</div>
       <span class="when">Multi-year roadmap</span>
       <h2>The nervous system.<em>Facility-wide distributed cognition.</em></h2>
-      <p class="intro">At full scope, Flynn becomes a facility-wide distributed nervous system — hierarchical composition of asset-level coordination into process-level, plant-level, and ultimately enterprise-level cognition.</p>
+      <p class="intro">At full scope, Flynn becomes a facility-wide nervous system: asset-level coordination composed up into process, plant, and enterprise cognition.</p>
 
       <div class="anatomy" style="margin-top: 28px;">
         <svg viewBox="0 0 460 260" style="color: var(--ink);">
@@ -342,34 +350,74 @@
         <div class="row"><div class="l">Cortex</div><div class="v">Site-wide decision-making across processes and plants.</div></div>
         <div class="row"><div class="l">Long-term memory</div><div class="v">Forensic replay back to any moment in equipment history.</div></div>
         <div class="row"><div class="l">Composition</div><div class="v">Built from primitives that already exist. Silicon-verified in parallel research.</div></div>
-        <div class="row"><div class="l">Status</div><div class="v">Multi-year. Spinal cord lays the foundation.</div></div>
+        <div class="row"><div class="l">Status</div><div class="v">Multi-year. The deterministic, auditable, neural network lays the foundation.</div></div>
       </div>
     </div>
   </div>
 </section>
 
+<hr class="rule" />
+
 <section class="section tight">
   <div class="wrap">
-    <div style="background: var(--ink); color: var(--bone); border-radius: var(--r-lg); padding: clamp(40px, 5vw, 72px); display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 56px; align-items: center;">
+    <div style="background: linear-gradient(180deg, rgba(12,18,30,0.82), rgba(6,10,18,0.86)); color: var(--ink); border-radius: var(--r-lg); padding: clamp(40px, 5vw, 72px); display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 56px; align-items: center;">
       <div>
-        <span class="eyebrow" style="color: color-mix(in oklab, var(--bone) 65%, transparent);"><span class="dot"></span>Roadmap conversations</span>
-        <h2 class="h1" style="margin-top: 20px; color: var(--bone);">Pilot the spinal cord.</h2>
-        <p class="lede" style="color: color-mix(in oklab, var(--bone) 80%, transparent); margin-top: 20px;">Operators with multi-sensor assets and clear regime structure are good candidates for 2026 pilot deployments of the coordination layer.</p>
+        <span class="eyebrow" style="color: color-mix(in oklab, var(--ink) 65%, transparent);"><span class="dot"></span>Roadmap conversations</span>
+        <h2 class="h1" style="margin-top: 20px; color: var(--ink);">Pilot the deterministic, auditable, neural network.</h2>
+        <p class="lede" style="color: color-mix(in oklab, var(--ink) 80%, transparent); margin-top: 20px;">Operators with multi-sensor assets and clear regime structure are first in line for 2026 pilot deployments of the coordination layer.</p>
         <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px;">
           <a class="btn" href="../index.html#contact" >Talk to engineering <span class="arrow">→</span></a>
-          <a class="btn ghost" href="tiers.html" style="background: transparent; color: var(--bone); border-color: color-mix(in oklab, var(--bone) 30%, transparent);">See engagement tiers</a>
+          <a class="btn ghost" href="tiers.html" style="background: transparent; color: var(--ink); border-color: color-mix(in oklab, var(--ink) 30%, transparent);">See engagement tiers</a>
         </div>
       </div>
       <div>
-        <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in oklab, var(--bone) 55%, transparent); margin-bottom: 14px;">Architectural brief on request</div>
-        <p style="color: color-mix(in oklab, var(--bone) 75%, transparent); font-size: 14px; line-height: 1.55;">A deeper architectural conversation about the structural-separation property and how it composes into the longer Flynn roadmap. Available to qualified engagements.</p>
+        <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in oklab, var(--ink) 55%, transparent); margin-bottom: 14px;">Architectural brief on request</div>
+        <p style="color: color-mix(in oklab, var(--ink) 75%, transparent); font-size: 14px; line-height: 1.55;">A deeper architectural conversation about the structural-separation property and how it composes into the longer Flynn roadmap. Available to qualified engagements.</p>
       </div>
     </div>
   </div>
 </section>
 
 <footer class="footer">
+  <canvas id="grid-bg"></canvas>
   <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="../index.html">
+          <img class="brand-mark" src="../assets/flynn-logo.jpg" alt="Flynn" />
+          <span>Flynn</span>
+        </a>
+        <p class="muted" style="font-size: 14px; max-width: 32ch; margin-top: 16px;">Deterministic anomaly detection embedded at the edge of the world and beyond.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="whitepaper.html">Whitepaper</a></li>
+          <li><a href="validation.html">Validation</a></li>
+          <li><a href="industries.html">Industries</a></li>
+          <li><a href="roadmap.html">Roadmap</a></li>
+          <li><a href="tiers.html">Tiers</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Engage</h4>
+        <ul>
+          <li><a href="../index.html#contact">Evaluation access</a></li>
+          <li><a href="../index.html#contact">OEM licensing</a></li>
+          <li><a href="../index.html#contact">Enterprise</a></li>
+          <li><a href="mailto:tripp@entromorphic.com">tripp@entromorphic.com</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="whitepaper.html">About EntroMorphic</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Trademark</a></li>
+          <li><a href="#">Legal</a></li>
+        </ul>
+      </div>
+    </div>
     <div class="footer-meta">
       <span>© 2026 EntroMorphic · Flynn is a trademark of EntroMorphic</span>
       <span>v.q2.2026 · audit-ready</span>
@@ -377,5 +425,11 @@
   </div>
 </footer>
 
+<script src="../assets/tron-fx.js"></script>
+
+<!-- Volumetric grid void (three.js) -->
+<script>window.FLYNN_GRID_CONFIG = { variant: 'roadmap' };</script>
+<script src="https://unpkg.com/three@0.149.0/build/three.min.js"></script>
+<script src="../assets/grid-void.js"></script>
 </body>
 </html>
