@@ -8,6 +8,7 @@ const TRON_DEFAULTS = Object.assign({
   motion: true,
   speed: 6,
   sfx: true,
+  music: true,
 }, window.FLYNN_TWEAK_DEFAULTS || {});
 
 const FONT_STACKS = {
@@ -47,6 +48,11 @@ function TronTweaks() {
     if (window.__gridVoid && window.__gridVoid.setSfx) window.__gridVoid.setSfx(t.sfx);
   }, [t.sfx]);
 
+  // game music
+  React.useEffect(() => {
+    if (window.__gridVoid && window.__gridVoid.setMusic) window.__gridVoid.setMusic(t.music);
+  }, [t.music]);
+
   // scope speed
   React.useEffect(() => {
     if (window.__flynnWave && window.__flynnWave.setSpeed) window.__flynnWave.setSpeed(t.speed);
@@ -81,6 +87,11 @@ function TronTweaks() {
           label="Tracer sound"
           value={t.sfx}
           onChange={(v) => setTweak("sfx", v)}
+        />
+        <TweakToggle
+          label="Game music"
+          value={t.music}
+          onChange={(v) => setTweak("music", v)}
         />
       </TweakSection>
 
