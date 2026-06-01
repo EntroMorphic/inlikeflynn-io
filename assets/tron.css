@@ -132,6 +132,7 @@ body.ah-playing .nav,
 body.ah-playing .void-haze,
 body.ah-playing section,
 body.ah-playing .footer,
+body.ah-playing .strip,
 body.ah-playing .hero { pointer-events: none; }
 .ah-hud { position: fixed; inset: 0; z-index: 9990; pointer-events: none; display: none; font-family: "Share Tech Mono", var(--font-mono); }
 .ah-hud.on { display: block; }
