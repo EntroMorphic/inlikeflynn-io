@@ -141,6 +141,13 @@ body.ah-playing .hero { pointer-events: none; }
 @keyframes ahFlash { from { opacity: 1; } to { opacity: 0; } }
 /* targeting cursor replaces the system cursor during play */
 body.ah-playing { cursor: none; }
+/* during play: kill double-tap zoom (rapid-fire taps) and the long-press
+   text-selection / copy callout that grabbed the faded page content */
+body.ah-playing, body.ah-playing * {
+  touch-action: manipulation;
+  -webkit-user-select: none; -moz-user-select: none; user-select: none;
+  -webkit-touch-callout: none;
+}
 
 /* framing brackets + scanline */
 .ah-frame { position: absolute; inset: 0; pointer-events: none; }
@@ -1034,4 +1041,19 @@ hr.rule {
   .cas-howto-btn { font-size: 9px; padding: 6px 13px; }
   .cas-credits { font-size: 8px; letter-spacing: 0.12em; }
   .cas-prompt { font-size: 9px; }
+
+  /* ---- game-over / stats card compaction ---- */
+  .ah-over.show { align-items: center; }
+  .ah-over-card { padding: 14px 20px; max-width: 94vw; }
+  .ah-over-new { font-size: 12px; margin-bottom: 5px; }
+  .ah-over-t { font-size: 18px; margin-bottom: 7px; }
+  .ah-over-score, .ah-over-best { font-size: 11px; margin: 2px 0; }
+  .ah-over-score b, .ah-over-best b { font-size: 15px; }
+  .cas-stats { grid-template-columns: repeat(4, 1fr); margin: 9px 0 7px; }
+  .cas-stat { padding: 6px 5px; gap: 2px; }
+  .cas-stat i { font-size: 7px; letter-spacing: 0.1em; }
+  .cas-stat b { font-size: 13px; }
+  .cas-career { font-size: 8px; margin-bottom: 2px; }
+  .ah-btn { margin-top: 12px; font-size: 11px; padding: 9px 20px; }
+  .ah-over-x { margin-top: 8px; font-size: 9px; }
 }
