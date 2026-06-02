@@ -306,6 +306,11 @@
     chargeEl.style.width = chargeEl.style.height = size + 'px';
     chargeEl.style.margin = (-size / 2) + 'px 0 0 ' + (-size / 2) + 'px';
     chargeEl.style.opacity = String(0.3 + p * 0.55);
+    if (chargeEl._logo) {
+      // the Flynn mark blooms into the core: grows + fades + slowly spins up
+      chargeEl._logo.style.opacity = String(Math.min(1, Math.max(0, (p - 0.08) * 1.3)));
+      chargeEl._logo.style.transform = 'translate(-50%, -50%) scale(' + (0.62 + p * 0.38) + ') rotate(' + (p * 44) + 'deg)';
+    }
     chargeRaf = requestAnimationFrame(chargeTick);
   }
   function beginChargeVisuals() {
@@ -314,6 +319,11 @@
     chargeEl = document.createElement('div');
     chargeEl.className = 'charge';
     chargeEl.style.left = cx + 'px'; chargeEl.style.top = cy + 'px';
+    const logo = document.createElement('img');
+    logo.className = 'charge-logo'; logo.alt = ''; logo.decoding = 'async';
+    logo.src = MUSIC_BASE + 'assets/flynn-logo.png';
+    chargeEl.appendChild(logo);
+    chargeEl._logo = logo;
     muzzleLayer.appendChild(chargeEl);
     startChargeSound();
     chargeRaf = requestAnimationFrame(chargeTick);
@@ -342,7 +352,56 @@
     // On the marketing site (not in-game), ignore quick taps — only a deliberate
     // press-and-hold fires the charged blast. In-game, every click fires.
     if (!game.active && held < WEB_HOLD_MIN) return;
-    fire(typeof x === 'number' ? x : cx, typeof y === 'number' ? y : cy, p);
+    const fx2 = typeof x === 'number' ? x : cx, fy2 = typeof y === 'number' ? y : cy;
+    fire(fx2, fy2, p);
+    if (p >= 0.12) launchLogoProjectile(fx2, fy2, p);   // the charged mark flies down the tunnel
+  }
+
+  // the bloomed Flynn mark rides the charged shot into the vanishing point —
+  // it mirrors the tracer 1:1 by sampling the tracer's exact 3D path each frame
+  // and projecting it to screen (same curve, same perspective recede, same timing).
+  function launchLogoProjectile(x, y, power) {
+    ensureMuzzleLayer();
+    const orbSize = 24 + power * 170;
+    const startSize = Math.max(34, orbSize * 0.86 * (0.62 + power * 0.38));
+    const el = document.createElement('img');
+    el.className = 'charge-logo-fly'; el.alt = ''; el.decoding = 'async';
+    el.src = MUSIC_BASE + 'assets/flynn-logo.png';
+    muzzleLayer.appendChild(el);
+
+    // replicate the tracer's own start→dest exactly (see spawnTracer)
+    let tStart = null, tDest = null;
+    try {
+      const mx = (x / window.innerWidth) * 2 - 1, my = -(y / window.innerHeight) * 2 + 1;
+      const ray = new THREE.Vector3(mx, my, 0.5).unproject(camera);
+      const dir = ray.sub(camera.position).normalize();
+      tStart = camera.position.clone().add(dir.multiplyScalar(9));
+      tDest = tStart.clone().add(new THREE.Vector3(0, 0, -1).multiplyScalar(Math.abs(cfg.fog[1]) * 1.4));
+    } catch (e) {}
+
+    const _lp = new THREE.Vector3(), _lp2 = new THREE.Vector3(), _unitY = new THREE.Vector3(0, 1, 0);
+    function proj(v) { const c = v.clone().project(camera); return { x: (c.x * 0.5 + 0.5) * window.innerWidth, y: (-c.y * 0.5 + 0.5) * window.innerHeight }; }
+    // screen px per 1 world unit at a given world point (for perspective sizing)
+    function pxPerWorld(v) { const a = proj(v); const b = proj(_lp2.copy(v).add(_unitY)); return Math.abs(b.y - a.y) || 0.0001; }
+    const worldSize = tStart ? (startSize / pxPerWorld(tStart)) : 0;   // logo's size in world units
+
+    const t0 = performance.now();
+    const life = (0.7 + power * 0.25) * 1000;        // identical to the tracer's life
+    (function fly() {
+      const tt = Math.min(1, (performance.now() - t0) / life);
+      const e = 1 - Math.pow(1 - tt, 3);             // easeOutCubic — identical to the tracer
+      if (tStart) {
+        _lp.lerpVectors(tStart, tDest, e);           // the tracer's exact 3D point at this t
+        const s = proj(_lp);
+        const sizePx = Math.max(2, pxPerWorld(_lp) * worldSize);
+        el.style.left = s.x + 'px'; el.style.top = s.y + 'px';
+        el.style.width = el.style.height = sizePx + 'px';
+        el.style.transform = 'translate(-50%, -50%) rotate(' + (e * 200) + 'deg)';
+      }
+      const fade = tt < 0.8 ? 1 : Math.max(0, 1 - (tt - 0.8) / 0.2);   // matches the tracer head fade
+      el.style.opacity = String(fade);
+      if (tt < 1) requestAnimationFrame(fly); else el.remove();
+    })();
   }
 
   window.addEventListener('pointerdown', (e) => { if (game.active) updateReticle(e.clientX, e.clientY); startCharge(e.clientX, e.clientY); }, { passive: true });
@@ -990,6 +1049,10 @@
     return new THREE.CanvasTexture(c);
   })();
   const missiles = [];
+  // Flynn mark ridden in each missile's exhaust (38% opacity). loaded once.
+  const logoTex = (function () {
+    try { const t = new THREE.TextureLoader().load(MUSIC_BASE + 'assets/flynn-logo.png'); t.anisotropy = 2; return t; } catch (e) { return null; }
+  })();
   const _mv1 = new THREE.Vector3(), _mv2 = new THREE.Vector3();
   function buildTrail(line, pts) {
     const n = pts.length;
@@ -1014,11 +1077,18 @@
     line.renderOrder = 6; line.frustumCulled = false; scene.add(line);
     const tpos = (target && target.alive) ? target.mesh.position.clone()
       : new THREE.Vector3((Math.random() - 0.5) * 64, 4 + Math.random() * 16, -(cfg.fog[1] * 0.66));
-    missiles.push({ target, tpos, pos, vel, head, line, trail: [pos.clone()], t: 0, cruise: 52 + Math.random() * 18, max: 80, turn: 2.3 + Math.random() * 1.9 });
+    // Flynn mark riding the exhaust (38% opacity), spinning as it flies
+    let logo = null;
+    if (logoTex) {
+      logo = new THREE.Sprite(new THREE.SpriteMaterial({ map: logoTex, transparent: true, opacity: 0.21, depthTest: false, depthWrite: false, fog: false }));
+      logo.scale.setScalar(4.4); logo.renderOrder = 5; logo.position.copy(pos); scene.add(logo);
+    }
+    missiles.push({ target, tpos, pos, vel, head, line, logo, trail: [pos.clone()], spin: Math.random() * Math.PI, t: 0, cruise: 52 + Math.random() * 18, max: 80, turn: 2.3 + Math.random() * 1.9 });
   }
   function disposeMissile(m) {
     scene.remove(m.head); m.head.material.dispose();
     scene.remove(m.line); m.line.geometry.dispose(); m.line.material.dispose();
+    if (m.logo) { scene.remove(m.logo); m.logo.material.dispose(); }
   }
   function detonateMissile(m) {
     if (m.target && m.target.alive) {
@@ -1046,6 +1116,12 @@
       if (sp > m.max) m.vel.multiplyScalar(m.max / sp);
       m.pos.addScaledVector(m.vel, dt);
       m.head.position.copy(m.pos);
+      if (m.logo) {
+        // sit in the exhaust: just behind the head, opposite the velocity
+        const sp2 = m.vel.length() || 1;
+        m.logo.position.copy(m.pos).addScaledVector(m.vel, -2.6 / sp2);
+        m.logo.material.rotation = (m.spin += dt * 2.4);
+      }
       m.trail.unshift(m.pos.clone()); if (m.trail.length > 16) m.trail.pop();
       buildTrail(m.line, m.trail);
       if (dist < 4 || m.t > 2.4) { detonateMissile(m); disposeMissile(m); missiles.splice(i, 1); }

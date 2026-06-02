@@ -123,6 +123,22 @@ body {
   border: 1.5px solid rgba(255,170,90,0.85);
   box-shadow: 0 0 22px rgba(255,150,64,0.7), inset 0 0 16px rgba(255,212,150,0.55);
 }
+/* the Flynn mark that blooms inside the charge core (scaled/faded by JS) */
+.muzzle-layer .charge-logo {
+  position: absolute; left: 50%; top: 50%; width: 86%; height: 86%;
+  margin: 0; transform: translate(-50%, -50%) scale(0.62);
+  transform-origin: center center; object-fit: contain; pointer-events: none;
+  opacity: 0; will-change: transform, opacity;
+  filter: drop-shadow(0 0 10px rgba(120,235,255,0.55));
+}
+/* the charged mark streaking into the horizon (positioned/scaled by JS) */
+.muzzle-layer .charge-logo-fly {
+  position: absolute; pointer-events: none; object-fit: contain;
+  transform: translate(-50%, -50%); transform-origin: center center;
+  will-change: left, top, transform, opacity;
+  filter: drop-shadow(0 0 12px rgba(120,235,255,0.6));
+}
+/* keep the logo centered: JS sets transform on the img, so wrap centering on a translate baked into each frame */
 
 /* ===== Anomaly Hunt — hidden easter-egg game HUD ===== */
 /* the site uses Web Animations (fill:forwards) for reveals, which override CSS
