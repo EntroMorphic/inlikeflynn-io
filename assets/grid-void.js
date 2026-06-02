@@ -297,9 +297,10 @@
 
   // ---- press & hold to charge a bigger shot ------------------------------
   const CHARGE_MAX = 1200; // ms to full power
-  let charging = false, chargeStart = 0, cx = 0, cy = 0, chargeEl = null, chargeRaf = 0;
+  const WEB_HOLD_MIN = 240; // ms: off the game, only a deliberate hold fires (quick taps are silent)
+  let charging = false, chargeStart = 0, cx = 0, cy = 0, chargeEl = null, chargeRaf = 0, chargeArmTimer = 0;
   function chargeTick() {
-    if (!charging) return;
+    if (!charging || !chargeEl) return;
     const p = Math.min(1, (performance.now() - chargeStart) / CHARGE_MAX);
     const size = 24 + p * 170;
     chargeEl.style.width = chargeEl.style.height = size + 'px';
@@ -307,16 +308,23 @@
     chargeEl.style.opacity = String(0.3 + p * 0.55);
     chargeRaf = requestAnimationFrame(chargeTick);
   }
-  function startCharge(x, y) {
-    if (game.over || game.attract) return;
-    charging = true; chargeStart = performance.now(); cx = x; cy = y;
+  function beginChargeVisuals() {
+    if (chargeEl) return;
     ensureMuzzleLayer();
     chargeEl = document.createElement('div');
     chargeEl.className = 'charge';
-    chargeEl.style.left = x + 'px'; chargeEl.style.top = y + 'px';
+    chargeEl.style.left = cx + 'px'; chargeEl.style.top = cy + 'px';
     muzzleLayer.appendChild(chargeEl);
     startChargeSound();
     chargeRaf = requestAnimationFrame(chargeTick);
+  }
+  function startCharge(x, y) {
+    if (game.over || game.attract) return;
+    charging = true; chargeStart = performance.now(); cx = x; cy = y;
+    // in-game: charge UI is immediate. on the site: defer until it's a real
+    // hold, so quick taps make nothing (no orb, no whine, no shot).
+    if (game.active) beginChargeVisuals();
+    else chargeArmTimer = setTimeout(() => { if (charging) beginChargeVisuals(); }, WEB_HOLD_MIN);
   }
   function moveCharge(x, y) {
     cx = x; cy = y;
@@ -325,10 +333,15 @@
   function endCharge(x, y) {
     if (!charging) return;
     charging = false;
+    clearTimeout(chargeArmTimer);
     cancelAnimationFrame(chargeRaf);
-    const p = Math.min(1, (performance.now() - chargeStart) / CHARGE_MAX);
+    const held = performance.now() - chargeStart;
+    const p = Math.min(1, held / CHARGE_MAX);
     if (chargeEl) { chargeEl.remove(); chargeEl = null; }
     stopChargeSound();
+    // On the marketing site (not in-game), ignore quick taps — only a deliberate
+    // press-and-hold fires the charged blast. In-game, every click fires.
+    if (!game.active && held < WEB_HOLD_MIN) return;
     fire(typeof x === 'number' ? x : cx, typeof y === 'number' ? y : cy, p);
   }
 
@@ -677,9 +690,9 @@
 
   // ---- game music: 80s synthwave playlist (shuffles, ducks under SFX) -----
   const MUSIC = [
-    'assets/music/neon-nights.mp3',
-    'assets/music/chasing-the-mirage.mp3',
-    'assets/music/silent-cinema.mp3'
+    { src: 'assets/music/neon-nights.mp3', title: 'Neon Nights', artist: 'entropywalker', meta: 'SYNTHWAVE · ENTROMORPHIC' },
+    { src: 'assets/music/chasing-the-mirage.mp3', title: 'Chasing the Mirage', artist: 'entropywalker', meta: 'SYNTHWAVE · ENTROMORPHIC' },
+    { src: 'assets/music/silent-cinema.mp3', title: 'Silent Cinema', artist: 'entropywalker', meta: 'SYNTHWAVE · ENTROMORPHIC' }
   ];
   // resolve relative to this script so it works from /pages/* too
   const MUSIC_BASE = (function () {
@@ -691,7 +704,38 @@
   })();
   let musicOn = (function () { try { return localStorage.getItem('flynn-music') !== 'off'; } catch (e) { return true; } })();
   const MUSIC_VOL = 0.5;
-  let musicEl = null, order = [], orderPos = 0, duckUntil = 0, musicFadeId = 0;
+  let musicEl = null, order = [], orderPos = 0, duckUntil = 0, musicFadeId = 0, nowPlaying = null;
+
+  // ---- MTV/VH1-style "now playing" lower-third chyron ---------------------
+  // slides in from the lower-right whenever the track changes, holds, slides out.
+  let npEl = null, npTimer = 0;
+  function ensureNpEl() {
+    if (npEl) return npEl;
+    npEl = document.createElement('div');
+    npEl.className = 'np-card';
+    npEl.innerHTML =
+      '<span class="np-bar"></span>' +
+      '<div class="np-body">' +
+        '<div class="np-eyebrow"><span class="np-eq"><i></i><i></i><i></i><i></i></span>NOW PLAYING</div>' +
+        '<div class="np-title" data-np-title></div>' +
+        '<div class="np-artist" data-np-artist></div>' +
+        '<div class="np-meta" data-np-meta></div>' +
+      '</div>';
+    document.body.appendChild(npEl);
+    return npEl;
+  }
+  function showNowPlaying(track) {
+    if (!track) return;
+    const el = ensureNpEl();
+    el.querySelector('[data-np-title]').textContent = track.title;
+    el.querySelector('[data-np-artist]').textContent = track.artist;
+    el.querySelector('[data-np-meta]').textContent = track.meta || '';
+    // restart the slide-in even if it's already showing
+    el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+    clearTimeout(npTimer);
+    npTimer = setTimeout(() => { if (npEl) npEl.classList.remove('show'); }, 6500);
+  }
+  function hideNowPlaying() { if (npEl) npEl.classList.remove('show'); clearTimeout(npTimer); }
   function shuffleOrder() {
     order = MUSIC.map((_, i) => i);
     for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
@@ -709,15 +753,18 @@
     const el = ensureMusicEl();
     musicFadeId++;                              // abort any in-flight stop-fade
     const idx = order[orderPos % order.length]; orderPos++;
-    el.src = MUSIC_BASE + MUSIC[idx];
+    const track = MUSIC[idx];
+    nowPlaying = track;
+    el.src = MUSIC_BASE + track.src;
     el.currentTime = 0; el.volume = MUSIC_VOL;
-    if (musicOn) el.play().catch(() => {});
+    if (musicOn) { el.play().catch(() => {}); showNowPlaying(track); }
   }
   function startMusic() {
     if (!musicOn) return;
     shuffleOrder(); playNextTrack();
   }
   function stopMusic() {                       // gentle fade then pause
+    hideNowPlaying();
     const el = musicEl; if (!el || el.paused) return;
     const myId = ++musicFadeId;
     const v0 = el.volume, t0 = performance.now();
@@ -738,8 +785,8 @@
     musicOn = !!on;
     try { localStorage.setItem('flynn-music', musicOn ? 'on' : 'off'); } catch (e) {}
     if (game.active || game.attract) {
-      if (musicOn) { if (!musicEl || musicEl.paused) startMusic(); else musicEl.play().catch(() => {}); }
-      else if (musicEl) musicEl.pause();
+      if (musicOn) { if (!musicEl || musicEl.paused) startMusic(); else { musicEl.play().catch(() => {}); showNowPlaying(nowPlaying); } }
+      else { if (musicEl) musicEl.pause(); hideNowPlaying(); }
     }
     updateMusicBtn();
   }
@@ -810,6 +857,34 @@
 
   const game = { active: false, over: false, attract: false, score: 0, high: 0, prevHigh: 0, wave: 0, combo: 0, lives: 3, timeScale: 1, slowUntil: 0, toSpawn: 0, spawnTimer: 0, waveBreak: 0, blossomReady: false, blossoming: false };
   try { game.high = +(localStorage.getItem('flynn-ah-high') || 0) || 0; } catch (e) {}
+
+  // ---- run + career stats -------------------------------------------------
+  // stats: reset each run. career: accumulated across all runs (localStorage).
+  const stats = { shots: 0, hits: 0, faults: 0, breaches: 0, bestCombo: 0, blossoms: 0, slowmo: 0, startedAt: 0, elapsed: 0 };
+  function resetStats() {
+    stats.shots = 0; stats.hits = 0; stats.faults = 0; stats.breaches = 0;
+    stats.bestCombo = 0; stats.blossoms = 0; stats.slowmo = 0;
+    stats.startedAt = performance.now(); stats.elapsed = 0;
+  }
+  let career = (function () { try { return JSON.parse(localStorage.getItem('flynn-ah-career')) || {}; } catch (e) { return {}; } })();
+  function commitCareer() {
+    career.games = (career.games || 0) + 1;
+    career.shots = (career.shots || 0) + stats.shots;
+    career.hits = (career.hits || 0) + stats.hits;
+    career.faults = (career.faults || 0) + stats.faults;
+    career.blossoms = (career.blossoms || 0) + stats.blossoms;
+    career.playtime = (career.playtime || 0) + stats.elapsed;
+    career.bestWave = Math.max(career.bestWave || 0, game.wave);
+    career.bestCombo = Math.max(career.bestCombo || 0, stats.bestCombo);
+    career.bestScore = Math.max(career.bestScore || 0, game.score);
+    try { localStorage.setItem('flynn-ah-career', JSON.stringify(career)); } catch (e) {}
+  }
+  function fmtTime(ms) {
+    const s = Math.max(0, Math.round(ms / 1000));
+    return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+  }
+  function accuracy(hits, shots) { return shots > 0 ? Math.round((hits / shots) * 100) : 0; }
+
   const anomalies = [];
   const fx = [];
   // real equipment faults — you're literally shooting down failures before they land
@@ -935,6 +1010,7 @@
       shatter(m.target.mesh.position, slow ? 0x9ff0ff : 0xffae5c, 9, 1.2);
       popBurst(m.target.mesh.position, slow ? 0x9ff0ff : 0xffb060, false);
       playHitSfx();
+      stats.faults++;
       game.score += 150; removeAnomaly(m.target); updateHUD();
       if (Math.random() < 0.45) shakeScreen(0.34);
     } else {
@@ -1012,7 +1088,7 @@
       a.mesh.scale.setScalar(pulse);
       const frac = Math.max(0, Math.min(1, (a.mesh.position.z - zFar) / (breachZ - zFar)));
       updateBlip(a, frac, corridor);
-      if (frac > nearest) nearest = frac;
+      if (a.type === 'fault' && frac > nearest) nearest = frac;   // only real threats raise the alarm
       if (a.type === 'fault' && frac > 0.74) { a.body.material.opacity = 0.12 + 0.18 * (0.5 + 0.5 * Math.sin(now * 0.02)); }
       if (a.mesh.position.z > breachZ) breach(a);
       if (game.over) break;                          // the breach above ended the run — stop touching the (now-cleared) array
@@ -1028,9 +1104,11 @@
   function breach(a) {
     if (!a.alive) return;
     if (game.attract) { removeAnomaly(a); return; }   // attract-mode craft just drift past
+    if (a.type === 'slow') { popBurst(a.mesh.position, 0x6fe8ff, false); removeAnomaly(a); return; }   // missed power-ups are harmless
     shatter(a.mesh.position, 0xff5a2a, 11, 1.25);
     popBurst(a.mesh.position, 0xff5a2a, true);
     removeAnomaly(a);
+    stats.breaches++;
     game.combo = 0; game.lives--; flashScreen('breach'); shakeScreen(0.6); updateHUD();
     if (game.lives <= 0) gameOver();
   }
@@ -1041,8 +1119,10 @@
     popBurst(a.mesh.position, slow ? 0x9ff0ff : 0xffb060, false);
     removeAnomaly(a);
     if (byPlayer) {
-      if (slow) activateSlowmo(); else playHitSfx();   // slow core → slow-mo sting; faults → hit
+      if (slow) { activateSlowmo(); stats.slowmo++; } else playHitSfx();   // slow core → slow-mo sting; faults → hit
+      stats.faults++;
       game.combo++;
+      if (game.combo > stats.bestCombo) stats.bestCombo = game.combo;
       game.score += 100 * (1 + Math.floor(game.combo / 5));
       if (!game.blossomReady && game.combo >= BLOSSOM_AT) armBlossom();
       if (game.score > game.high) { game.high = game.score; try { localStorage.setItem('flynn-ah-high', String(game.high)); } catch (e) {} }
@@ -1063,14 +1143,16 @@
     return best;
   }
   function gameFire(x, y, power) {
+    stats.shots++;
     if (power >= 0.9) {                  // MAX-CHARGE BOMB → clears the field
+      if (anomalies.some((a) => a.alive)) stats.hits++;   // bomb connects if anything's out there
       spawnTracer(x, y, power);          // cyan fan detonates at the horizon on arrival
       anomalies.slice().forEach((a, k) => setTimeout(() => { if (a.alive) destroyAnomaly(a, true); }, 80 + k * 45));
       flashScreen('bomb');
       return;
     }
     const hit = pickAnomaly(x, y);
-    if (hit) spawnTracer(x, y, power, hit, () => destroyAnomaly(hit, true));
+    if (hit) { stats.hits++; spawnTracer(x, y, power, hit, () => destroyAnomaly(hit, true)); }
     else { spawnTracer(x, y, power); game.combo = 0; updateHUD(); }
   }
   function activateSlowmo() { game.slowUntil = performance.now() + 4000; flashScreen('slow'); playSlowmoSfx(); }
@@ -1117,6 +1199,7 @@
   function deathBlossom() {
     if (!game.active || game.over || !game.blossomReady || game.blossoming) return;
     game.blossomReady = false; game.blossoming = true;
+    stats.blossoms++;
     if (hud) hud.classList.remove('blossom');
     if (hudEls && hudEls.hint) hudEls.hint.classList.remove('hot');
     showPrompt('DEATH BLOSSOM');
@@ -1202,6 +1285,8 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
     fadeSite(true);
     startMusic();
+    ensureBlasters();            // preload blaster/hit/slow-mo while the player reads the splash
+    ensureMissileBuf();          // ...and the Death Blossom launch sample
     attractSpawn = 0.2;
     ensureRunning();
   }
@@ -1214,6 +1299,7 @@
     game.timeScale = 1; game.slowUntil = 0; game.toSpawn = 0; game.waveBreak = 0;
     game.blossomReady = false; game.blossoming = false;
     game.prevHigh = game.high;
+    resetStats();
     buildHUD(); showHUD(true); hideGameOver(); closeHowto();
     if (hud) hud.classList.remove('blossom', 'alarm', 'menu');
     document.body.classList.remove('cas-menu');
@@ -1232,6 +1318,8 @@
     game.over = true;
     anomalies.slice().forEach(removeAnomaly);
     setBreachAlarm(false);
+    stats.elapsed = performance.now() - stats.startedAt;
+    commitCareer();
     const isNew = game.score > 0 && game.score > game.prevHigh;
     showGameOver(isNew);
   }
@@ -1296,6 +1384,17 @@
           '<div class="ah-over-t">THRESHOLD BREACHED</div>' +
           '<div class="ah-over-score">SCORE <b data-fscore>0</b></div>' +
           '<div class="ah-over-best">BEST <b data-fhigh>0</b></div>' +
+          '<div class="cas-stats" data-stats>' +
+            '<div class="cas-stat"><i>WAVE</i><b data-st-wave>0</b></div>' +
+            '<div class="cas-stat"><i>TIME</i><b data-st-time>0:00</b></div>' +
+            '<div class="cas-stat"><i>FAULTS CAUGHT</i><b data-st-faults>0</b></div>' +
+            '<div class="cas-stat"><i>ACCURACY</i><b data-st-acc>0%</b></div>' +
+            '<div class="cas-stat"><i>SHOTS FIRED</i><b data-st-shots>0</b></div>' +
+            '<div class="cas-stat"><i>BEST COMBO</i><b data-st-combo>0</b></div>' +
+            '<div class="cas-stat"><i>DEATH BLOSSOMS</i><b data-st-blossoms>0</b></div>' +
+            '<div class="cas-stat"><i>SLOW-MO GRABBED</i><b data-st-slowmo>0</b></div>' +
+          '</div>' +
+          '<div class="cas-career" data-career></div>' +
           '<div class="ah-over-btns">' +
             '<button class="ah-btn" data-retry type="button">RE-ARM</button>' +
             '<button class="ah-btn ghost" data-menu type="button">MAIN MENU</button>' +
@@ -1344,13 +1443,25 @@
       music: hud.querySelector('[data-music]'), musicLabel: hud.querySelector('[data-musiclabel]'),
       reticle: hud.querySelector('[data-reticle]'), retLabel: hud.querySelector('[data-retlabel]'),
       radar: hud.querySelector('.ah-radar'), hint: hud.querySelector('.ah-hint'), prompt: hud.querySelector('[data-prompt]'),
-      hiscore: hud.querySelector('[data-hiscore]'), newhigh: hud.querySelector('[data-new]')
+      hiscore: hud.querySelector('[data-hiscore]'), newhigh: hud.querySelector('[data-new]'),
+      stWave: hud.querySelector('[data-st-wave]'), stTime: hud.querySelector('[data-st-time]'),
+      stFaults: hud.querySelector('[data-st-faults]'), stAcc: hud.querySelector('[data-st-acc]'),
+      stShots: hud.querySelector('[data-st-shots]'), stCombo: hud.querySelector('[data-st-combo]'),
+      stBlossoms: hud.querySelector('[data-st-blossoms]'), stSlowmo: hud.querySelector('[data-st-slowmo]'),
+      career: hud.querySelector('[data-career]')
     };
     hud.querySelector('[data-retry]').addEventListener('click', (e) => { e.stopPropagation(); game.active = false; game.over = false; startGame(); });
     hud.querySelector('[data-menu]').addEventListener('click', (e) => { e.stopPropagation(); exitToMenu(); });
     hud.querySelector('[data-start]').addEventListener('click', (e) => { e.stopPropagation(); startGame(); });
     hud.querySelector('[data-howto]').addEventListener('click', (e) => { e.stopPropagation(); openHowto(); });
     hud.querySelector('[data-howtoclose]').addEventListener('click', (e) => { e.stopPropagation(); closeHowto(); });
+    // touch devices have no Enter key — speak their language on the splash prompt
+    try {
+      if (window.matchMedia('(pointer: coarse)').matches) {
+        const pr = hud.querySelector('.cas-prompt');
+        if (pr) pr.textContent = 'TAP THE COIN TO PLAY';
+      }
+    } catch (e) {}
     hudEls.music.addEventListener('click', (e) => { e.stopPropagation(); setMusic(!musicOn); });
     updateMusicBtn();
   }
@@ -1402,6 +1513,21 @@
     if (!hudEls) return;
     hudEls.fscore.textContent = game.score; hudEls.fhigh.textContent = game.high;
     if (hudEls.newhigh) hudEls.newhigh.classList.toggle('show', !!isNew);
+    if (hudEls.stWave) {
+      hudEls.stWave.textContent = game.wave;
+      hudEls.stTime.textContent = fmtTime(stats.elapsed);
+      hudEls.stFaults.textContent = stats.faults;
+      hudEls.stAcc.textContent = accuracy(stats.hits, stats.shots) + '%';
+      hudEls.stShots.textContent = stats.shots;
+      hudEls.stCombo.textContent = stats.bestCombo;
+      hudEls.stBlossoms.textContent = stats.blossoms;
+      hudEls.stSlowmo.textContent = stats.slowmo;
+    }
+    if (hudEls.career) {
+      hudEls.career.textContent = 'CAREER · ' + (career.games || 0) + ' RUNS · ' +
+        (career.faults || 0) + ' FAULTS · ' + accuracy(career.hits, career.shots) + '% ACC · ' +
+        'BEST WAVE ' + (career.bestWave || 0);
+    }
     hudEls.over.classList.add('show');
   }
   function hideGameOver() { if (hudEls) hudEls.over.classList.remove('show'); }
@@ -1447,6 +1573,25 @@
     if ((k === 'enter' || k === ' ' || k === 'spacebar' || e.code === 'Space') && game.attract) { e.preventDefault(); startGame(); }
     if ((k === ' ' || k === 'spacebar' || e.code === 'Space') && game.active) { e.preventDefault(); if (game.blossomReady) deathBlossom(); }
   });
+
+  // ---- mobile: rotate the phone to landscape to enter the arcade ---------
+  // phones only (coarse pointer + short landscape viewport) so we never hijack
+  // a desktop window-resize or a tablet/phone reading the site in landscape.
+  (function () {
+    const coarse = () => { try { return window.matchMedia('(pointer: coarse)').matches; } catch (e) { return false; } };
+    let mq;
+    try { mq = window.matchMedia('(orientation: landscape)'); } catch (e) { return; }
+    function onOrient() {
+      if (!coarse()) return;
+      if (mq.matches) {                       // turned horizontal
+        if (window.innerHeight <= 540 && !game.active && !game.attract && !game.over) openSplash();
+      } else {                                // back to portrait → leave the arcade
+        if (game.active || game.attract || game.over) endGame();
+      }
+    }
+    if (mq.addEventListener) mq.addEventListener('change', onOrient);
+    else if (mq.addListener) mq.addListener(onOrient);   // older Safari
+  })();
 
   // ---- loop ---------------------------------------------------------------
   let raf = 0, last = performance.now(), running = false;
@@ -1516,11 +1661,14 @@
     get sfxEnabled() { return sfxOn; },
     setMusic(on) { setMusic(on); },
     get musicEnabled() { return musicOn; },
+    get nowPlaying() { return nowPlaying ? { title: nowPlaying.title, artist: nowPlaying.artist, meta: nowPlaying.meta } : null; },
     get tracerCount() { return tracers.length; },
     startGame() { startGame(); },
     openSplash() { openSplash(); },
     stopGame() { endGame(); },
     deathBlossom() { game.blossomReady = true; deathBlossom(); },
+    get stats() { return { shots: stats.shots, hits: stats.hits, accuracy: accuracy(stats.hits, stats.shots), faults: stats.faults, breaches: stats.breaches, bestCombo: stats.bestCombo, blossoms: stats.blossoms, slowmo: stats.slowmo, elapsed: stats.elapsed }; },
+    get career() { return Object.assign({ accuracy: accuracy(career.hits, career.shots) }, career); },
     get game() { return { active: game.active, over: game.over, attract: game.attract, score: game.score, wave: game.wave, combo: game.combo, lives: game.lives, anomalies: anomalies.length, blossomReady: game.blossomReady }; }
   };
 })();

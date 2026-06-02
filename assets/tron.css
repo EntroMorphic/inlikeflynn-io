@@ -350,12 +350,14 @@ body.ah-playing { cursor: none; }
   position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
   background: radial-gradient(circle at 50% 50%, rgba(5,8,14,0.55), rgba(3,5,10,0.82)); pointer-events: none;
 }
-.ah-over.show { display: flex; pointer-events: auto; }
+.ah-over.show { display: flex; pointer-events: auto; overflow-y: auto; }
+.ah-over.show .ah-over-card { margin: auto; }
 .ah-over-card {
-  text-align: center; padding: 40px 56px;
+  text-align: center; padding: 26px 40px;
   border: 1px solid color-mix(in oklab, var(--accent) 40%, transparent); border-radius: 14px;
-  background: linear-gradient(180deg, rgba(12,18,30,0.88), rgba(6,10,18,0.92));
+  background: linear-gradient(180deg, rgba(12,18,30,0.9), rgba(6,10,18,0.94));
   box-shadow: 0 0 60px color-mix(in oklab, var(--glow-orange) 18%, transparent);
+  max-width: min(92vw, 460px);
 }
 .ah-over-t {
   font-family: var(--font-display); font-size: 30px; letter-spacing: 0.08em; color: var(--accent);
@@ -366,6 +368,96 @@ body.ah-playing { cursor: none; }
   text-transform: uppercase; color: var(--accent-2); margin: 4px 0;
 }
 .ah-over-score b, .ah-over-best b { color: #fff; font-size: 20px; margin-left: 8px; }
+/* per-run stats grid */
+.cas-stats {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+  margin: 14px 0 10px;
+  border: 1px solid color-mix(in oklab, var(--accent-2) 26%, transparent);
+  background: color-mix(in oklab, var(--accent-2) 22%, transparent);
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, calc(100% - 8px) 100%, 8px 100%, 0 100%, 0 8px);
+}
+.cas-stat {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 8px 8px;
+  background: linear-gradient(180deg, rgba(10,16,26,0.96), rgba(7,11,19,0.96));
+}
+.cas-stat i {
+  font-style: normal; font-family: "Share Tech Mono", var(--font-mono);
+  font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: color-mix(in oklab, var(--accent-2) 64%, transparent);
+}
+.cas-stat b {
+  font-family: "Share Tech Mono", var(--font-mono); font-size: 19px; line-height: 1; color: #fff;
+  letter-spacing: 0.03em; text-shadow: 0 0 12px color-mix(in oklab, var(--glow-cyan) 42%, transparent);
+}
+.cas-career {
+  font-family: "Share Tech Mono", var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: color-mix(in oklab, var(--accent-2) 60%, transparent);
+  margin-bottom: 4px;
+}
+
+/* ===== MTV/VH1-style "now playing" lower-third chyron ===== */
+.np-card {
+  position: fixed; right: 26px; bottom: 26px; z-index: 9992;
+  display: flex; align-items: stretch; gap: 0; pointer-events: none;
+  max-width: min(78vw, 340px);
+  background: linear-gradient(135deg, rgba(10,15,24,0.92), rgba(6,10,17,0.9));
+  border: 1px solid color-mix(in oklab, var(--accent-2) 26%, transparent);
+  box-shadow: 0 8px 34px rgba(0,0,0,0.5), 0 0 30px color-mix(in oklab, var(--glow-cyan) 12%, transparent);
+  /* hidden state: slid off to the right, faded */
+  opacity: 0; transform: translateX(118%);
+  transition: transform 0.55s cubic-bezier(.16,.84,.34,1), opacity 0.45s ease;
+}
+.np-card.show { opacity: 1; transform: translateX(0); }
+.np-bar {
+  width: 5px; flex: none;
+  background: linear-gradient(180deg, var(--accent), color-mix(in oklab, var(--accent) 50%, var(--accent-2)));
+  box-shadow: 0 0 12px color-mix(in oklab, var(--glow-orange) 60%, transparent);
+}
+.np-body { padding: 11px 16px 12px 14px; min-width: 0; }
+.np-eyebrow {
+  display: flex; align-items: center; gap: 8px;
+  font-family: "Share Tech Mono", var(--font-mono); font-size: 9px; letter-spacing: 0.26em;
+  text-transform: uppercase; color: color-mix(in oklab, var(--accent) 86%, white);
+  text-shadow: 0 0 8px color-mix(in oklab, var(--glow-orange) 45%, transparent);
+}
+/* little animated equalizer */
+.np-eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 11px; }
+.np-eq i {
+  width: 2.5px; background: var(--accent-2); border-radius: 1px;
+  box-shadow: 0 0 5px color-mix(in oklab, var(--glow-cyan) 55%, transparent);
+  animation: npEq 0.7s ease-in-out infinite;
+}
+.np-eq i:nth-child(1) { height: 40%; animation-delay: -0.1s; }
+.np-eq i:nth-child(2) { height: 90%; animation-delay: -0.45s; }
+.np-eq i:nth-child(3) { height: 60%; animation-delay: -0.25s; }
+.np-eq i:nth-child(4) { height: 100%; animation-delay: -0.6s; }
+@keyframes npEq { 0%, 100% { transform: scaleY(0.35); } 50% { transform: scaleY(1); } }
+.np-card:not(.show) .np-eq i { animation-play-state: paused; }
+.np-title {
+  font-family: var(--font-display); font-size: 19px; line-height: 1.12; color: #fff;
+  letter-spacing: 0.01em; margin-top: 5px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  text-shadow: 0 0 14px color-mix(in oklab, var(--glow-cyan) 30%, transparent);
+}
+.np-artist {
+  font-family: "Share Tech Mono", var(--font-mono); font-size: 12px; letter-spacing: 0.08em;
+  color: color-mix(in oklab, var(--accent-2) 92%, white); margin-top: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.np-meta {
+  font-family: "Share Tech Mono", var(--font-mono); font-size: 9px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: color-mix(in oklab, var(--accent-2) 52%, transparent); margin-top: 5px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+@media (max-width: 600px) {
+  .np-card { right: 14px; bottom: 96px; max-width: 64vw; }
+  .np-title { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .np-card { transition: opacity 0.4s ease; transform: none; }
+  .np-card:not(.show) { transform: none; }
+}
 .ah-btn {
   margin-top: 22px; font-family: "Share Tech Mono", var(--font-mono); font-size: 13px;
   letter-spacing: 0.18em; text-transform: uppercase; color: #051018; background: var(--accent-2);
@@ -381,7 +473,7 @@ body.ah-playing { cursor: none; }
 .ah-btn.ghost { color: var(--accent-2); background: transparent; border: 1px solid color-mix(in oklab, var(--accent-2) 45%, transparent); box-shadow: none; }
 .ah-btn.ghost:hover { background: color-mix(in oklab, var(--accent-2) 14%, transparent); color: #fff; }
 .ah-over-new {
-  display: none; margin-bottom: 14px;
+  display: none; margin-bottom: 10px;
   font-family: var(--font-display); font-size: 16px; letter-spacing: 0.16em; text-transform: uppercase;
   color: var(--accent); text-shadow: 0 0 18px color-mix(in oklab, var(--glow-orange) 60%, transparent);
   animation: ahArmed 0.9s ease-in-out infinite;
