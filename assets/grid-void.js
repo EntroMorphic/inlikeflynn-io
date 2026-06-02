@@ -1385,6 +1385,7 @@
 
   function startGame() {
     if (game.active) return;
+    clearGoCountdown();
     anomalies.slice().forEach(removeAnomaly);
     game.attract = false;
     game.active = true; game.over = false; game.score = 0; game.wave = 0; game.combo = 0; game.lives = 3;
@@ -1415,8 +1416,9 @@
     const isNew = game.score > 0 && game.score > game.prevHigh;
     showGameOver(isNew);
   }
-  function exitToMenu() { game.active = false; game.over = false; game.attract = false; openSplash(); }
+  function exitToMenu() { clearGoCountdown(); game.active = false; game.over = false; game.attract = false; openSplash(); }
   function endGame() {
+    clearGoCountdown();
     game.active = false; game.over = false; game.attract = false;
     anomalies.slice().forEach(removeAnomaly);
     if (hud) hud.classList.remove('menu', 'howto');
@@ -1473,26 +1475,59 @@
       '</div>' +
       '<div class="ah-over" data-over>' +
         '<div class="ah-over-card">' +
-          '<div class="ah-over-new" data-new>★ NEW HIGH SCORE ★</div>' +
-          '<div class="ah-over-t">THRESHOLD BREACHED</div>' +
-          '<div class="ah-over-score">SCORE <b data-fscore>0</b></div>' +
-          '<div class="ah-over-best">BEST <b data-fhigh>0</b></div>' +
-          '<div class="cas-stats" data-stats>' +
-            '<div class="cas-stat"><i>WAVE</i><b data-st-wave>0</b></div>' +
-            '<div class="cas-stat"><i>TIME</i><b data-st-time>0:00</b></div>' +
-            '<div class="cas-stat"><i>FAULTS CAUGHT</i><b data-st-faults>0</b></div>' +
-            '<div class="cas-stat"><i>ACCURACY</i><b data-st-acc>0%</b></div>' +
-            '<div class="cas-stat"><i>SHOTS FIRED</i><b data-st-shots>0</b></div>' +
-            '<div class="cas-stat"><i>BEST COMBO</i><b data-st-combo>0</b></div>' +
-            '<div class="cas-stat"><i>DEATH BLOSSOMS</i><b data-st-blossoms>0</b></div>' +
-            '<div class="cas-stat"><i>SLOW-MO GRABBED</i><b data-st-slowmo>0</b></div>' +
-          '</div>' +
-          '<div class="cas-career" data-career></div>' +
-          '<div class="ah-over-btns">' +
-            '<button class="ah-btn" data-retry type="button">RE-ARM</button>' +
-            '<button class="ah-btn ghost" data-menu type="button">MAIN MENU</button>' +
-          '</div>' +
-          '<div class="ah-over-x">ESC to exit</div>' +
+          '<svg class="svgo" viewBox="0 0 520 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">' +
+            '<defs>' +
+              '<linearGradient id="svgoBg" x1="0" y1="0" x2="0" y2="1">' +
+                '<stop offset="0" stop-color="#0c1320" stop-opacity="0.96"/>' +
+                '<stop offset="1" stop-color="#060a12" stop-opacity="0.97"/>' +
+              '</linearGradient>' +
+            '</defs>' +
+            '<rect x="6" y="6" width="508" height="588" rx="16" fill="url(#svgoBg)" stroke="rgba(255,138,90,0.40)" stroke-width="1.5"/>' +
+            '<path class="svgo-bracket" d="M22 54 V22 H54"/>' +
+            '<path class="svgo-bracket" d="M498 54 V22 H466"/>' +
+            '<path class="svgo-bracket" d="M22 546 V578 H54"/>' +
+            '<path class="svgo-bracket" d="M498 546 V578 H466"/>' +
+            '<text class="svgo-new" data-new x="260" y="44" text-anchor="middle">\u2605 NEW HIGH SCORE \u2605</text>' +
+            '<text class="svgo-title" x="260" y="98" text-anchor="middle">GAME OVER</text>' +
+            '<text class="svgo-subtitle" x="260" y="122" text-anchor="middle">THRESHOLD BREACHED</text>' +
+            '<text class="svgo-cont-lbl" x="260" y="152" text-anchor="middle">CONTINUE?</text>' +
+            '<text class="svgo-cont-num" data-continue x="260" y="190" text-anchor="middle">9</text>' +
+            '<text class="svgo-eyebrow" x="260" y="216" text-anchor="middle">SCORE</text>' +
+            '<text class="svgo-score" data-fscore x="260" y="246" text-anchor="middle">0</text>' +
+            '<text class="svgo-best" x="260" y="270" text-anchor="middle">BEST <tspan class="svgo-best-v" data-fhigh>0</tspan></text>' +
+            '<g class="svgo-grid">' +
+              '<rect x="26" y="288" width="468" height="208" rx="6"/>' +
+              '<line x1="260" y1="288" x2="260" y2="496"/>' +
+              '<line x1="26" y1="340" x2="494" y2="340"/>' +
+              '<line x1="26" y1="392" x2="494" y2="392"/>' +
+              '<line x1="26" y1="444" x2="494" y2="444"/>' +
+            '</g>' +
+            '<text class="svgo-lbl" x="146" y="312" text-anchor="middle">WAVE</text>' +
+            '<text class="svgo-val" data-st-wave x="146" y="334" text-anchor="middle">0</text>' +
+            '<text class="svgo-lbl" x="374" y="312" text-anchor="middle">TIME</text>' +
+            '<text class="svgo-val" data-st-time x="374" y="334" text-anchor="middle">0:00</text>' +
+            '<text class="svgo-lbl" x="146" y="364" text-anchor="middle">FAULTS CAUGHT</text>' +
+            '<text class="svgo-val" data-st-faults x="146" y="386" text-anchor="middle">0</text>' +
+            '<text class="svgo-lbl" x="374" y="364" text-anchor="middle">ACCURACY</text>' +
+            '<text class="svgo-val" data-st-acc x="374" y="386" text-anchor="middle">0%</text>' +
+            '<text class="svgo-lbl" x="146" y="416" text-anchor="middle">SHOTS FIRED</text>' +
+            '<text class="svgo-val" data-st-shots x="146" y="438" text-anchor="middle">0</text>' +
+            '<text class="svgo-lbl" x="374" y="416" text-anchor="middle">BEST COMBO</text>' +
+            '<text class="svgo-val" data-st-combo x="374" y="438" text-anchor="middle">0</text>' +
+            '<text class="svgo-lbl" x="146" y="468" text-anchor="middle">DEATH BLOSSOMS</text>' +
+            '<text class="svgo-val" data-st-blossoms x="146" y="490" text-anchor="middle">0</text>' +
+            '<text class="svgo-lbl" x="374" y="468" text-anchor="middle">SLOW-MO GRABBED</text>' +
+            '<text class="svgo-val" data-st-slowmo x="374" y="490" text-anchor="middle">0</text>' +
+            '<text class="svgo-career" data-career x="260" y="520" text-anchor="middle"></text>' +
+            '<g class="svgo-btn svgo-btn-fill" data-retry role="button" tabindex="0">' +
+              '<rect x="86" y="536" width="160" height="44" rx="22"/>' +
+              '<text x="166" y="564" text-anchor="middle">CONTINUE</text>' +
+            '</g>' +
+            '<g class="svgo-btn svgo-btn-ghost" data-menu role="button" tabindex="0">' +
+              '<rect x="274" y="536" width="160" height="44" rx="22"/>' +
+              '<text x="354" y="564" text-anchor="middle">MAIN MENU</text>' +
+            '</g>' +
+          '</svg>' +
         '</div>' +
       '</div>' +
       '<div class="cas-splash">' +
@@ -1614,7 +1649,7 @@
   function showGameOver(isNew) {
     if (!hudEls) return;
     hudEls.fscore.textContent = game.score; hudEls.fhigh.textContent = game.high;
-    if (hudEls.newhigh) hudEls.newhigh.classList.toggle('show', !!isNew);
+    if (hudEls.newhigh) hudEls.newhigh.style.display = isNew ? '' : 'none';
     if (hudEls.stWave) {
       hudEls.stWave.textContent = game.wave;
       hudEls.stTime.textContent = fmtTime(stats.elapsed);
@@ -1631,6 +1666,21 @@
         'BEST WAVE ' + (career.bestWave || 0);
     }
     hudEls.over.classList.add('show');
+    startGoCountdown();
+  }
+  // CAPCOM-style continue countdown: 9 → 0; expiry drops back to the attract menu
+  let goTimer = 0;
+  function clearGoCountdown() { if (goTimer) { clearInterval(goTimer); goTimer = 0; } }
+  function startGoCountdown() {
+    clearGoCountdown();
+    const numEl = hud && hud.querySelector('[data-continue]');
+    let n = 9;
+    if (numEl) { numEl.textContent = n; numEl.classList.remove('low'); }
+    goTimer = setInterval(function () {
+      n--;
+      if (numEl) { numEl.textContent = Math.max(0, n); if (n <= 3) numEl.classList.add('low'); }
+      if (n <= 0) { clearGoCountdown(); exitToMenu(); }
+    }, 1000);
   }
   function hideGameOver() { if (hudEls) hudEls.over.classList.remove('show'); }
 

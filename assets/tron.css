@@ -404,12 +404,41 @@ body.ah-playing, body.ah-playing * {
 .ah-over.show { display: flex; pointer-events: auto; overflow-y: auto; }
 .ah-over.show .ah-over-card { margin: auto; }
 .ah-over-card {
-  text-align: center; padding: 26px 40px;
-  border: 1px solid color-mix(in oklab, var(--accent) 40%, transparent); border-radius: 14px;
-  background: linear-gradient(180deg, rgba(12,18,30,0.9), rgba(6,10,18,0.94));
-  box-shadow: 0 0 60px color-mix(in oklab, var(--glow-orange) 18%, transparent);
-  max-width: min(92vw, 460px);
+  text-align: center; padding: 0; border: 0; background: none; box-shadow: none;
+  max-width: none; display: flex;
 }
+/* the auto-scaling SVG debrief: never exceeds the screen in either dimension */
+.svgo {
+  display: block;
+  width: min(94vw, 440px, calc(88vh * 520 / 600));
+  aspect-ratio: 520 / 600; height: auto; overflow: visible;
+  filter: drop-shadow(0 0 50px color-mix(in oklab, var(--glow-orange) 16%, transparent));
+}
+.svgo-bracket { fill: none; stroke: color-mix(in oklab, var(--accent-2) 60%, transparent); stroke-width: 2; }
+.svgo text { font-family: "Share Tech Mono", var(--font-mono); }
+.svgo-new { font-family: var(--font-display); font-size: 17px; letter-spacing: 2px; fill: var(--accent); }
+.svgo-title { font-family: var(--font-display); font-weight: 700; font-size: 42px; letter-spacing: 3px; fill: var(--accent); }
+.svgo-subtitle { font-size: 12px; letter-spacing: 4px; fill: color-mix(in oklab, var(--accent) 75%, white); }
+.svgo-cont-lbl { font-size: 12px; letter-spacing: 5px; fill: color-mix(in oklab, var(--accent-2) 80%, white); }
+.svgo-cont-num { font-family: var(--font-display); font-weight: 700; font-size: 38px; fill: var(--accent-2); }
+.svgo-cont-num.low { fill: #ff5436; }
+.svgo-eyebrow { font-size: 11px; letter-spacing: 4px; fill: color-mix(in oklab, var(--accent-2) 62%, transparent); }
+.svgo-score { font-family: var(--font-display); font-weight: 700; font-size: 32px; fill: #fff; }
+.svgo-best { font-size: 13px; letter-spacing: 3px; fill: var(--accent-2); }
+.svgo-best-v { fill: #fff; }
+.svgo-grid rect { fill: none; stroke: color-mix(in oklab, var(--accent-2) 26%, transparent); stroke-width: 1; }
+.svgo-grid line { stroke: color-mix(in oklab, var(--accent-2) 18%, transparent); stroke-width: 1; }
+.svgo-lbl { font-size: 11px; letter-spacing: 1.5px; fill: color-mix(in oklab, var(--accent-2) 64%, transparent); }
+.svgo-val { font-size: 21px; fill: #fff; }
+.svgo-career { font-size: 11px; letter-spacing: 1.5px; fill: color-mix(in oklab, var(--accent-2) 58%, transparent); }
+.svgo-btn { cursor: pointer; }
+.svgo-btn text { font-size: 15px; letter-spacing: 2px; }
+.svgo-btn-fill rect { fill: var(--accent-2); }
+.svgo-btn-fill text { fill: #051018; }
+.svgo-btn-fill:hover rect { fill: var(--accent); }
+.svgo-btn-ghost rect { fill: transparent; stroke: color-mix(in oklab, var(--accent-2) 50%, transparent); stroke-width: 1.5; }
+.svgo-btn-ghost text { fill: var(--accent-2); }
+.svgo-btn-ghost:hover rect { fill: color-mix(in oklab, var(--accent-2) 16%, transparent); }
 .ah-over-t {
   font-family: var(--font-display); font-size: 30px; letter-spacing: 0.08em; color: var(--accent);
   text-shadow: 0 0 22px color-mix(in oklab, var(--glow-orange) 50%, transparent); margin-bottom: 18px;
