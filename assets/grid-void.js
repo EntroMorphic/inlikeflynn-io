@@ -350,6 +350,22 @@
   window.addEventListener('pointercancel', () => endCharge(), { passive: true });
   window.addEventListener('blur', () => endCharge());
 
+  // mobile: during play, suppress the native long-press text-selection / copy
+  // callout (and scroll) on the playfield — but never on the buttons. The
+  // pointer-driven charge/fire still works; we only cancel the touch default.
+  window.addEventListener('touchstart', (e) => {
+    if (!(game.active || game.attract || game.over)) return;
+    const t = e.target;
+    if (t && t.closest && t.closest('button, a, input, textarea, select, .cas-howto')) return;
+    if (e.cancelable) e.preventDefault();
+  }, { passive: false });
+  window.addEventListener('touchmove', (e) => {
+    if (!(game.active || game.attract)) return;
+    const t = e.target;
+    if (t && t.closest && t.closest('.cas-howto')) return;   // allow the how-to panel to scroll
+    if (e.cancelable) e.preventDefault();
+  }, { passive: false });
+
   // ---- tracer sound — original photon-torpedo-style synth (no samples) ---
   let actx = null;
   let sfxOn = (function () { try { return localStorage.getItem('flynn-sfx') !== 'off'; } catch (e) { return true; } })();
