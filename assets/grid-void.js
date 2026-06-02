@@ -1368,6 +1368,7 @@
       '<button class="ah-music" data-music type="button" aria-label="Toggle music"><span class="ah-note">♪</span> <span data-musiclabel>MUSIC</span></button>' +
       '<div class="ah-hint">CLICK / HOLD TO FIRE \u00b7 MAX CHARGE = HORIZON BOMB \u00b7 ESC TO EXIT</div>' +
       '<div class="ah-armed"><span class="ah-armed-dot"></span>DEATH BLOSSOM ARMED \u00b7 PRESS SPACE</div>' +
+      '<button class="ah-blossom-btn" data-blossom type="button" aria-label="Death Blossom"><span class="ah-bb-burst"></span><span class="ah-bb-label">DEATH<b>BLOSSOM</b></span></button>' +
       '<div class="ah-prompt" data-prompt></div>' +
       '<div class="ah-reticle" data-reticle aria-hidden="true">' +
         '<span class="ah-ret-ring"></span>' +
@@ -1460,8 +1461,17 @@
       if (window.matchMedia('(pointer: coarse)').matches) {
         const pr = hud.querySelector('.cas-prompt');
         if (pr) pr.textContent = 'TAP THE COIN TO PLAY';
+        const hint = hud.querySelector('.ah-hint');
+        if (hint) hint.textContent = 'TAP TO FIRE \u00b7 HOLD TO CHARGE \u00b7 ROTATE TO EXIT';
       }
     } catch (e) {}
+    // mobile Death Blossom button — tap to fire it (no keyboard). stop the tap
+    // from also triggering a normal shot via the window pointer handler.
+    const bb = hud.querySelector('[data-blossom]');
+    if (bb) {
+      bb.addEventListener('pointerdown', (e) => { e.stopPropagation(); e.preventDefault(); if (game.blossomReady) deathBlossom(); }, { passive: false });
+      bb.addEventListener('click', (e) => { e.stopPropagation(); });
+    }
     hudEls.music.addEventListener('click', (e) => { e.stopPropagation(); setMusic(!musicOn); });
     updateMusicBtn();
   }

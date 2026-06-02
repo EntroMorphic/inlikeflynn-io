@@ -288,6 +288,34 @@ body.ah-playing { cursor: none; }
 .ah-armed-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
 .ah-hint.hot { color: color-mix(in oklab, var(--accent) 82%, white); text-shadow: 0 0 10px color-mix(in oklab, var(--glow-orange) 55%, transparent); }
 
+/* mobile Death Blossom tap button — hidden on desktop, shown (when armed) on touch */
+.ah-blossom-btn {
+  position: absolute; right: 18px; bottom: 18px; z-index: 3;
+  display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  width: 88px; height: 88px; border-radius: 50%; cursor: pointer; pointer-events: auto;
+  color: #150602; background: radial-gradient(circle at 50% 38%, #ffd9a8, var(--accent) 60%, color-mix(in oklab, var(--accent) 70%, #200) 100%);
+  border: 2px solid color-mix(in oklab, #fff 70%, var(--accent));
+  box-shadow: 0 0 26px color-mix(in oklab, var(--glow-orange) 70%, transparent), 0 6px 18px rgba(0,0,0,0.5);
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+  animation: ahArmed 1.05s ease-in-out infinite;
+}
+.ah-hud.blossom .ah-blossom-btn { display: none; }      /* default: stay hidden */
+.ah-blossom-btn:active { transform: scale(0.94); }
+.ah-bb-burst {
+  width: 22px; height: 22px; margin-bottom: 1px;
+  background:
+    conic-gradient(from 0deg, transparent 0 8deg, #2a0a00 8deg 22deg, transparent 22deg 45deg) ,
+    radial-gradient(circle, #2a0a00 18%, transparent 19%);
+  -webkit-mask: radial-gradient(circle, #000 60%, transparent 62%); mask: radial-gradient(circle, #000 60%, transparent 62%);
+  border-radius: 50%; opacity: 0.85;
+}
+.ah-bb-label { font-family: var(--font-display); font-weight: 700; font-size: 11px; line-height: 0.96; letter-spacing: 0.04em; text-align: center; }
+.ah-bb-label b { display: block; font-weight: 700; }
+/* only surface the button on touch devices (no SPACE key) */
+@media (pointer: coarse) {
+  .ah-hud.blossom .ah-blossom-btn { display: flex; }
+}
+
 /* big center prompt (DEATH BLOSSOM) */
 .ah-prompt {
   position: absolute; top: 33%; left: 0; right: 0; text-align: center;
@@ -945,4 +973,65 @@ hr.rule {
 /* reduce motion: kill ribbons via JS; also calm the marquee */
 @media (prefers-reduced-motion: reduce) {
   .strip-row { animation: none; }
+}
+
+/* ============ Phones in landscape (rotate-to-play): compact HUD ========== */
+@media (orientation: landscape) and (max-height: 600px) and (pointer: coarse) {
+  /* frame brackets — smaller, tighter to the edges */
+  .ah-corner { width: 24px; height: 24px; border-width: 1.5px; }
+  .ah-corner.tl { top: 7px; left: 7px; } .ah-corner.tr { top: 7px; right: 7px; }
+  .ah-corner.bl { bottom: 7px; left: 7px; } .ah-corner.br { bottom: 7px; right: 7px; }
+  .ah-tick { height: 7px; } .ah-tick-t { top: 7px; } .ah-tick-b { bottom: 7px; }
+
+  /* header strip — tiny, hugging the top */
+  .ah-header { top: 7px; gap: 7px; font-size: 8px; letter-spacing: 0.16em; }
+
+  /* readout modules — compact bar */
+  .ah-stats { top: 26px; }
+  .ah-mod { padding: 3px 10px 4px; }
+  .ah-mod i { font-size: 7px; letter-spacing: 0.14em; }
+  .ah-mod b { font-size: 13px; }
+  .ah-mod::before { left: 8px; right: 8px; }
+
+  /* music toggle — small, top-right (beat the max-width:720 push-down) */
+  .ah-music { top: 7px; right: 9px; padding: 4px 9px; font-size: 8px; letter-spacing: 0.1em; gap: 5px; }
+  .ah-music .ah-note { font-size: 11px; }
+
+  /* radar eats a corner — drop it on phones */
+  .ah-radar { display: none; }
+
+  /* control hint — tiny strip at the bottom */
+  .ah-hint { bottom: 7px; font-size: 8px; letter-spacing: 0.08em; padding: 0 8px; }
+
+  /* now-playing chyron → bottom-LEFT so it clears the Death Blossom button */
+  .np-card { left: 10px; right: auto; bottom: 10px; max-width: 50vw; }
+  .np-body { padding: 6px 11px 7px 10px; }
+  .np-eyebrow { font-size: 8px; letter-spacing: 0.2em; }
+  .np-title { font-size: 13px; margin-top: 2px; }
+  .np-artist { font-size: 10px; }
+  .np-meta { font-size: 8px; margin-top: 3px; }
+
+  /* Death Blossom tap button — thumb-reachable, a touch smaller */
+  .ah-blossom-btn { width: 72px; height: 72px; right: 11px; bottom: 11px; }
+  .ah-bb-label { font-size: 9px; }
+  .ah-bb-burst { width: 18px; height: 18px; }
+
+  /* reticle — a bit smaller so it doesn't dominate */
+  .ah-reticle { width: 48px; height: 48px; }
+
+  /* ---- splash (menu) compaction ---- */
+  .ah-hud.menu .ah-header { display: none; }     /* don't clash with the big title */
+  .cas-splash { gap: 8px; }
+  .cas-hi { top: 7px; font-size: 9px; letter-spacing: 0.14em; }
+  .cas-titlewrap { gap: 4px; margin-top: 0; }
+  .cas-title { font-size: clamp(28px, 7.6vw, 50px); line-height: 0.9; }
+  .cas-sub { font-size: 9px; letter-spacing: 0.26em; }
+  .cas-coin { width: clamp(168px, 30vw, 206px); padding: 8px; margin-top: 2px; }
+  .cas-coin-slot { flex-basis: 22px; }
+  .cas-coin-body { padding: 4px 6px 6px; gap: 5px; }
+  .cas-coin-price { font-size: clamp(26px, 5vw, 36px); }
+  .cas-coin-cta { font-size: clamp(13px, 2vw, 16px); }
+  .cas-howto-btn { font-size: 9px; padding: 6px 13px; }
+  .cas-credits { font-size: 8px; letter-spacing: 0.12em; }
+  .cas-prompt { font-size: 9px; }
 }
