@@ -285,7 +285,7 @@
 
   // fire everything together, scaled by charge power (0..1)
   function fire(x, y, power) {
-    if (game.over) return;
+    if (game.over || game.attract) return;
     power = Math.min(1, Math.max(0, power || 0));
     muzzleFlash(x, y, power);
     playTracerSfx(power);
@@ -308,7 +308,7 @@
     chargeRaf = requestAnimationFrame(chargeTick);
   }
   function startCharge(x, y) {
-    if (game.over) return;
+    if (game.over || game.attract) return;
     charging = true; chargeStart = performance.now(); cx = x; cy = y;
     ensureMuzzleLayer();
     chargeEl = document.createElement('div');
@@ -376,9 +376,54 @@
     chargeOsc = null; chargeGn = null;
   }
 
+  // generic one-shot sample players — decoded once, a fresh source per shot
+  // so rapid fire overlaps cleanly. Synth stays as the fallback until loaded.
+  const sfxBuf = {}, sfxBufTried = {}, sfxOffset = {};
+  // find where real sound starts so we can skip baked-in leading silence
+  function leadingSilence(buf) {
+    const thresh = 0.015, n = buf.length, chs = [];
+    for (let c = 0; c < buf.numberOfChannels; c++) chs.push(buf.getChannelData(c));
+    for (let i = 0; i < n; i++) {
+      for (let c = 0; c < chs.length; c++) {
+        if (Math.abs(chs[c][i]) > thresh) return Math.max(0, i / buf.sampleRate - 0.004);
+      }
+    }
+    return 0;
+  }
+  function loadSfxBuf(name, rel) {
+    if (sfxBufTried[name] || !ensureCtx()) return;
+    sfxBufTried[name] = true;
+    fetch(MUSIC_BASE + rel)
+      .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject()))
+      .then((b) => actx.decodeAudioData(b))
+      .then((buf) => { sfxBuf[name] = buf; sfxOffset[name] = leadingSilence(buf); })
+      .catch(() => {});
+  }
+  function playSfxBuf(name, gain, rateVar) {
+    const buf = sfxBuf[name]; if (!buf) return false;
+    const s = actx.createBufferSource(); s.buffer = buf;
+    if (rateVar) s.playbackRate.value = 1 - rateVar + Math.random() * rateVar * 2;
+    const g = actx.createGain(); g.gain.value = gain;
+    s.connect(g); g.connect(actx.destination);
+    s.start(0, sfxOffset[name] || 0);          // skip leading silence → instant fire
+    return true;
+  }
+  function ensureBlasters() {
+    loadSfxBuf('blaster', 'assets/sfx/blaster.mp3');
+    loadSfxBuf('heavy', 'assets/sfx/heavy-blaster.mp3');
+    loadSfxBuf('hit', 'assets/sfx/direct-hit-1.mp3');
+    loadSfxBuf('slowmo', 'assets/sfx/slow-mo.mp3');
+  }
+  function playHitSfx() { ensureBlasters(); playSfxBuf('hit', 0.6, 0.06); }
+  function playSlowmoSfx() { ensureBlasters(); playSfxBuf('slowmo', 0.85, 0); }
+
   function playTracerSfx(power) {
     if (!sfxOn || !ensureCtx()) return;
     power = Math.min(1, Math.max(0, power || 0));
+    ensureBlasters();
+    // charged shots get the heavy blaster; light taps get the regular one
+    const heavy = power >= 0.5;
+    if (playSfxBuf(heavy ? 'heavy' : 'blaster', heavy ? 0.85 : 0.7, 0.05)) return;
     const t0 = actx.currentTime;
     const master = actx.createGain();
     master.connect(actx.destination);
@@ -522,6 +567,114 @@
     setTimeout(() => { try { nodes.forEach((n) => n.disconnect()); } catch (e) {} }, 2600);
   }
 
+  // missile launch sample (user-uploaded). fire-z-missiles-2.mp3 contains TWO
+  // missiles back-to-back; we isolate the FIRST one (clip below) and play it
+  // per missile so the salvo layers into an Itano-Circus crescendo. Falls back
+  // to the synth until it loads (or if it fails).
+  let missileBuf = null, missileBufTried = false;
+  // fire-z-missiles-3.mp3 holds two events; the SECOND (~0.66s on) is a full
+  // launch + a long descending travel-whoosh tail — launch AND scream in one.
+  const MISSILE_CLIP = { off: 0.66, dur: 1.7 };
+  function ensureMissileBuf() {
+    if (missileBufTried || !ensureCtx()) return;
+    missileBufTried = true;
+    fetch(MUSIC_BASE + 'assets/sfx/fire-z-missiles-3.mp3')
+      .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject()))
+      .then((b) => actx.decodeAudioData(b))
+      .then((buf) => { missileBuf = buf; })
+      .catch(() => {});
+  }
+
+  // a synth "travel whoosh" — descending (doppler-away) noise + whistle. Layered
+  // under the sampled launch so the missile both fires AND screams off-screen.
+  function missileWhoosh(prog) {
+    const t0 = actx.currentTime, sr = actx.sampleRate;
+    const master = actx.createGain(); master.gain.value = 0.24; master.connect(actx.destination);
+    const len = Math.floor(sr * 0.42);
+    const buf = actx.createBuffer(1, len, sr); const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) { const e = i / len; d[i] = (Math.random() * 2 - 1) * (1 - e * 0.15); }
+    const src = actx.createBufferSource(); src.buffer = buf;
+    const bp = actx.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 0.8;
+    bp.frequency.setValueAtTime(1550 + prog * 250, t0);
+    bp.frequency.exponentialRampToValueAtTime(300, t0 + 0.4);       // pitch falls = flying away
+    const g = actx.createGain();
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(0.9, t0 + 0.05);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.42);
+    src.connect(bp); bp.connect(g); g.connect(master);
+    src.start(t0); src.stop(t0 + 0.43);
+    const o = actx.createOscillator(); o.type = 'sawtooth';
+    o.frequency.setValueAtTime(1500 + Math.random() * 220, t0);
+    o.frequency.exponentialRampToValueAtTime(380 + Math.random() * 60, t0 + 0.4);
+    const og = actx.createGain();
+    og.gain.setValueAtTime(0.0001, t0);
+    og.gain.exponentialRampToValueAtTime(0.1, t0 + 0.05);
+    og.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.4);
+    o.connect(og); og.connect(master); o.start(t0); o.stop(t0 + 0.42);
+    setTimeout(() => { try { master.disconnect(); } catch (e) {} }, 600);
+  }
+
+  // a single missile launch — uses the real sample if loaded, else a synth
+  // (ignition CRACK + motor whoosh that rises then falls + doppler whistle).
+  // Staggered across the salvo they pile into an Itano-Circus crescendo.
+  function playMissileSfx(prog) {
+    if (!sfxOn || !ensureCtx()) return;
+    ensureMissileBuf();
+    if (missileBuf) {
+      const t0 = actx.currentTime;
+      const rate = 0.95 + Math.random() * 0.1;          // slight per-shot variation
+      const realDur = MISSILE_CLIP.dur / rate;
+      const s = actx.createBufferSource();
+      s.buffer = missileBuf; s.playbackRate.value = rate;
+      const g = actx.createGain();
+      g.gain.setValueAtTime(0.55, t0);
+      g.gain.setValueAtTime(0.55, t0 + Math.max(0, realDur - 0.18));
+      g.gain.linearRampToValueAtTime(0.0001, t0 + realDur);   // gentle tail-fade so the cut doesn't click
+      s.connect(g); g.connect(actx.destination);
+      s.start(t0, MISSILE_CLIP.off, MISSILE_CLIP.dur);          // launch + travel-whoosh, in one sample
+      return;
+    }
+    const t0 = actx.currentTime, sr = actx.sampleRate;
+    const master = actx.createGain(); master.gain.value = 0.34; master.connect(actx.destination);
+
+    // 1) ignition CRACK — sharp highpassed transient (the "chk" of launch)
+    const clen = Math.floor(sr * 0.05);
+    const cbuf = actx.createBuffer(1, clen, sr); const cd = cbuf.getChannelData(0);
+    for (let i = 0; i < clen; i++) cd[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / clen, 3);
+    const crack = actx.createBufferSource(); crack.buffer = cbuf;
+    const chp = actx.createBiquadFilter(); chp.type = 'highpass'; chp.frequency.value = 1700;
+    const cg = actx.createGain(); cg.gain.value = 0.8;
+    crack.connect(chp); chp.connect(cg); cg.connect(master);
+    crack.start(t0); crack.stop(t0 + 0.06);
+
+    // 2) motor ROAR — noise through a bandpass that rises then falls (whoosh away)
+    const len = Math.floor(sr * 0.34);
+    const buf = actx.createBuffer(1, len, sr); const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) { const e = i / len; d[i] = (Math.random() * 2 - 1) * (1 - e * 0.25); }
+    const src = actx.createBufferSource(); src.buffer = buf;
+    const bp = actx.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 0.9;
+    bp.frequency.setValueAtTime(300 + prog * 130, t0);
+    bp.frequency.exponentialRampToValueAtTime(1500, t0 + 0.08);
+    bp.frequency.exponentialRampToValueAtTime(360, t0 + 0.34);
+    const g = actx.createGain();
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(1.0, t0 + 0.025);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.34);
+    src.connect(bp); bp.connect(g); g.connect(master);
+    src.start(t0); src.stop(t0 + 0.35);
+
+    // 3) descending doppler whistle (the missile screaming away)
+    const o = actx.createOscillator(); o.type = 'sawtooth';
+    o.frequency.setValueAtTime(1300 + Math.random() * 240, t0);
+    o.frequency.exponentialRampToValueAtTime(420 + Math.random() * 80, t0 + 0.32);
+    const og = actx.createGain();
+    og.gain.setValueAtTime(0.0001, t0);
+    og.gain.exponentialRampToValueAtTime(0.13, t0 + 0.03);
+    og.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.3);
+    o.connect(og); og.connect(master); o.start(t0); o.stop(t0 + 0.33);
+    setTimeout(() => { try { master.disconnect(); } catch (e) {} }, 400);
+  }
+
   // ---- game music: 80s synthwave playlist (shuffles, ducks under SFX) -----
   const MUSIC = [
     'assets/music/neon-nights.mp3',
@@ -538,7 +691,7 @@
   })();
   let musicOn = (function () { try { return localStorage.getItem('flynn-music') !== 'off'; } catch (e) { return true; } })();
   const MUSIC_VOL = 0.5;
-  let musicEl = null, order = [], orderPos = 0, duckUntil = 0;
+  let musicEl = null, order = [], orderPos = 0, duckUntil = 0, musicFadeId = 0;
   function shuffleOrder() {
     order = MUSIC.map((_, i) => i);
     for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
@@ -554,6 +707,7 @@
   function playNextTrack() {
     if (!order.length) shuffleOrder();
     const el = ensureMusicEl();
+    musicFadeId++;                              // abort any in-flight stop-fade
     const idx = order[orderPos % order.length]; orderPos++;
     el.src = MUSIC_BASE + MUSIC[idx];
     el.currentTime = 0; el.volume = MUSIC_VOL;
@@ -565,8 +719,10 @@
   }
   function stopMusic() {                       // gentle fade then pause
     const el = musicEl; if (!el || el.paused) return;
+    const myId = ++musicFadeId;
     const v0 = el.volume, t0 = performance.now();
     (function fade() {
+      if (myId !== musicFadeId) return;        // a newer start/stop superseded this fade
       const k = Math.min(1, (performance.now() - t0) / 700);
       el.volume = Math.max(0, v0 * (1 - k));
       if (k < 1) requestAnimationFrame(fade); else el.pause();
@@ -581,7 +737,7 @@
   function setMusic(on) {
     musicOn = !!on;
     try { localStorage.setItem('flynn-music', musicOn ? 'on' : 'off'); } catch (e) {}
-    if (game.active) {
+    if (game.active || game.attract) {
       if (musicOn) { if (!musicEl || musicEl.paused) startMusic(); else musicEl.play().catch(() => {}); }
       else if (musicEl) musicEl.pause();
     }
@@ -611,8 +767,15 @@
   function resize() {
     const w = window.innerWidth, h = window.innerHeight;
     renderer.setSize(w, h, false);
-    camera.aspect = w / h;
+    const aspect = w / h;
+    camera.aspect = aspect;
     camera.updateProjectionMatrix();
+    // widen the grid horizontally so it always overshoots the screen edges
+    // (the geometry is tuned for ~16:9; stretch X on wider/portrait viewports
+    // so the void reads full-bleed instead of a centred panel)
+    const sx = Math.max(1, aspect / 1.6);
+    grid.scale.x = sx;
+    glow.scale.x = sx;
   }
   window.addEventListener('resize', resize);
   resize();
@@ -645,7 +808,7 @@
     return new THREE.CanvasTexture(c);
   })();
 
-  const game = { active: false, over: false, score: 0, high: 0, wave: 0, combo: 0, lives: 3, timeScale: 1, slowUntil: 0, toSpawn: 0, spawnTimer: 0, waveBreak: 0, blossomReady: false, blossoming: false };
+  const game = { active: false, over: false, attract: false, score: 0, high: 0, prevHigh: 0, wave: 0, combo: 0, lives: 3, timeScale: 1, slowUntil: 0, toSpawn: 0, spawnTimer: 0, waveBreak: 0, blossomReady: false, blossoming: false };
   try { game.high = +(localStorage.getItem('flynn-ah-high') || 0) || 0; } catch (e) {}
   const anomalies = [];
   const fx = [];
@@ -670,6 +833,130 @@
       f.s.scale.setScalar(f.s0 + ease * (f.s1 - f.s0));
       f.s.material.opacity = Math.max(0, 1 - e);
       if (f.t >= 1) { scene.remove(f.s); f.s.material.dispose(); fx.splice(i, 1); }
+    }
+  }
+
+  // ---- Asteroids-style shatter: craft break into spinning wireframe shards -
+  const _shardGeos = (function () {
+    const geos = [];
+    for (let n = 0; n < 6; n++) {
+      const pts = [];
+      const segs = 2 + (Math.random() * 2 | 0);
+      for (let i = 0; i < segs; i++) {
+        const ax = (Math.random() - 0.5) * 2, ay = (Math.random() - 0.5) * 2, az = (Math.random() - 0.5) * 2;
+        pts.push(ax, ay, az, ax + (Math.random() - 0.5) * 1.7, ay + (Math.random() - 0.5) * 1.7, az + (Math.random() - 0.5) * 1.7);
+      }
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+      geos.push(g);
+    }
+    return geos;
+  })();
+  const debris = [];
+  function shatter(pos, colorHex, count, force) {
+    count = count || 8; force = force || 1;
+    for (let i = 0; i < count; i++) {
+      const geo = _shardGeos[(Math.random() * _shardGeos.length) | 0];
+      const mat = new THREE.LineBasicMaterial({ color: colorHex, transparent: true, opacity: 1, blending: THREE.AdditiveBlending, depthTest: false, depthWrite: false, fog: false });
+      const seg = new THREE.LineSegments(geo, mat);
+      seg.position.copy(pos);
+      seg.scale.setScalar(0.5 + Math.random() * 0.8);
+      seg.renderOrder = 6;
+      scene.add(seg);
+      const dir = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, (Math.random() - 0.5) * 0.6).normalize();
+      const speed = (9 + Math.random() * 20) * force;
+      debris.push({
+        seg, vel: dir.multiplyScalar(speed),
+        spin: new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(),
+        spinRate: 2 + Math.random() * 5, t: 0, life: 0.5 + Math.random() * 0.45
+      });
+    }
+  }
+  function updateDebris(dt) {
+    for (let i = debris.length - 1; i >= 0; i--) {
+      const d = debris[i];
+      d.t += dt / d.life;
+      d.seg.position.addScaledVector(d.vel, dt);
+      d.vel.multiplyScalar(Math.max(0, 1 - dt * 1.4));   // drag, so shards coast to a stop
+      d.seg.rotateOnAxis(d.spin, d.spinRate * dt);
+      d.seg.material.opacity = Math.max(0, 1 - d.t * d.t); // fade out, easing
+      if (d.t >= 1) { scene.remove(d.seg); d.seg.material.dispose(); debris.splice(i, 1); }
+    }
+  }
+
+  // ---- Itano-Circus missile swarm (Death Blossom) ------------------------
+  // missiles bloom outward from the viewer, draw smoke trails, then steer
+  // (arc) back onto every on-screen anomaloid. ~6 per target.
+  const missileTex = (function () {
+    const c = document.createElement('canvas'); c.width = c.height = 64;
+    const g = c.getContext('2d');
+    const grd = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grd.addColorStop(0.0, 'rgba(255,255,250,1)');
+    grd.addColorStop(0.35, 'rgba(255,210,150,0.95)');
+    grd.addColorStop(0.7, 'rgba(255,140,60,0.5)');
+    grd.addColorStop(1.0, 'rgba(255,110,40,0)');
+    g.fillStyle = grd; g.fillRect(0, 0, 64, 64);
+    return new THREE.CanvasTexture(c);
+  })();
+  const missiles = [];
+  const _mv1 = new THREE.Vector3(), _mv2 = new THREE.Vector3();
+  function buildTrail(line, pts) {
+    const n = pts.length;
+    const pos = new Float32Array(n * 3), col = new Float32Array(n * 3);
+    for (let i = 0; i < n; i++) {
+      pos[i * 3] = pts[i].x; pos[i * 3 + 1] = pts[i].y; pos[i * 3 + 2] = pts[i].z;
+      const a = 1 - i / (n - 1 || 1);            // newest = brightest
+      col[i * 3] = a; col[i * 3 + 1] = a * 0.55; col[i * 3 + 2] = a * 0.24;
+    }
+    const gg = line.geometry;
+    gg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    gg.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  }
+  function launchMissile(target) {
+    const pos = new THREE.Vector3((Math.random() - 0.5) * 9, 2 + Math.random() * 2.5, 9 + Math.random() * 2.5);
+    // initial OUTWARD spread (up + sideways, slightly toward camera) → forces an arc
+    const spread = new THREE.Vector3((Math.random() - 0.5) * 2.6, 0.5 + Math.random() * 1.3, (Math.random() - 0.25) * 0.9).normalize();
+    const vel = spread.multiplyScalar(18 + Math.random() * 16);
+    const head = new THREE.Sprite(new THREE.SpriteMaterial({ map: missileTex, color: 0xffe2b8, transparent: true, opacity: 1, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false, fog: false }));
+    head.position.copy(pos); head.scale.setScalar(2.6); head.renderOrder = 7; scene.add(head);
+    const line = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthTest: false, depthWrite: false, fog: false }));
+    line.renderOrder = 6; line.frustumCulled = false; scene.add(line);
+    const tpos = (target && target.alive) ? target.mesh.position.clone()
+      : new THREE.Vector3((Math.random() - 0.5) * 64, 4 + Math.random() * 16, -(cfg.fog[1] * 0.66));
+    missiles.push({ target, tpos, pos, vel, head, line, trail: [pos.clone()], t: 0, cruise: 52 + Math.random() * 18, max: 80, turn: 2.3 + Math.random() * 1.9 });
+  }
+  function disposeMissile(m) {
+    scene.remove(m.head); m.head.material.dispose();
+    scene.remove(m.line); m.line.geometry.dispose(); m.line.material.dispose();
+  }
+  function detonateMissile(m) {
+    if (m.target && m.target.alive) {
+      const slow = m.target.type === 'slow';
+      shatter(m.target.mesh.position, slow ? 0x9ff0ff : 0xffae5c, 9, 1.2);
+      popBurst(m.target.mesh.position, slow ? 0x9ff0ff : 0xffb060, false);
+      playHitSfx();
+      game.score += 150; removeAnomaly(m.target); updateHUD();
+      if (Math.random() < 0.45) shakeScreen(0.34);
+    } else {
+      popBurst(m.pos, 0xffc890, false);          // secondary airburst (overkill missiles)
+    }
+  }
+  function updateMissiles(dt) {
+    for (let i = missiles.length - 1; i >= 0; i--) {
+      const m = missiles[i];
+      m.t += dt;
+      if (m.target && m.target.alive) m.tpos.copy(m.target.mesh.position);
+      const desired = _mv1.copy(m.tpos).sub(m.pos);
+      const dist = desired.length();
+      desired.normalize().multiplyScalar(m.cruise);
+      m.vel.addScaledVector(_mv2.copy(desired).sub(m.vel), Math.min(1, m.turn * dt));
+      const sp = m.vel.length();
+      if (sp > m.max) m.vel.multiplyScalar(m.max / sp);
+      m.pos.addScaledVector(m.vel, dt);
+      m.head.position.copy(m.pos);
+      m.trail.unshift(m.pos.clone()); if (m.trail.length > 16) m.trail.pop();
+      buildTrail(m.line, m.trail);
+      if (dist < 4 || m.t > 2.4) { detonateMissile(m); disposeMissile(m); missiles.splice(i, 1); }
     }
   }
 
@@ -718,6 +1005,7 @@
     let nearest = 0;
     for (let i = anomalies.length - 1; i >= 0; i--) {
       const a = anomalies[i];
+      if (!a) continue;                              // array can shrink mid-loop (breach → gameOver clears it)
       a.mesh.position.z += a.speed * d;
       a.mesh.rotateOnAxis(a.spin, a.spinRate * dt * (0.5 + game.timeScale * 0.5));
       const pulse = 1 + 0.06 * Math.sin(now * 0.006 + a.mesh.position.x);
@@ -727,8 +1015,9 @@
       if (frac > nearest) nearest = frac;
       if (a.type === 'fault' && frac > 0.74) { a.body.material.opacity = 0.12 + 0.18 * (0.5 + 0.5 * Math.sin(now * 0.02)); }
       if (a.mesh.position.z > breachZ) breach(a);
+      if (game.over) break;                          // the breach above ended the run — stop touching the (now-cleared) array
     }
-    setBreachAlarm(nearest > 0.74 && anomalies.length > 0);
+    setBreachAlarm(game.active && nearest > 0.74 && anomalies.length > 0);
   }
   function removeAnomaly(a) {
     a.alive = false; scene.remove(a.mesh);
@@ -738,6 +1027,8 @@
   }
   function breach(a) {
     if (!a.alive) return;
+    if (game.attract) { removeAnomaly(a); return; }   // attract-mode craft just drift past
+    shatter(a.mesh.position, 0xff5a2a, 11, 1.25);
     popBurst(a.mesh.position, 0xff5a2a, true);
     removeAnomaly(a);
     game.combo = 0; game.lives--; flashScreen('breach'); shakeScreen(0.6); updateHUD();
@@ -746,12 +1037,13 @@
   function destroyAnomaly(a, byPlayer) {
     if (!a.alive) return;
     const slow = a.type === 'slow';
+    shatter(a.mesh.position, slow ? 0x9ff0ff : 0xffae5c, slow ? 10 : 8, 1);
     popBurst(a.mesh.position, slow ? 0x9ff0ff : 0xffb060, false);
     removeAnomaly(a);
     if (byPlayer) {
+      if (slow) activateSlowmo(); else playHitSfx();   // slow core → slow-mo sting; faults → hit
       game.combo++;
       game.score += 100 * (1 + Math.floor(game.combo / 5));
-      if (slow) activateSlowmo();
       if (!game.blossomReady && game.combo >= BLOSSOM_AT) armBlossom();
       if (game.score > game.high) { game.high = game.score; try { localStorage.setItem('flynn-ah-high', String(game.high)); } catch (e) {} }
       updateHUD();
@@ -781,7 +1073,7 @@
     if (hit) spawnTracer(x, y, power, hit, () => destroyAnomaly(hit, true));
     else { spawnTracer(x, y, power); game.combo = 0; updateHUD(); }
   }
-  function activateSlowmo() { game.slowUntil = performance.now() + 4000; flashScreen('slow'); }
+  function activateSlowmo() { game.slowUntil = performance.now() + 4000; flashScreen('slow'); playSlowmoSfx(); }
 
   // ---- radar blips: plot live anomalies on the SECTOR SCAN ---------------
   function makeBlip(slow) {
@@ -828,22 +1120,33 @@
     if (hud) hud.classList.remove('blossom');
     if (hudEls && hudEls.hint) hudEls.hint.classList.remove('hot');
     showPrompt('DEATH BLOSSOM');
-    flashScreen('bomb'); shakeScreen(1.0); horizonBurstSfx();
-    const cw = window.innerWidth / 2, ch = window.innerHeight * 0.5;
-    const R = Math.max(window.innerWidth, window.innerHeight) * 0.72, N = 18;
-    for (let i = 0; i < N; i++) {
-      const ang = (i / N) * Math.PI * 2;
-      setTimeout(() => { blossomBolt(cw + Math.cos(ang) * R, ch + Math.sin(ang) * R); if (i % 3 === 0) playTracerSfx(0.5); }, i * 20);
-    }
-    anomalies.slice().forEach((a, k) => setTimeout(() => {
-      if (!a.alive) return;
-      popBurst(a.mesh.position, a.type === 'slow' ? 0x9ff0ff : 0xffb060, false);
-      game.score += 150; removeAnomaly(a); updateHUD();
-    }, 130 + k * 40));
+    flashScreen('bomb'); shakeScreen(0.6);
+    // ~6 missiles per on-screen target; if the field is empty, fire a display salvo
+    // each target gets its own rolling salvo: ~6 missiles fired 0.1s apart;
+    // groups start slightly staggered so the whole barrage ripples out.
+    const targets = anomalies.filter((a) => a.alive);
+    const per = 6;
+    const groups = targets.length ? targets : [null, null, null];
+    const groupGap = 80;      // ms between successive target-groups starting
+    const missileGap = 100;   // ms between missiles within one group
+    let n = 0, lastAt = 0;
+    groups.forEach((t, gi) => {
+      const count = targets.length ? per : 5;
+      for (let m = 0; m < count; m++) {
+        if (n >= 48) break;                         // safety cap
+        const at = gi * groupGap + m * missileGap;
+        lastAt = Math.max(lastAt, at);
+        const prog = n;
+        setTimeout(() => { if (!game.active) return; launchMissile(t); playMissileSfx(Math.min(1, prog / 30)); }, at);
+        n++;
+      }
+    });
+    // the convergence boom lands as the first salvos reach the horizon
+    setTimeout(() => { if (!game.active) return; horizonBurstSfx(); flashScreen('bomb'); shakeScreen(1.0); }, lastAt * 0.5 + 520);
     game.combo = 0;
     if (game.score > game.high) { game.high = game.score; try { localStorage.setItem('flynn-ah-high', String(game.high)); } catch (e) {} }
     updateHUD();
-    setTimeout(() => { game.blossoming = false; }, 720);
+    setTimeout(() => { game.blossoming = false; }, lastAt + 2200);
     ensureRunning();
   }
 
@@ -871,32 +1174,73 @@
     }
   }
 
+  // ---- arcade flow: splash (attract) → start → game → over → menu -------
+  let attractSpawn = 0;
+  function updateAttract(dt) {
+    if (!game.attract) return;
+    game.timeScale = 1;
+    updateAnomalies(dt);
+    attractSpawn -= dt;
+    if (attractSpawn <= 0 && anomalies.length < 7) {
+      spawnAnomaly(Math.random() < 0.2 ? 'slow' : 'fault');
+      attractSpawn = 0.5 + Math.random() * 0.7;
+    }
+  }
+  function openHowto() { if (hud) hud.classList.add('howto'); }
+  function closeHowto() { if (hud) hud.classList.remove('howto'); }
+
+  function openSplash() {
+    if (game.active || game.attract) return;
+    buildHUD();
+    anomalies.slice().forEach(removeAnomaly);
+    game.attract = true; game.active = false; game.over = false;
+    if (hud) hud.classList.add('menu');
+    if (hud) hud.classList.remove('blossom', 'alarm', 'howto');
+    document.body.classList.add('ah-playing', 'cas-menu');
+    showHUD(true); hideGameOver(); closeHowto();
+    if (hudEls && hudEls.hiscore) hudEls.hiscore.textContent = game.high;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    fadeSite(true);
+    startMusic();
+    attractSpawn = 0.2;
+    ensureRunning();
+  }
+
   function startGame() {
     if (game.active) return;
     anomalies.slice().forEach(removeAnomaly);
+    game.attract = false;
     game.active = true; game.over = false; game.score = 0; game.wave = 0; game.combo = 0; game.lives = 3;
     game.timeScale = 1; game.slowUntil = 0; game.toSpawn = 0; game.waveBreak = 0;
     game.blossomReady = false; game.blossoming = false;
-    buildHUD(); showHUD(true); hideGameOver();
-    if (hud) { hud.classList.remove('blossom'); hud.classList.remove('alarm'); }
+    game.prevHigh = game.high;
+    buildHUD(); showHUD(true); hideGameOver(); closeHowto();
+    if (hud) hud.classList.remove('blossom', 'alarm', 'menu');
+    document.body.classList.remove('cas-menu');
     if (hudEls && hudEls.hint) hudEls.hint.classList.remove('hot');
     document.body.classList.add('ah-playing');
     if (hudEls && hudEls.reticle) updateReticle(window.innerWidth / 2, window.innerHeight / 2);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     fadeSite(true);
-    startMusic();
+    if (!musicEl || musicEl.paused) startMusic();
+    ensureMissileBuf();          // preload the launch sample
+    ensureBlasters();            // preload blaster + hit + slow-mo samples
     nextWave();
     ensureRunning();
   }
   function gameOver() {
     game.over = true;
     anomalies.slice().forEach(removeAnomaly);
-    showGameOver();
+    setBreachAlarm(false);
+    const isNew = game.score > 0 && game.score > game.prevHigh;
+    showGameOver(isNew);
   }
+  function exitToMenu() { game.active = false; game.over = false; game.attract = false; openSplash(); }
   function endGame() {
-    game.active = false; game.over = false;
+    game.active = false; game.over = false; game.attract = false;
     anomalies.slice().forEach(removeAnomaly);
-    document.body.classList.remove('ah-playing');
+    if (hud) hud.classList.remove('menu', 'howto');
+    document.body.classList.remove('ah-playing', 'cas-menu');
     fadeSite(false);
     stopMusic();
     showHUD(false); hideGameOver();
@@ -948,11 +1292,46 @@
       '</div>' +
       '<div class="ah-over" data-over>' +
         '<div class="ah-over-card">' +
+          '<div class="ah-over-new" data-new>★ NEW HIGH SCORE ★</div>' +
           '<div class="ah-over-t">THRESHOLD BREACHED</div>' +
           '<div class="ah-over-score">SCORE <b data-fscore>0</b></div>' +
           '<div class="ah-over-best">BEST <b data-fhigh>0</b></div>' +
-          '<button class="ah-btn" data-retry>RE-ARM</button>' +
+          '<div class="ah-over-btns">' +
+            '<button class="ah-btn" data-retry type="button">RE-ARM</button>' +
+            '<button class="ah-btn ghost" data-menu type="button">MAIN MENU</button>' +
+          '</div>' +
           '<div class="ah-over-x">ESC to exit</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="cas-splash">' +
+        '<div class="cas-hi">HI-SCORE <b data-hiscore>0</b></div>' +
+        '<div class="cas-titlewrap">' +
+          '<h1 class="cas-title"><span>CYBERSPACE</span><span>ANOMALOIDS</span></h1>' +
+          '<div class="cas-sub">A FLYNN DEFENSE SIMULATION</div>' +
+        '</div>' +
+        '<button class="cas-coin" data-start type="button" aria-label="Insert coin to play">' +
+          '<span class="cas-coin-slot"></span>' +
+          '<span class="cas-coin-body">' +
+            '<span class="cas-coin-price">25<i>¢</i></span>' +
+            '<span class="cas-coin-rule"></span>' +
+            '<span class="cas-coin-cta"><span>INSERT COIN</span><span>TO PLAY</span></span>' +
+          '</span>' +
+        '</button>' +
+        '<div class="cas-prompt">PRESS ENTER · INSERT COIN</div>' +
+        '<button class="cas-howto-btn" data-howto type="button">HOW TO PLAY</button>' +
+        '<div class="cas-credits">MUSIC BY ENTROPYWALKER · © 2026 ENTROMORPHIC</div>' +
+        '<div class="cas-howto" data-howtopanel>' +
+          '<div class="cas-howto-card">' +
+            '<div class="cas-howto-t">HOW TO PLAY</div>' +
+            '<ul class="cas-howto-list">' +
+              '<li><b>AIM</b><span class="cas-keys"><kbd class="cas-key"><span class="cas-mouse"></span>MOVE</kbd></span><span>Track anomaloids streaming in from the void</span></li>' +
+              '<li><b>FIRE</b><span class="cas-keys"><kbd class="cas-key">CLICK</kbd></span><span>Lock on and neutralize a fault</span></li>' +
+              '<li><b>CHARGE</b><span class="cas-keys"><kbd class="cas-key">HOLD</kbd></span><span>A full charge detonates the horizon</span></li>' +
+              '<li><b>SLOW-MO</b><span class="cas-keys"><kbd class="cas-key"><span class="cas-core"></span>CORE</kbd></span><span>Shoot a cyan core to bend time in your favor</span></li>' +
+              '<li><b>THRESHOLD</b><span class="cas-keys"><span class="cas-pips">\u25c6\u25c6\u25c6</span></span><span>Three breaches and the run is over</span></li>' +
+            '</ul>' +
+            '<button class="ah-btn" data-howtoclose type="button">GOT IT</button>' +
+          '</div>' +
         '</div>' +
       '</div>';
     document.body.appendChild(hud);
@@ -964,9 +1343,14 @@
       fhigh: hud.querySelector('[data-fhigh]'), flash: hud.querySelector('.ah-flash'),
       music: hud.querySelector('[data-music]'), musicLabel: hud.querySelector('[data-musiclabel]'),
       reticle: hud.querySelector('[data-reticle]'), retLabel: hud.querySelector('[data-retlabel]'),
-      radar: hud.querySelector('.ah-radar'), hint: hud.querySelector('.ah-hint'), prompt: hud.querySelector('[data-prompt]')
+      radar: hud.querySelector('.ah-radar'), hint: hud.querySelector('.ah-hint'), prompt: hud.querySelector('[data-prompt]'),
+      hiscore: hud.querySelector('[data-hiscore]'), newhigh: hud.querySelector('[data-new]')
     };
     hud.querySelector('[data-retry]').addEventListener('click', (e) => { e.stopPropagation(); game.active = false; game.over = false; startGame(); });
+    hud.querySelector('[data-menu]').addEventListener('click', (e) => { e.stopPropagation(); exitToMenu(); });
+    hud.querySelector('[data-start]').addEventListener('click', (e) => { e.stopPropagation(); startGame(); });
+    hud.querySelector('[data-howto]').addEventListener('click', (e) => { e.stopPropagation(); openHowto(); });
+    hud.querySelector('[data-howtoclose]').addEventListener('click', (e) => { e.stopPropagation(); closeHowto(); });
     hudEls.music.addEventListener('click', (e) => { e.stopPropagation(); setMusic(!musicOn); });
     updateMusicBtn();
   }
@@ -1014,9 +1398,10 @@
     hudEls.prompt.textContent = text;
     hudEls.prompt.classList.remove('show'); void hudEls.prompt.offsetWidth; hudEls.prompt.classList.add('show');
   }
-  function showGameOver() {
+  function showGameOver(isNew) {
     if (!hudEls) return;
     hudEls.fscore.textContent = game.score; hudEls.fhigh.textContent = game.high;
+    if (hudEls.newhigh) hudEls.newhigh.classList.toggle('show', !!isNew);
     hudEls.over.classList.add('show');
   }
   function hideGameOver() { if (hudEls) hudEls.over.classList.remove('show'); }
@@ -1056,9 +1441,10 @@
   window.addEventListener('keydown', (e) => {
     const k = (e.key || '').toLowerCase();
     kbuf.push(k); if (kbuf.length > KONAMI.length) kbuf.shift();
-    if (kbuf.length === KONAMI.length && KONAMI.every((v, i) => kbuf[i] === v)) { kbuf = []; startGame(); }
-    if (k.length === 1) { fbuf = (fbuf + k).slice(-5); if (fbuf === 'flynn') { fbuf = ''; startGame(); } }
-    if (k === 'escape' && game.active) endGame();
+    if (kbuf.length === KONAMI.length && KONAMI.every((v, i) => kbuf[i] === v)) { kbuf = []; openSplash(); }
+    if (k.length === 1) { fbuf = (fbuf + k).slice(-5); if (fbuf === 'flynn') { fbuf = ''; openSplash(); } }
+    if (k === 'escape' && (game.active || game.attract || game.over)) endGame();
+    if ((k === 'enter' || k === ' ' || k === 'spacebar' || e.code === 'Space') && game.attract) { e.preventDefault(); startGame(); }
     if ((k === ' ' || k === 'spacebar' || e.code === 'Space') && game.active) { e.preventDefault(); if (game.blossomReady) deathBlossom(); }
   });
 
@@ -1083,12 +1469,15 @@
     updateTracers(dt);
     updateBursts(dt);
     updateFx(dt);
+    updateDebris(dt);
+    updateMissiles(dt);
     updateMusic(dt);
     if (game.active) updateGame(dt);
+    else if (game.attract) updateAttract(dt);
     renderer.render(scene, camera);
 
-    // keep animating while motion is on OR effects / the game are active
-    if (motion || tracers.length || bursts.length || fx.length || game.active) { raf = requestAnimationFrame(frame); running = true; }
+    // keep animating while motion is on OR effects / the game / attract is active
+    if (motion || tracers.length || bursts.length || fx.length || debris.length || missiles.length || game.active || game.attract) { raf = requestAnimationFrame(frame); running = true; }
     else { running = false; }
   }
   function ensureRunning() { if (!running) { running = true; last = performance.now(); raf = requestAnimationFrame(frame); } }
@@ -1103,7 +1492,7 @@
   // pause when tab hidden
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) stop();
-    else if (motion) start();
+    else if (motion || game.active || game.attract) start();
   });
 
   window.__gridVoid = {
@@ -1129,8 +1518,9 @@
     get musicEnabled() { return musicOn; },
     get tracerCount() { return tracers.length; },
     startGame() { startGame(); },
+    openSplash() { openSplash(); },
     stopGame() { endGame(); },
     deathBlossom() { game.blossomReady = true; deathBlossom(); },
-    get game() { return { active: game.active, over: game.over, score: game.score, wave: game.wave, combo: game.combo, lives: game.lives, anomalies: anomalies.length, blossomReady: game.blossomReady }; }
+    get game() { return { active: game.active, over: game.over, attract: game.attract, score: game.score, wave: game.wave, combo: game.combo, lives: game.lives, anomalies: anomalies.length, blossomReady: game.blossomReady }; }
   };
 })();

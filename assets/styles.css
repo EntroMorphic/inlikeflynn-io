@@ -323,7 +323,16 @@ img, svg { display: block; max-width: 100%; }
   text-transform: uppercase;
 }
 @media (max-width: 720px) {
-  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px 24px; }
+  .footer-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    text-align: left;
+  }
+}
+@media (max-width: 480px) {
+  .footer-grid { grid-template-columns: 1fr; gap: 28px; }
 }
 
 /* ----- spec table ----- */
