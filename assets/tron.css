@@ -385,6 +385,29 @@ body.ah-playing, body.ah-playing * {
 }
 .ah-music.off .ah-note { opacity: 0.5; }
 @media (max-width: 720px) { .ah-music { top: 122px; right: 14px; } }
+
+/* full-screen toggle — mirrors .ah-music, anchored top-left */
+.ah-fs {
+  position: absolute; top: 84px; left: 26px; pointer-events: auto; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: "Share Tech Mono", var(--font-mono); font-size: 11px;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: color-mix(in oklab, var(--accent-2) 88%, white);
+  background: color-mix(in oklab, var(--accent-2) 8%, transparent);
+  border: 1px solid color-mix(in oklab, var(--accent-2) 38%, transparent);
+  border-radius: 999px; padding: 7px 14px;
+  text-shadow: 0 0 10px color-mix(in oklab, var(--glow-cyan) 45%, transparent);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.ah-fs:hover { border-color: color-mix(in oklab, var(--accent-2) 70%, transparent); }
+.ah-fs svg { display: block; }
+.ah-fs .ah-fs-out { display: none; }
+.ah-fs.on .ah-fs-in { display: none; }
+.ah-fs.on .ah-fs-out { display: block; }
+.ah-fs.on .ah-fs-label::after { content: "EXIT FULL SCREEN"; }
+.ah-fs.on .ah-fs-label { font-size: 0; }
+.ah-fs.on .ah-fs-label::after { font-size: 11px; }
+@media (max-width: 720px) { .ah-fs { top: 122px; left: 14px; } }
 .ah-splash {
   position: absolute; top: 40%; left: 0; right: 0; text-align: center;
   font-family: var(--font-display); font-size: clamp(40px, 7vw, 96px); letter-spacing: 0.06em;
@@ -422,6 +445,8 @@ body.ah-playing, body.ah-playing * {
 .svgo-cont-lbl { font-size: 12px; letter-spacing: 5px; fill: color-mix(in oklab, var(--accent-2) 80%, white); }
 .svgo-cont-num { font-family: var(--font-display); font-weight: 700; font-size: 38px; fill: var(--accent-2); }
 .svgo-cont-num.low { fill: #ff5436; }
+/* when the continue timer runs out, retire the prompt but keep the stats card */
+.svgo.go-expired .svgo-cont-lbl, .svgo.go-expired .svgo-cont-num { opacity: 0; transition: opacity 0.4s ease; }
 .svgo-eyebrow { font-size: 11px; letter-spacing: 4px; fill: color-mix(in oklab, var(--accent-2) 62%, transparent); }
 .svgo-score { font-family: var(--font-display); font-weight: 700; font-size: 32px; fill: #fff; }
 .svgo-best { font-size: 13px; letter-spacing: 3px; fill: var(--accent-2); }
@@ -1048,6 +1073,10 @@ hr.rule {
   /* music toggle — small, top-right (beat the max-width:720 push-down) */
   .ah-music { top: 7px; right: 9px; padding: 4px 9px; font-size: 8px; letter-spacing: 0.1em; gap: 5px; }
   .ah-music .ah-note { font-size: 11px; }
+  /* full-screen toggle — compact icon-only, top-left */
+  .ah-fs { top: 7px; left: 9px; padding: 5px 7px; gap: 0; }
+  .ah-fs .ah-fs-label { display: none; }
+  .ah-fs svg { width: 13px; height: 13px; }
 
   /* radar eats a corner — drop it on phones */
   .ah-radar { display: none; }

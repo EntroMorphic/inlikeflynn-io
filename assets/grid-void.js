@@ -290,7 +290,7 @@
     muzzleFlash(x, y, power);
     playTracerSfx(power);
     if (musicOn) duck(power >= 0.9 ? 900 : 220);   // music dips under the shot
-    if (game.active) gameFire(x, y, power);
+    if (game.active && !game.paused) gameFire(x, y, power);
     else spawnTracer(x, y, power);
     ensureRunning();
   }
@@ -331,9 +331,9 @@
   function startCharge(x, y) {
     if (game.over || game.attract) return;
     charging = true; chargeStart = performance.now(); cx = x; cy = y;
-    // in-game: charge UI is immediate. on the site: defer until it's a real
-    // hold, so quick taps make nothing (no orb, no whine, no shot).
-    if (game.active) beginChargeVisuals();
+    // in-game: charge UI is immediate. on the site (incl. paused): defer until
+    // it's a real hold, so quick taps make nothing (no orb, no whine, no shot).
+    if (game.active && !game.paused) beginChargeVisuals();
     else chargeArmTimer = setTimeout(() => { if (charging) beginChargeVisuals(); }, WEB_HOLD_MIN);
   }
   function moveCharge(x, y) {
@@ -351,7 +351,7 @@
     stopChargeSound();
     // On the marketing site (not in-game), ignore quick taps — only a deliberate
     // press-and-hold fires the charged blast. In-game, every click fires.
-    if (!game.active && held < WEB_HOLD_MIN) return;
+    if (!(game.active && !game.paused) && held < WEB_HOLD_MIN) return;
     const fx2 = typeof x === 'number' ? x : cx, fy2 = typeof y === 'number' ? y : cy;
     fire(fx2, fy2, p);
     if (p >= 0.12) launchLogoProjectile(fx2, fy2, p);   // the charged mark flies down the tunnel
@@ -404,7 +404,7 @@
     })();
   }
 
-  window.addEventListener('pointerdown', (e) => { if (game.active) updateReticle(e.clientX, e.clientY); startCharge(e.clientX, e.clientY); }, { passive: true });
+  window.addEventListener('pointerdown', (e) => { if (game.active && !game.paused) updateReticle(e.clientX, e.clientY); startCharge(e.clientX, e.clientY); }, { passive: true });
   window.addEventListener('pointerup', (e) => endCharge(e.clientX, e.clientY), { passive: true });
   window.addEventListener('pointercancel', () => endCharge(), { passive: true });
   window.addEventListener('blur', () => endCharge());
@@ -413,13 +413,13 @@
   // callout (and scroll) on the playfield — but never on the buttons. The
   // pointer-driven charge/fire still works; we only cancel the touch default.
   window.addEventListener('touchstart', (e) => {
-    if (!(game.active || game.attract || game.over)) return;
+    if (!(game.active || game.attract || game.over) || game.paused) return;
     const t = e.target;
     if (t && t.closest && t.closest('button, a, input, textarea, select, .cas-howto')) return;
     if (e.cancelable) e.preventDefault();
   }, { passive: false });
   window.addEventListener('touchmove', (e) => {
-    if (!(game.active || game.attract)) return;
+    if (!(game.active || game.attract) || game.paused) return;
     const t = e.target;
     if (t && t.closest && t.closest('.cas-howto')) return;   // allow the how-to panel to scroll
     if (e.cancelable) e.preventDefault();
@@ -875,7 +875,7 @@
     target.x = (e.clientX / window.innerWidth) * 2 - 1;
     target.y = (e.clientY / window.innerHeight) * 2 - 1;
     if (charging) moveCharge(e.clientX, e.clientY);
-    if (game.active) updateReticle(e.clientX, e.clientY);
+    if (game.active && !game.paused) updateReticle(e.clientX, e.clientY);
   }, { passive: true });
 
   function onScroll() {
@@ -930,7 +930,7 @@
     return new THREE.CanvasTexture(c);
   })();
 
-  const game = { active: false, over: false, attract: false, score: 0, high: 0, prevHigh: 0, wave: 0, combo: 0, lives: 3, timeScale: 1, slowUntil: 0, toSpawn: 0, spawnTimer: 0, waveBreak: 0, blossomReady: false, blossoming: false };
+  const game = { active: false, over: false, attract: false, paused: false, pausedAt: 0, score: 0, high: 0, prevHigh: 0, wave: 0, combo: 0, lives: 3, timeScale: 1, slowUntil: 0, toSpawn: 0, spawnTimer: 0, waveBreak: 0, blossomReady: false, blossoming: false };
   try { game.high = +(localStorage.getItem('flynn-ah-high') || 0) || 0; } catch (e) {}
 
   // ---- run + career stats -------------------------------------------------
@@ -1333,7 +1333,7 @@
     flashWave(); updateHUD();
   }
   function updateGame(dt) {
-    if (!game.active || game.over) return;
+    if (!game.active || game.over || game.paused) return;
     game.timeScale = performance.now() < game.slowUntil ? 0.4 : 1;
     updateAnomalies(dt);
     if (game.toSpawn > 0) {
@@ -1419,13 +1419,45 @@
   function exitToMenu() { clearGoCountdown(); game.active = false; game.over = false; game.attract = false; openSplash(); }
   function endGame() {
     clearGoCountdown();
-    game.active = false; game.over = false; game.attract = false;
+    game.active = false; game.over = false; game.attract = false; game.paused = false;
     anomalies.slice().forEach(removeAnomaly);
-    if (hud) hud.classList.remove('menu', 'howto');
-    document.body.classList.remove('ah-playing', 'cas-menu');
+    if (hud) hud.classList.remove('menu', 'howto', 'paused');
+    document.body.classList.remove('ah-playing', 'cas-menu', 'ah-paused');
     fadeSite(false);
     stopMusic();
     showHUD(false); hideGameOver();
+  }
+
+  // ---- pause: stash the run and return to the website ("play at work") ----
+  // ESC (desktop) or rotating to portrait (mobile) pauses without losing the
+  // run; FLYNN / Konami / ESC / rotate-to-landscape resumes exactly where it was.
+  function pauseGame() {
+    if (!game.active || game.paused || game.over) return;
+    game.paused = true; game.pausedAt = performance.now();
+    setBreachAlarm(false);
+    anomalies.forEach((a) => { if (a.mesh) a.mesh.visible = false; });   // hide the craft behind the site
+    if (hud) hud.classList.remove('blossom', 'alarm');
+    showHUD(false);
+    document.body.classList.remove('ah-playing');
+    fadeSite(false);                       // bring the website back
+    if (musicEl) musicEl.pause();          // silence — looks like normal browsing
+    hideNowPlaying();
+  }
+  function resumeGame() {
+    if (!game.paused) return;
+    game.paused = false;
+    // don't count paused time against survival / timers
+    const delta = performance.now() - game.pausedAt;
+    stats.startedAt += delta;
+    if (game.slowUntil) game.slowUntil += delta;
+    anomalies.forEach((a) => { if (a.mesh) a.mesh.visible = true; });
+    showHUD(true);
+    document.body.classList.add('ah-playing');
+    fadeSite(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (musicOn && musicEl) { musicEl.play().catch(() => {}); showNowPlaying(nowPlaying); }
+    last = performance.now();              // avoid a giant dt on the first resumed frame
+    ensureRunning();
   }
 
   // ---- HUD (DOM) ----
@@ -1459,6 +1491,11 @@
         '<span class="ah-radar-cap">SECTOR SCAN</span>' +
       '</div>' +
       '<div class="ah-splash" data-splash></div>' +
+      '<button class="ah-fs" data-fs type="button" aria-label="Toggle full screen">' +
+        '<svg class="ah-fs-in" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5"/><path d="M20 9V4h-5"/><path d="M4 15v5h5"/><path d="M20 15v5h-5"/></svg>' +
+        '<svg class="ah-fs-out" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H4v5"/><path d="M15 4h5v5"/><path d="M9 20H4v-5"/><path d="M15 20h5v-5"/></svg>' +
+        '<span class="ah-fs-label">FULL SCREEN</span>' +
+      '</button>' +
       '<button class="ah-music" data-music type="button" aria-label="Toggle music"><span class="ah-note">♪</span> <span data-musiclabel>MUSIC</span></button>' +
       '<div class="ah-hint">CLICK / HOLD TO FIRE \u00b7 MAX CHARGE = HORIZON BOMB \u00b7 ESC TO EXIT</div>' +
       '<div class="ah-armed"><span class="ah-armed-dot"></span>DEATH BLOSSOM ARMED \u00b7 PRESS SPACE</div>' +
@@ -1571,6 +1608,7 @@
       music: hud.querySelector('[data-music]'), musicLabel: hud.querySelector('[data-musiclabel]'),
       reticle: hud.querySelector('[data-reticle]'), retLabel: hud.querySelector('[data-retlabel]'),
       radar: hud.querySelector('.ah-radar'), hint: hud.querySelector('.ah-hint'), prompt: hud.querySelector('[data-prompt]'),
+      fs: hud.querySelector('[data-fs]'),
       hiscore: hud.querySelector('[data-hiscore]'), newhigh: hud.querySelector('[data-new]'),
       stWave: hud.querySelector('[data-st-wave]'), stTime: hud.querySelector('[data-st-time]'),
       stFaults: hud.querySelector('[data-st-faults]'), stAcc: hud.querySelector('[data-st-acc]'),
@@ -1583,6 +1621,19 @@
     hud.querySelector('[data-start]').addEventListener('click', (e) => { e.stopPropagation(); startGame(); });
     hud.querySelector('[data-howto]').addEventListener('click', (e) => { e.stopPropagation(); openHowto(); });
     hud.querySelector('[data-howtoclose]').addEventListener('click', (e) => { e.stopPropagation(); closeHowto(); });
+    // full-screen toggle
+    const fsBtn = hud.querySelector('[data-fs]');
+    if (fsBtn) {
+      if (!fullscreenSupported()) {
+        fsBtn.style.display = 'none';     // e.g. iPhone Safari — no element fullscreen; hide the dead button
+      } else {
+        fsBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleFullscreen(); });
+        fsBtn.addEventListener('pointerdown', (e) => { e.stopPropagation(); }, { passive: true });
+        document.addEventListener('fullscreenchange', updateFsBtn);
+        document.addEventListener('webkitfullscreenchange', updateFsBtn);
+        updateFsBtn();
+      }
+    }
     // touch devices have no Enter key — speak their language on the splash prompt
     try {
       if (window.matchMedia('(pointer: coarse)').matches) {
@@ -1607,6 +1658,23 @@
     hudEls.music.classList.toggle('off', !musicOn);
     hudEls.musicLabel.textContent = musicOn ? 'MUSIC' : 'MUTED';
   }
+  // full-screen toggle (cross-browser)
+  function isFullscreen() { return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+  function fullscreenSupported() {
+    const el = document.documentElement;
+    return !!(el.requestFullscreen || el.webkitRequestFullscreen) && (document.fullscreenEnabled !== false);
+  }
+  function toggleFullscreen() {
+    try {
+      if (isFullscreen()) {
+        (document.exitFullscreen || document.webkitExitFullscreen || function () {}).call(document);
+      } else {
+        const el = document.documentElement;
+        (el.requestFullscreen || el.webkitRequestFullscreen || function () {}).call(el);
+      }
+    } catch (e) {}
+  }
+  function updateFsBtn() { if (hudEls && hudEls.fs) hudEls.fs.classList.toggle('on', isFullscreen()); }
   // targeting reticle follows the pointer; locks (orange) when over a craft
   let reticleSeen = false;
   function updateReticle(x, y) {
@@ -1674,12 +1742,14 @@
   function startGoCountdown() {
     clearGoCountdown();
     const numEl = hud && hud.querySelector('[data-continue]');
+    const svg = hud && hud.querySelector('.svgo');
+    if (svg) svg.classList.remove('go-expired');
     let n = 9;
     if (numEl) { numEl.textContent = n; numEl.classList.remove('low'); }
     goTimer = setInterval(function () {
       n--;
       if (numEl) { numEl.textContent = Math.max(0, n); if (n <= 3) numEl.classList.add('low'); }
-      if (n <= 0) { clearGoCountdown(); exitToMenu(); }
+      if (n <= 0) { clearGoCountdown(); if (svg) svg.classList.add('go-expired'); }   // keep the stats card up
     }, 1000);
   }
   function hideGameOver() { if (hudEls) hudEls.over.classList.remove('show'); }
@@ -1719,16 +1789,22 @@
   window.addEventListener('keydown', (e) => {
     const k = (e.key || '').toLowerCase();
     kbuf.push(k); if (kbuf.length > KONAMI.length) kbuf.shift();
-    if (kbuf.length === KONAMI.length && KONAMI.every((v, i) => kbuf[i] === v)) { kbuf = []; openSplash(); }
-    if (k.length === 1) { fbuf = (fbuf + k).slice(-5); if (fbuf === 'flynn') { fbuf = ''; openSplash(); } }
-    if (k === 'escape' && (game.active || game.attract || game.over)) endGame();
-    if ((k === 'enter' || k === ' ' || k === 'spacebar' || e.code === 'Space') && game.attract) { e.preventDefault(); startGame(); }
-    if ((k === ' ' || k === 'spacebar' || e.code === 'Space') && game.active) { e.preventDefault(); if (game.blossomReady) deathBlossom(); }
+    if (kbuf.length === KONAMI.length && KONAMI.every((v, i) => kbuf[i] === v)) { kbuf = []; if (game.paused) resumeGame(); else openSplash(); }
+    if (k.length === 1) { fbuf = (fbuf + k).slice(-5); if (fbuf === 'flynn') { fbuf = ''; if (game.paused) resumeGame(); else openSplash(); } }
+    if (k === 'escape') {
+      if (game.paused) resumeGame();
+      else if (game.active && !game.over) pauseGame();   // stash the run, back to the site
+      else if (game.attract || game.over) endGame();
+    }
+    if ((k === 'enter' || k === ' ' || k === 'spacebar' || e.code === 'Space') && game.paused) { e.preventDefault(); resumeGame(); }
+    else if ((k === 'enter' || k === ' ' || k === 'spacebar' || e.code === 'Space') && game.attract) { e.preventDefault(); startGame(); }
+    else if ((k === ' ' || k === 'spacebar' || e.code === 'Space') && game.active && !game.paused) { e.preventDefault(); if (game.blossomReady) deathBlossom(); }
   });
 
-  // ---- mobile: rotate the phone to landscape to enter the arcade ---------
-  // phones only (coarse pointer + short landscape viewport) so we never hijack
-  // a desktop window-resize or a tablet/phone reading the site in landscape.
+  // ---- touch devices: rotate to landscape to enter the arcade -----------
+  // phones & tablets (coarse pointer + landscape). The height cap is generous
+  // enough to include tablets (~1024px tall in landscape) but bounded so a
+  // desktop never qualifies; coarse-pointer + an actual rotation gate the rest.
   (function () {
     const coarse = () => { try { return window.matchMedia('(pointer: coarse)').matches; } catch (e) { return false; } };
     let mq;
@@ -1736,9 +1812,11 @@
     function onOrient() {
       if (!coarse()) return;
       if (mq.matches) {                       // turned horizontal
-        if (window.innerHeight <= 540 && !game.active && !game.attract && !game.over) openSplash();
-      } else {                                // back to portrait → leave the arcade
-        if (game.active || game.attract || game.over) endGame();
+        if (game.paused) resumeGame();        // back to your saved run
+        else if (window.innerHeight <= 1200 && !game.active && !game.attract && !game.over) openSplash();
+      } else {                                // back to portrait
+        if (game.active && !game.paused) pauseGame();   // stash the run, look like you're reading
+        else if (game.attract || game.over) endGame();
       }
     }
     if (mq.addEventListener) mq.addEventListener('change', onOrient);
@@ -1818,9 +1896,11 @@
     startGame() { startGame(); },
     openSplash() { openSplash(); },
     stopGame() { endGame(); },
+    pauseGame() { pauseGame(); },
+    resumeGame() { resumeGame(); },
     deathBlossom() { game.blossomReady = true; deathBlossom(); },
     get stats() { return { shots: stats.shots, hits: stats.hits, accuracy: accuracy(stats.hits, stats.shots), faults: stats.faults, breaches: stats.breaches, bestCombo: stats.bestCombo, blossoms: stats.blossoms, slowmo: stats.slowmo, elapsed: stats.elapsed }; },
     get career() { return Object.assign({ accuracy: accuracy(career.hits, career.shots) }, career); },
-    get game() { return { active: game.active, over: game.over, attract: game.attract, score: game.score, wave: game.wave, combo: game.combo, lives: game.lives, anomalies: anomalies.length, blossomReady: game.blossomReady }; }
+    get game() { return { active: game.active, over: game.over, attract: game.attract, paused: game.paused, score: game.score, wave: game.wave, combo: game.combo, lives: game.lives, anomalies: anomalies.length, blossomReady: game.blossomReady }; }
   };
 })();

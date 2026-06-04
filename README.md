@@ -113,6 +113,16 @@ Push to GitHub and enable **GitHub Pages** on the branch/root. All paths are
 relative, so no extra configuration is needed. The site needs internet at runtime
 for the three.js and Google Fonts CDNs.
 
+### Cache-busting (do this before each deploy)
+
+Mobile browsers cache `grid-void.js` / `tron.css` etc. hard, so returning visitors
+can run stale code after an update. Every local asset reference carries a `?v=`
+version tag (e.g. `grid-void.js?v=20260603-1936`); bumping the tag forces a fresh
+fetch. To re-stamp every page with a fresh timestamp version in one pass, ask
+Claude to "bump the asset cache version" — it runs the stamping script across
+`index.html` and `pages/*.html`. Done right before committing, this guarantees
+mobile users get the latest build with no action on their part.
+
 ---
 
 ## Credits
