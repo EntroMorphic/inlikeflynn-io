@@ -10,9 +10,22 @@ First versioned release. Establishes the canonical site and a professional repo
 baseline.
 
 ### Added
+- A **floating three.js bloom emblem** beside a new **INSTALL** link in the nav
+  (after Tiers): a neon wireframe "anomaly core" (nested counter-rotating
+  icosahedra + a hot center) rendered on a transparent canvas through a hand-rolled
+  UnrealBloom-style post pipeline (scene → blurred mip levels → additive
+  composite), so it glows and appears to float freely next to the label. Energizes
+  on hover/focus — faster spin, cyan→anomaly-orange, stronger bloom. Wired to the
+  real PWA `beforeinstallprompt` flow via `assets/js/install-button.js`. Degrades
+  gracefully — no WebGL falls back to a glowing CSS hexagon glyph; on iOS/Firefox
+  (no prompt event) it shows plain-language "Add to Home Screen" instructions; once
+  installed it hides itself. Respects `prefers-reduced-motion`; hidden in
+  standalone (installed) mode.
 - Social/SEO metadata on every page: Open Graph + Twitter Card tags, per-page
   meta descriptions, canonical URLs, and a branded 1200×630 share image.
-- Favicons (16/32/180) and PWA icons (192/512) + `site.webmanifest`.
+- Favicons (16/32/180) and PWA icons (192/512) + `site.webmanifest`, including a
+  plain-spoken install `description` and preview `screenshots` so the browser's
+  install dialog clearly explains what installing does (no dark patterns).
 - `robots.txt`, `sitemap.xml`, and a branded `404.html`.
 - Keyboard activation (Enter/Space) and a focus ring for the game-over buttons;
   `role="dialog"` on the game-over screen; site-wide `:focus-visible` styles.

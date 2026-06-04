@@ -29,7 +29,7 @@ audio buffers.
     img/                logo, favicons, OG image
     audio/{music,sfx}/  game soundtrack + sound effects
   docs/                 audit notes & architecture (see also /REMEDIATION.md at root)
-  uploads/              raw source drops (PDFs, original audio) — not deployed-critical
+  uploads/              raw source drops (PDFs, original audio) — local only, git-ignored
 ```
 
 ## Branching & commits

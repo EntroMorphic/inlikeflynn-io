@@ -50,7 +50,7 @@ assets/
     sfx/                In-game sound effects
 docs/                   Audit notes & architecture
 .github/                CI workflow, issue/PR templates, CODEOWNERS
-uploads/                Source material (PDFs, logos, raw audio drops)
+uploads/                Source material (PDFs, logos, raw audio) — local only, git-ignored
 ```
 
 The **root** is canonical. Asset references are relative, so the site runs from
