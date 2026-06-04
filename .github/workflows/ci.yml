@@ -19,7 +19,7 @@ jobs:
         with:
           args: >-
             --no-progress
-            --base .
+            --root-dir "${{ github.workspace }}"
             --exclude 'inlikeflynn\.io'
             './**/*.html'
           fail: true
