@@ -20,7 +20,6 @@ jobs:
           args: >-
             --no-progress
             --base .
-            --exclude-mail
             --exclude 'inlikeflynn\.io'
             './**/*.html'
           fail: true
