@@ -415,7 +415,7 @@
   window.addEventListener('touchstart', (e) => {
     if (!(game.active || game.attract || game.over) || game.paused) return;
     const t = e.target;
-    if (t && t.closest && t.closest('button, a, input, textarea, select, .cas-howto')) return;
+    if (t && t.closest && t.closest('button, a, input, textarea, select, .cas-howto, .svgo-btn, [role="button"]')) return;
     if (e.cancelable) e.preventDefault();
   }, { passive: false });
   window.addEventListener('touchmove', (e) => {
