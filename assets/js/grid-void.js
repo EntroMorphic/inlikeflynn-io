@@ -321,7 +321,7 @@
     chargeEl.style.left = cx + 'px'; chargeEl.style.top = cy + 'px';
     const logo = document.createElement('img');
     logo.className = 'charge-logo'; logo.alt = ''; logo.decoding = 'async';
-    logo.src = MUSIC_BASE + 'assets/flynn-logo.png';
+    logo.src = MUSIC_BASE + 'assets/img/flynn-logo.png';
     chargeEl.appendChild(logo);
     chargeEl._logo = logo;
     muzzleLayer.appendChild(chargeEl);
@@ -366,7 +366,7 @@
     const startSize = Math.max(34, orbSize * 0.86 * (0.62 + power * 0.38));
     const el = document.createElement('img');
     el.className = 'charge-logo-fly'; el.alt = ''; el.decoding = 'async';
-    el.src = MUSIC_BASE + 'assets/flynn-logo.png';
+    el.src = MUSIC_BASE + 'assets/img/flynn-logo.png';
     muzzleLayer.appendChild(el);
 
     // replicate the tracer's own start→dest exactly (see spawnTracer)
@@ -497,10 +497,10 @@
     return true;
   }
   function ensureBlasters() {
-    loadSfxBuf('blaster', 'assets/sfx/blaster.mp3');
-    loadSfxBuf('heavy', 'assets/sfx/heavy-blaster.mp3');
-    loadSfxBuf('hit', 'assets/sfx/direct-hit-1.mp3');
-    loadSfxBuf('slowmo', 'assets/sfx/slow-mo.mp3');
+    loadSfxBuf('blaster', 'assets/audio/sfx/blaster.mp3');
+    loadSfxBuf('heavy', 'assets/audio/sfx/heavy-blaster.mp3');
+    loadSfxBuf('hit', 'assets/audio/sfx/direct-hit-1.mp3');
+    loadSfxBuf('slowmo', 'assets/audio/sfx/slow-mo.mp3');
   }
   function playHitSfx() { ensureBlasters(); playSfxBuf('hit', 0.6, 0.06); }
   function playSlowmoSfx() { ensureBlasters(); playSfxBuf('slowmo', 0.85, 0); }
@@ -666,7 +666,7 @@
   function ensureMissileBuf() {
     if (missileBufTried || !ensureCtx()) return;
     missileBufTried = true;
-    fetch(MUSIC_BASE + 'assets/sfx/fire-z-missiles-3.mp3')
+    fetch(MUSIC_BASE + 'assets/audio/sfx/fire-z-missiles-3.mp3')
       .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject()))
       .then((b) => actx.decodeAudioData(b))
       .then((buf) => { missileBuf = buf; })
@@ -765,15 +765,15 @@
 
   // ---- game music: 80s synthwave playlist (shuffles, ducks under SFX) -----
   const MUSIC = [
-    { src: 'assets/music/neon-nights.mp3', title: 'Neon Nights', artist: 'entropywalker', meta: 'SYNTHWAVE · ENTROMORPHIC' },
-    { src: 'assets/music/chasing-the-mirage.mp3', title: 'Chasing the Mirage', artist: 'entropywalker', meta: 'SYNTHWAVE · ENTROMORPHIC' },
-    { src: 'assets/music/silent-cinema.mp3', title: 'Silent Cinema', artist: 'entropywalker', meta: 'SYNTHWAVE · ENTROMORPHIC' }
+    { src: 'assets/audio/music/neon-nights.mp3', title: 'Neon Nights', artist: 'entropywalker', meta: 'SYNTHWAVE · ENTROMORPHIC' },
+    { src: 'assets/audio/music/chasing-the-mirage.mp3', title: 'Chasing the Mirage', artist: 'entropywalker', meta: 'SYNTHWAVE · ENTROMORPHIC' },
+    { src: 'assets/audio/music/silent-cinema.mp3', title: 'Silent Cinema', artist: 'entropywalker', meta: 'SYNTHWAVE · ENTROMORPHIC' }
   ];
   // resolve relative to this script so it works from /pages/* too
   const MUSIC_BASE = (function () {
     try {
       const s = document.currentScript || [].slice.call(document.scripts).find((x) => /grid-void\.js/.test(x.src));
-      if (s && s.src) return s.src.replace(/[^/]*$/, '').replace(/assets\/$/, '');
+      if (s && s.src) return s.src.replace(/[^/]*$/, '').replace(/assets\/js\/$/, '');
     } catch (e) {}
     return '';
   })();
@@ -1051,7 +1051,7 @@
   const missiles = [];
   // Flynn mark ridden in each missile's exhaust (38% opacity). loaded once.
   const logoTex = (function () {
-    try { const t = new THREE.TextureLoader().load(MUSIC_BASE + 'assets/flynn-logo.png'); t.anisotropy = 2; return t; } catch (e) { return null; }
+    try { const t = new THREE.TextureLoader().load(MUSIC_BASE + 'assets/img/flynn-logo.png'); t.anisotropy = 2; return t; } catch (e) { return null; }
   })();
   const _mv1 = new THREE.Vector3(), _mv2 = new THREE.Vector3();
   function buildTrail(line, pts) {
@@ -1516,7 +1516,7 @@
         '<span class="ah-ret-lock bl"></span><span class="ah-ret-lock br"></span>' +
         '<span class="ah-ret-label" data-retlabel></span>' +
       '</div>' +
-      '<div class="ah-over" data-over>' +
+      '<div class="ah-over" data-over role="dialog" aria-modal="true" aria-label="Game over">' +
         '<div class="ah-over-card">' +
           '<svg class="svgo" viewBox="0 0 520 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">' +
             '<defs>' +
@@ -1624,6 +1624,16 @@
     };
     hud.querySelector('[data-retry]').addEventListener('click', (e) => { e.stopPropagation(); game.active = false; game.over = false; startGame(); });
     hud.querySelector('[data-menu]').addEventListener('click', (e) => { e.stopPropagation(); exitToMenu(); });
+    // keyboard activation for the SVG game-over buttons (role=button, tabindex=0)
+    ['[data-retry]', '[data-menu]'].forEach((sel) => {
+      const g = hud.querySelector(sel);
+      g.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar' || e.code === 'Space') {
+          e.preventDefault(); e.stopPropagation();
+          g.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        }
+      });
+    });
     hud.querySelector('[data-start]').addEventListener('click', (e) => { e.stopPropagation(); startGame(); });
     hud.querySelector('[data-howto]').addEventListener('click', (e) => { e.stopPropagation(); openHowto(); });
     hud.querySelector('[data-howtoclose]').addEventListener('click', (e) => { e.stopPropagation(); closeHowto(); });
@@ -1740,6 +1750,8 @@
         'BEST WAVE ' + (career.bestWave || 0);
     }
     hudEls.over.classList.add('show');
+    // move focus to the primary action so keyboard users can act immediately
+    try { var _r = hudEls.over.querySelector('[data-retry]'); if (_r) _r.focus(); } catch (e) {}
     startGoCountdown();
   }
   // CAPCOM-style continue countdown: 9 → 0; expiry drops back to the attract menu

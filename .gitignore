@@ -1,18 +1,18 @@
-# OS / editor cruft
+# ---- OS / editor cruft ----
 .DS_Store
 Thumbs.db
+desktop.ini
+*.swp
 *~
 .idea/
 .vscode/
+*.code-workspace
 
-# Dependencies (none currently — site is dependency-free)
-node_modules/
-
-# Logs / temp
-*.log
-.cache/
-
-# Internal assets — not part of the published site (kept in ../ outside the repo)
-uploads/
+# ---- working artifacts (not part of the deployed site) ----
 screenshots/
-*.pptx
+*.log
+
+# ---- dependencies (only if a toolchain is ever added) ----
+node_modules/
+.cache/
+dist/

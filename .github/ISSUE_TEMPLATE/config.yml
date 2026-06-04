@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security report (private)
+    url: mailto:tripp@entromorphic.com
+    about: Please report security issues by email, not as a public issue.
+  - name: Licensing / commercial inquiry
+    url: mailto:tripp@entromorphic.com
+    about: Evaluation, OEM, or enterprise licensing conversations.

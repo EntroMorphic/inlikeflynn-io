@@ -11,25 +11,35 @@
 
 ## Summary
 
-The canonical site renders clean, links and assets resolve, and cache versions are
-uniform. Remaining work is **SEO/social metadata**, **housekeeping**, and a
-**repo-professionalization** workstream. Nothing below is a functional breakage.
+> **✅ Remediated to v1.0.0 on 2026-06-04.** All items below are complete except
+> **HK-5** (deliberately deferred to a real build step — see note). See
+> [`CHANGELOG.md`](CHANGELOG.md) for the shipped change set and
+> [`docs/AUDIT.md`](docs/AUDIT.md) for the audit record.
 
 | ID | Item | Priority | Effort | Status |
 |----|------|----------|--------|--------|
-| SEO-1 | Open Graph + Twitter Card meta on all pages | 🔴 | M | [ ] |
-| SEO-2 | Per-page `<meta name="description">` | 🟡 | S | [ ] |
-| SEO-3 | Favicon + canonical links | 🟡 | S | [ ] |
-| SEO-4 | `sitemap.xml` + `robots.txt` | 🟢 | S | [ ] |
-| HK-1 | Remove stale `Flynn-site/` snapshot | 🟢 | S | [ ] |
-| HK-2 | Remove orphaned `flynn-logo.jpg` | 🟢 | S | [ ] |
-| HK-3 | Optimize nav logo (255 KB → nav-sized) | 🟢 | S | [ ] |
-| HK-4 | Resolve footer placeholder links | 🟢 | M | [ ] |
-| HK-5 | Precompile Babel / Tweaks for production | 🟢 | M | [ ] |
-| HK-6 | Remove orphaned `assets/tweaks.jsx` | 🟢 | S | [ ] |
-| DEC-1 | Decide: Tweaks panel home-only or site-wide? | 🟡 | S | [ ] |
-| A11Y-1 | Lightweight accessibility pass (contrast, headings, kbd) | 🟢 | M | [ ] |
-| REPO | Professional-grade GitHub repo shape | 🟡 | L | [ ] |
+| SEO-1 | Open Graph + Twitter Card meta on all pages | 🔴 | M | [x] |
+| SEO-2 | Per-page `<meta name="description">` | 🟡 | S | [x] |
+| SEO-3 | Favicon + canonical links | 🟡 | S | [x] |
+| SEO-4 | `sitemap.xml` + `robots.txt` (+ `404.html`) | 🟢 | S | [x] |
+| HK-1 | Remove stale `Flynn-site/` snapshot | 🟢 | S | [x] |
+| HK-2 | Remove orphaned `flynn-logo.jpg` | 🟢 | S | [x] |
+| HK-3 | Optimize nav logo (255 KB → 73 KB) | 🟢 | S | [x] |
+| HK-4 | Resolve footer placeholder links | 🟢 | M | [x] |
+| HK-5 | Precompile Babel / Tweaks for production | 🟢 | M | [~] deferred |
+| HK-6 | Remove orphaned `assets/tweaks.jsx` | 🟢 | S | [x] |
+| DEC-1 | Tweaks panel home-only or site-wide? | 🟡 | S | [x] home-only |
+| A11Y-1 | Accessibility pass (contrast, headings, kbd) | 🟢 | M | [x] |
+| REPO | Professional-grade GitHub repo shape | 🟡 | L | [x] |
+
+**HK-5 deferral rationale:** hand-transpiling the live Tweaks JSX risks subtly
+breaking the panel; it should be precompiled by a real toolchain in CI, not by
+hand. Documented in README → Production notes and tracked for when a build step
+lands.
+
+### ✅ Verified healthy (no action needed)
+- **Reduced-motion is correctly handled** — `grid-void.js`, `tron-fx.js`, and `tron.css` all honor `prefers-reduced-motion: reduce` (grid, ribbons, and marquee calm down). Confirmed during audit.
+- **Game-over screen buttons** — *fixed* (see Fix Log below).
 
 ### ✅ Verified healthy (no action needed)
 - **Reduced-motion is correctly handled** — `grid-void.js`, `tron-fx.js`, and `tron.css` all honor `prefers-reduced-motion: reduce` (grid, ribbons, and marquee calm down). Confirmed during audit.

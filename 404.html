@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="theme-color" content="#05080e" />
+<title>Signal lost — Flynn</title>
+<meta name="description" content="The page you requested isn't on the grid. Return to Flynn — embedded anomaly detection for industrial telemetry." />
+<meta name="robots" content="noindex, follow" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet" />
+<style>
+  /* Self-contained: a 404 can be served at any URL depth, so it must not
+     depend on external stylesheets resolving. Brand tokens inlined. */
+  :root {
+    --bg: #05080e; --ink: #e8eef4; --mid: #8aa0b0;
+    --cyan: #47d8ff; --orange: #ff8a3a;
+    --hair: rgba(120,180,210,0.16);
+    --mono: "Geist Mono", ui-monospace, monospace;
+    --body: "Geist", system-ui, sans-serif;
+    --display: "Orbitron", var(--body);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg); color: var(--ink); font-family: var(--body);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(140% 120% at 50% 0%, rgba(20,40,60,0.35), transparent 60%),
+      linear-gradient(transparent 0, transparent calc(100% - 1px), var(--hair) 100%),
+      repeating-linear-gradient(90deg, transparent 0 79px, var(--hair) 79px 80px);
+    background-size: auto, auto, 80px 80px;
+  }
+  #grid-void { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 2; }
+  .nav { padding: 22px 0; border-bottom: 1px solid var(--hair); position: relative; z-index: 2; }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); font-weight: 600; }
+  .brand img { width: 34px; height: 34px; display: block; }
+  .brand .fl { color: var(--cyan); }
+  .nav-links { display: flex; gap: 22px; flex-wrap: wrap; }
+  .nav-links a { color: var(--mid); text-decoration: none; font-size: 14px; letter-spacing: 0.01em; transition: color .2s; }
+  .nav-links a:hover { color: var(--cyan); }
+  main { min-height: calc(100vh - 160px); display: flex; align-items: center; }
+  .nf { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; padding: 72px 0; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan); }
+  .eyebrow .dot { width: 7px; height: 7px; background: var(--orange); transform: rotate(45deg); }
+  .code { font-family: var(--mono); font-size: clamp(80px, 18vw, 200px); line-height: 0.9; letter-spacing: -0.03em; color: #cdd8e0; }
+  .code em { color: var(--orange); font-style: normal; }
+  h1 { font-family: var(--display); font-weight: 700; font-size: clamp(26px, 4vw, 44px); letter-spacing: -0.01em; margin: 4px 0 0; }
+  .lede { max-width: 52ch; color: var(--mid); font-size: clamp(15px, 1.4vw, 18px); line-height: 1.55; margin: 0; }
+  .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--body); font-weight: 600; font-size: 14px; padding: 13px 20px; border-radius: 8px; text-decoration: none; border: 1px solid; transition: all .18s; }
+  .btn.solid { background: var(--cyan); border-color: var(--cyan); color: #051018; }
+  .btn.solid:hover { background: var(--orange); border-color: var(--orange); }
+  .btn.ghost { background: transparent; border-color: var(--hair); color: var(--ink); }
+  .btn.ghost:hover { border-color: var(--cyan); color: var(--cyan); }
+  .hint { margin-top: 16px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mid); }
+  .hint b { color: var(--cyan); }
+  @media (max-width: 640px) { .nav-links { display: none; } }
+</style>
+</head>
+<body>
+
+<canvas id="grid-void"></canvas>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="/">
+      <img src="/assets/img/flynn-logo.png?v=20260604-1530" alt="Flynn" onerror="this.style.display='none'" />
+      <span>Get in like <span class="fl">Flynn</span>.</span>
+    </a>
+    <nav class="nav-links">
+      <a href="/pages/whitepaper.html">Whitepaper</a>
+      <a href="/pages/validation.html">Validation</a>
+      <a href="/pages/industries.html">Industries</a>
+      <a href="/pages/roadmap.html">Roadmap</a>
+      <a href="/pages/tiers.html">Tiers</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="nf">
+      <span class="eyebrow"><span class="dot"></span>Signal lost · 404</span>
+      <div class="code">4<em>0</em>4</div>
+      <h1>This stream returned no signal.</h1>
+      <p class="lede">The page you requested isn't on the grid. It may have moved, or the link
+        drifted out of its threshold. Let's get you back to a known-good state.</p>
+      <div class="actions">
+        <a class="btn solid" href="/">Return to signal →</a>
+        <a class="btn ghost" href="/pages/whitepaper.html">Read the whitepaper</a>
+      </div>
+      <div class="hint">Tip: type <b>FLYNN</b> to enter the grid.</div>
+    </div>
+  </div>
+</main>
+
+<!-- progressive enhancement: the volumetric grid + hidden game, if it resolves -->
+<script>window.FLYNN_GRID_CONFIG = { variant: 'home' };</script>
+<script src="https://unpkg.com/three@0.149.0/build/three.min.js"></script>
+<script src="/assets/js/grid-void.js?v=20260604-1530"></script>
+
+</body>
+</html>

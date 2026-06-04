@@ -1,0 +1,9 @@
+# These owners are requested for review on any change to matching paths.
+# See https://docs.github.com/articles/about-code-owners
+
+# Default owner for everything
+*                       @entromorphic
+
+# The game engine + audio are delicate — flag explicitly
+/assets/js/grid-void.js @entromorphic
+/assets/audio/          @entromorphic

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Print-only variant — canonical lives at /pages/industries.html
+Disallow: /pages/industries-print.html
+
+Sitemap: https://inlikeflynn.io/sitemap.xml

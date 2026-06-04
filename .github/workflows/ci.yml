@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Link & local-asset check (lychee)
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --no-progress
+            --base .
+            --exclude-mail
+            --exclude 'inlikeflynn\.io'
+            './**/*.html'
+          fail: true
+
+      - name: Cache-version consistency
+        shell: bash
+        run: |
+          set -euo pipefail
+          tags=$(grep -rhoE '\?v=[0-9]{8}-[0-9]{4}' --include='*.html' . | sort -u || true)
+          count=$(printf '%s\n' "$tags" | grep -c . || true)
+          echo "Found cache tags:"; printf '%s\n' "$tags"
+          if [ "$count" -ne 1 ]; then
+            echo "::error::Asset cache (?v=) tags are not uniform across HTML — run the cache-bump pass."
+            exit 1
+          fi
+
+      - name: No dead placeholder links
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -rnE 'href="#"' --include='*.html' .; then
+            echo "::error::Found dead href=\"#\" links."
+            exit 1
+          fi
+          echo "No dead placeholder links."
