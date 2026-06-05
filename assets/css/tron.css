@@ -539,6 +539,8 @@ a:focus-visible, button:focus-visible, .cas-coin:focus-visible, .ah-music:focus-
   .install-gem { width: 23px; height: 23px; }
 }
 @media (display-mode: standalone) { .install-btn { display: none !important; } }
+/* footer placement: small top margin so it sits under the brand tagline */
+.footer-install { margin-left: 0; margin-top: 18px; }
 
 /* install toast + instructions popover */
 .install-toast {

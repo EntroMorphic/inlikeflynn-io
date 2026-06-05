@@ -4,6 +4,20 @@ All notable changes to inlikeflynn.io are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- Echoed the **Install** control (floating bloom emblem + PWA flow) into the site
+  **footer**, under the brand tagline — same `[data-install]` the script auto-wires.
+- `CNAME` (`inlikeflynn.io`) and `.nojekyll` for GitHub Pages custom-domain serving.
+
+### Changed
+- Renamed the install instructions modal header to **"INSTALL inlikeflynn.io"**.
+- Bumped the asset cache version to `20260605-1145`.
+
+### Removed
+- `Flynn.pptx` (a fresh deck will be authored separately).
+
 ## [1.0.0] — 2026-06-04
 
 First versioned release. Establishes the canonical site and a professional repo
