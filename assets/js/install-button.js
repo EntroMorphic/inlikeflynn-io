@@ -70,10 +70,28 @@
       '<p class="install-pop-fine">It just opens this site in its own window — no account, no tracking.</p>';
     document.body.appendChild(pop);
     var r = btn.getBoundingClientRect();
-    var pw = pop.offsetWidth;
-    var left = Math.min(window.innerWidth - pw - 12, Math.max(12, r.left + r.width / 2 - pw / 2));
+    var pw = pop.offsetWidth, ph = pop.offsetHeight;
+    var pad = 12, gap = 10;
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var left, top;
+    if (r.bottom + gap + ph <= vh - pad) {
+      // room below — place beneath, centered on the link
+      left = r.left + r.width / 2 - pw / 2;
+      top = r.bottom + gap;
+    } else {
+      // not enough room below (e.g. the footer) — place to the side, centered vertically
+      top = r.top + r.height / 2 - ph / 2;
+      if (r.right + gap + pw <= vw - pad) {
+        left = r.right + gap;              // to the right of the link
+      } else {
+        left = r.left - gap - pw;          // fall back to the left if right overflows
+      }
+    }
+    // clamp inside the viewport
+    left = Math.min(vw - pw - pad, Math.max(pad, left));
+    top = Math.min(vh - ph - pad, Math.max(pad, top));
     pop.style.left = left + 'px';
-    pop.style.top = (r.bottom + 10) + 'px';
+    pop.style.top = top + 'px';
     requestAnimationFrame(function () { pop.classList.add('show'); });
     setTimeout(function () { document.addEventListener('pointerdown', onDoc, true); }, 0);
   }
