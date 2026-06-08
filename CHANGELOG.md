@@ -28,6 +28,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - `CNAME` (`inlikeflynn.io`) and `.nojekyll` for GitHub Pages custom-domain serving.
 
 ### Changed
+- Trimmed the empty padding from the logo (`flynn-logo.png`, mandala was inset
+  ~33%) so it fills its box in the nav/footer/masthead, and regenerated the icon
+  set from it: favicons (16/32), apple-touch-icon (180), and PWA maskable icons
+  (192/512, with a proper safe zone).
+- **Top navigation is now a single source of truth** (`assets/js/site-nav.js`),
+  injected into a `<header id="site-nav">` mount on every page. Reduced the
+  primary links to Why Flynn / Whitepaper / Tiers and moved Validation /
+  Industries / Roadmap into an **"Explore" dropdown** styled after the INSTALL
+  modal + the now-playing music card (dark cyan-bordered panel, orange→cyan
+  accent bar, mono eyebrow). Added a Liquid.ai-style **sliding highlight** that
+  follows the cursor and rests on the current page; the dropdown opens on hover
+  (desktop) / tap (touch), and surfaces the active sub-page. Auto-detects the
+  current page; depth-aware links.
+- **Footer is now a single source of truth.** Extracted the canonical footer
+  (index.html's) into `assets/js/site-footer.js`, which injects depth-aware markup
+  into a `<footer id="site-footer">` mount on every page (index, all `pages/*`, and
+  why-flynn). One edit now updates the footer everywhere. The themed pages keep
+  their `<canvas id="grid-bg">` for tron-fx; why-flynn carries the footer CSS inline.
+- Fixed a pre-existing ~22px horizontal scroll from the nav Install gem's oversized
+  bloom canvas (`overflow-x: clip` on html/body).
 - **Delivery model corrected across the site: Flynn ships as a compiled binary for
   the customer's hardware, not as source.** Reconciled every "ships as one
   human-readable C source file / Source files: 1 / auditable line-by-line" claim
@@ -36,7 +56,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   verifiable against published test vectors + certification-ready artifacts, with
   full source available to certifying authorities under NDA / escrow.
 - Renamed the install instructions modal header to **"INSTALL inlikeflynn.io"**.
-- Bumped the asset cache version to `20260608-1100` (also the service worker's
+- Disabled the hidden game on the 404 page (it half-launched against the wrong DOM)
+  and made the 404 auto-start the synthwave + now-playing card on first interaction
+  (autoplay-safe, falls back to first tap/click/keypress). Removed the 404's
+  "type FLYNN" hint. New `noGame` / `autoMusic` flags in `grid-void.js`.
+- Bumped the asset cache version to `20260608-2030` (also the service worker's
   cache `VERSION`).
 
 ### Removed

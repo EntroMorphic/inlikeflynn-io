@@ -1807,8 +1807,8 @@
   window.addEventListener('keydown', (e) => {
     const k = (e.key || '').toLowerCase();
     kbuf.push(k); if (kbuf.length > KONAMI.length) kbuf.shift();
-    if (kbuf.length === KONAMI.length && KONAMI.every((v, i) => kbuf[i] === v)) { kbuf = []; if (game.paused) resumeGame(); else openSplash(); }
-    if (k.length === 1) { fbuf = (fbuf + k).slice(-5); if (fbuf === 'flynn') { fbuf = ''; if (game.paused) resumeGame(); else openSplash(); } }
+    if (!cfg.noGame && kbuf.length === KONAMI.length && KONAMI.every((v, i) => kbuf[i] === v)) { kbuf = []; if (game.paused) resumeGame(); else openSplash(); }
+    if (!cfg.noGame && k.length === 1) { fbuf = (fbuf + k).slice(-5); if (fbuf === 'flynn') { fbuf = ''; if (game.paused) resumeGame(); else openSplash(); } }
     if (k === 'escape') {
       if (game.paused) resumeGame();
       else if (game.active && !game.over) pauseGame();   // stash the run, back to the site
@@ -1824,6 +1824,7 @@
   // enough to include tablets (~1024px tall in landscape) but bounded so a
   // desktop never qualifies; coarse-pointer + an actual rotation gate the rest.
   (function () {
+    if (cfg.noGame) return;                  // game disabled on this page (e.g. 404)
     const coarse = () => { try { return window.matchMedia('(pointer: coarse)').matches; } catch (e) { return false; } };
     let mq;
     try { mq = window.matchMedia('(orientation: landscape)'); } catch (e) { return; }
@@ -1921,4 +1922,24 @@
     get career() { return Object.assign({ accuracy: accuracy(career.hits, career.shots) }, career); },
     get game() { return { active: game.active, over: game.over, attract: game.attract, paused: game.paused, score: game.score, wave: game.wave, combo: game.combo, lives: game.lives, anomalies: anomalies.length, blossomReady: game.blossomReady }; }
   };
+
+  // ---- auto-music (e.g. the 404 page): start the synthwave + now-playing card.
+  // Browsers block audio until a user gesture, so try immediately; if that's
+  // refused, arm a one-shot starter on the first real interaction. The card is
+  // suppressed until playback is actually confirmed (no silent-card flash).
+  if (cfg.autoMusic && musicOn) {
+    startMusic();
+    hideNowPlaying();                          // suppress premature card; show only once audio is confirmed
+    setTimeout(() => {
+      if (musicEl && !musicEl.paused) { showNowPlaying(nowPlaying); return; }   // autoplay allowed
+      const evs = ['pointerdown', 'keydown', 'touchstart', 'click'];
+      const cleanup = () => evs.forEach((ev) => window.removeEventListener(ev, go, true));
+      function go() {
+        cleanup();
+        if (musicEl && musicEl.paused) { musicEl.play().then(() => showNowPlaying(nowPlaying)).catch(() => {}); }
+        else { showNowPlaying(nowPlaying); }
+      }
+      evs.forEach((ev) => window.addEventListener(ev, go, true));
+    }, 250);
+  }
 })();

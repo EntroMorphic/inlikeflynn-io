@@ -61,6 +61,7 @@ html {
   font-feature-settings: "ss01", "ss02", "cv11";
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overflow-x: clip;
 }
 
 body {
@@ -68,6 +69,7 @@ body {
   line-height: 1.55;
   letter-spacing: -0.005em;
   min-height: 100vh;
+  overflow-x: clip;   /* contain the install gem's oversized bloom canvas near the viewport edge */
 }
 
 ::selection { background: var(--ink); color: var(--bone); }

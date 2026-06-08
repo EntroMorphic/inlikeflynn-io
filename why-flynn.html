@@ -4,8 +4,22 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="theme-color" content="#06090f" />
-<title>Flynn — Embedded Anomaly Detection · Business Overview</title>
-<meta name="description" content="Flynn is a patent-pending, 2,180-byte embedded anomaly detector that lives on the microcontroller already inside your equipment. It locks its baseline on day one, so slow-developing faults stay visible — flagging a NASA bearing fault 17 days before failure, fully offline, deterministic to the bit." />
+<title>Why Flynn — embedded anomaly detection</title>
+<meta name="description" content="Why Flynn: a patent-pending, 2,180-byte embedded anomaly detector that lives on the microcontroller already inside your equipment. It locks its baseline on day one, so slow-developing faults stay visible — flagging a NASA bearing fault 17 days before failure, fully offline, deterministic to the bit." />
+<link rel="canonical" href="https://inlikeflynn.io/why-flynn.html" />
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Flynn" />
+<meta property="og:title" content="Why Flynn — embedded anomaly detection" />
+<meta property="og:description" content="On-device, deterministic anomaly detection. The intelligence goes to the data — not the other way around." />
+<meta property="og:url" content="https://inlikeflynn.io/why-flynn.html" />
+<meta property="og:image" content="https://inlikeflynn.io/assets/img/og-flynn.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Why Flynn — embedded anomaly detection" />
+<meta name="twitter:description" content="On-device, deterministic anomaly detection. The intelligence goes to the data — not the other way around." />
+<meta name="twitter:image" content="https://inlikeflynn.io/assets/img/og-flynn.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet" />
@@ -28,19 +42,22 @@
     --display: "Orbitron", var(--font);
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
+  html, body { margin: 0; padding: 0; overflow-x: clip; }
   body {
     background: #04060a;
     color: var(--text);
     font-family: var(--font);
     -webkit-font-smoothing: antialiased;
-    display: flex; justify-content: center;
-    padding: 40px 20px;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 0;
+    overflow-x: clip;
   }
 
   /* ---- the sheet ---- */
   .sheet {
     position: relative;
+    z-index: 2;
+    margin: 40px 20px 0;
     width: 1000px;
     background:
       radial-gradient(125% 60% at 50% -8%, rgba(34, 70, 98, 0.45), transparent 62%),
@@ -445,11 +462,129 @@
   .foot-meta .fm-strong { color: var(--cyan); }
   .foot-meta .sep { color: var(--hair); }
 
+  /* ============ SHARED SITE FOOTER (markup injected by site-footer.js) ============ */
+  .footer { position: relative; width: 100%; background: #070b11;
+    border-top: 1px solid var(--hair); padding: 56px 0 40px; }
+  .footer .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; align-items: start; }
+  .footer .brand { display: inline-flex; align-items: center; gap: 20px; text-decoration: none;
+    color: var(--text); font-weight: 600; font-size: 54px; line-height: 1; }
+  .footer .brand-mark { width: 112px; height: 112px; display: block; }
+  .footer .muted { color: var(--muted); }
+  .footer h4 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--muted); margin: 0 0 16px; font-weight: 500; }
+  .footer ul { list-style: none; padding: 0; margin: 0; }
+  .footer li { margin-bottom: 8px; }
+  .footer a { font-size: 14px; color: var(--cyan); text-decoration: none; transition: color .2s; }
+  .footer li a { font-family: var(--mono); letter-spacing: 0.02em; }
+  .footer a:hover { color: var(--orange); }
+  .footer-meta { display: flex; justify-content: space-between; align-items: center;
+    margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--hair);
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; }
+  .footer-install { margin-top: 18px; }
+  @media (max-width: 720px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px 24px; }
+    .footer .brand { font-size: 38px; gap: 14px; }
+    .footer .brand-mark { width: 72px; height: 72px; }
+    .footer-meta { flex-direction: column; align-items: flex-start; gap: 8px; }
+  }
+  @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; gap: 28px; } }
+
+  /* ============ SITE CHROME (scoped nav + grid backdrop) ============ */
+  #grid-void { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  .void-haze { position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background: radial-gradient(120% 80% at 50% 0%, transparent 45%, rgba(4,6,10,0.55)); }
+
+  .wf-nav { position: sticky; top: 0; z-index: 50; width: 100%;
+    background: rgba(5,8,14,0.82); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--hair); }
+  .wf-nav-inner { max-width: 1100px; margin: 0 auto; padding: 15px 32px;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .wf-brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none;
+    color: var(--text); font-weight: 600; font-size: 15px; }
+  .wf-brand img { width: 30px; height: 30px; display: block; }
+  .wf-brand .bf { color: var(--cyan); }
+  .wf-links { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+  .wf-links a { color: var(--muted); text-decoration: none; font-size: 14px; letter-spacing: 0.01em;
+    transition: color .2s; }
+  .wf-links a:hover { color: var(--cyan); }
+  .wf-links a.cur { color: var(--cyan); }
+
+  /* install gem (classes kept verbatim for install-button.js) */
+  .install-btn { position: relative; display: inline-flex; align-items: center; gap: 9px;
+    background: none; border: 0; padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .install-label { order: 1; pointer-events: none; position: relative; z-index: 1;
+    font-family: var(--mono); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: oklch(0.88 0.16 200); transition: color .25s, text-shadow .25s; }
+  .install-gem { order: 2; position: relative; z-index: 0; flex: 0 0 auto; width: 26px; height: 26px; pointer-events: none; }
+  .install-fx { position: absolute; left: 50%; top: 50%; width: 74px; height: 74px;
+    transform: translate(-50%, -50%); display: block; pointer-events: none; }
+  .install-btn:hover .install-label, .install-btn:focus-visible .install-label {
+    color: var(--orange); text-shadow: 0 0 16px rgba(255,138,58,0.55); }
+  .install-btn:active { transform: translateY(1px); }
+  .install-btn:focus-visible { outline: none; }
+  .install-btn.no-fx .install-fx { display: none; }
+  .install-btn.no-fx .install-label::after { content: "\2B21"; margin-left: 9px; font-size: 15px;
+    vertical-align: -1px; color: var(--cyan); text-shadow: 0 0 10px rgba(71,216,255,0.6); }
+  @media (display-mode: standalone) { .install-btn { display: none !important; } }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 1040px) {
+    .sheet { width: 100%; max-width: 1000px; margin: 0; border-left: 0; border-right: 0; }
+  }
+  @media (max-width: 720px) {
+    .wf-nav-inner { padding: 13px 18px; }
+    .wf-links { gap: 14px; }
+    .wf-links a { display: none; }            /* footer carries full nav on mobile */
+    .pad { padding: 0 20px; }
+    .ticker { padding: 10px 18px; gap: 8px 10px; font-size: 10px; }
+    .mast { padding-top: 30px; padding-bottom: 30px; }
+    .mast-top { flex-direction: column; align-items: flex-start; gap: 14px; margin-bottom: 26px; }
+    .mast-meta { text-align: left; }
+    .wordmark { font-size: clamp(54px, 17vw, 92px); }
+    .lede { font-size: 19px; }
+    .definition { font-size: 15px; }
+    .stitle { font-size: 27px; line-height: 1.12; }
+    .hero-title { font-size: 27px; }
+    .hero-sub { font-size: 15px; }
+    .verdict-body, .tnote { font-size: 15px; }
+
+    .story, .verdict, .invert, .stats, .outcomes, .markets { grid-template-columns: 1fr; }
+    .verdict { gap: 12px; }
+
+    .costdelta { grid-template-columns: 1fr; }
+    .cd-arrow { padding: 8px; font-size: 18px; transform: rotate(90deg); background: var(--hair-soft); }
+    .cd-cell.gap { border-left: 0; border-top: 1px solid var(--hair); }
+
+    .steps { grid-template-columns: 1fr; }
+    .step { padding: 16px 0; }
+    .step:not(:first-child)::before { left: 0; right: 0; top: 0; bottom: auto; width: auto; height: 1px; }
+    .step:not(:last-child)::after { content: "\2193"; right: auto; left: 50%; transform: translateX(-50%);
+      top: auto; bottom: -9px; }
+
+    .constellation { width: 100%; }
+    .fan { display: none; }
+    .worlds { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .world .wnode { display: none; }
+
+    .ctable { font-size: 12.5px; }
+    .ctable th, .ctable td { padding: 10px 9px; }
+    .ctable tbody td.cattr { white-space: normal; }
+
+    .tl-mark .lab, .tl-mark .day { font-size: 10px; }
+  }
+  @media (max-width: 460px) {
+    .worlds { grid-template-columns: 1fr; }
+    .wordmark { font-size: clamp(44px, 15vw, 70px); }
+  }
+
   /* ============ PRINT ============ */
   @media print {
     @page { size: A4 portrait; margin: 0; }
     body { background: #04060a; padding: 0; display: block; }
-    .sheet { width: 1000px; border: none; box-shadow: none;
+    #site-nav, #grid-void, .void-haze { display: none; }
+    .footer { display: none; }
+    .sheet { width: 1000px; border: none; box-shadow: none; margin: 0;
       transform: scale(var(--pscale, 0.79)); transform-origin: top center; }
     * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   }
@@ -457,12 +592,17 @@
 </head>
 <body>
 
+<canvas id="grid-void"></canvas>
+<div class="void-haze"></div>
+
+<header id="site-nav"></header>
+
 <div class="sheet" id="sheet">
 
   <!-- ===================== TICKER ===================== -->
   <div class="ticker">
     <b>EntroMorphic</b><span class="tk-sep"></span>
-    <span>Flynn Overview</span><span class="tk-sep"></span>
+    <span>Why Flynn</span><span class="tk-sep"></span>
     <span>Embedded Anomaly Detection</span><span class="tk-sep"></span>
     <span>Patent-pending</span><span class="tk-sep"></span>
     <span>2026</span>
@@ -472,8 +612,10 @@
   <header class="mast pad" data-screen-label="Masthead">
     <div class="mast-top">
       <div class="mast-brand">
-        <img src="assets/img/flynn-logo.png?v=20260608-2030" alt="Flynn" onerror="this.style.display='none'" />
-        <div class="pw"><b>EntroMorphic</b><br />Flynn Overview</div>
+        <a href="index.html" style="display:inline-flex;align-items:center;gap:14px;text-decoration:none;color:inherit;">
+          <img src="assets/img/flynn-logo.png?v=20260608-2030" alt="Flynn" onerror="this.style.display='none'" />
+          <div class="pw"><b>EntroMorphic</b><br />Why Flynn</div>
+        </a>
       </div>
       <div class="mast-meta">Embedded anomaly detection<br />Patent-pending · 2026</div>
     </div>
@@ -906,6 +1048,8 @@
 
 </div>
 
+<footer class="footer" id="site-footer"></footer>
+
 <script>
   // Compute a print scale so the whole sheet fits one A4 portrait page.
   (function () {
@@ -921,6 +1065,15 @@
     window.addEventListener('resize', setScale);
   })();
 </script>
+
+<!-- Volumetric grid void backdrop + install gem (three.js) -->
+<script>window.FLYNN_GRID_CONFIG = { variant: 'home', noGame: true };</script>
+<script src="https://unpkg.com/three@0.149.0/build/three.min.js"></script>
+<script src="assets/js/grid-void.js?v=20260608-2030"></script>
+<script src="assets/js/site-footer.js?v=20260608-2030"></script>
+<script src="assets/js/site-nav.js?v=20260608-2030"></script>
+<script src="assets/js/install-button.js?v=20260608-2030"></script>
+<script src="assets/js/sw-register.js?v=20260608-2030"></script>
 
 </body>
 </html>

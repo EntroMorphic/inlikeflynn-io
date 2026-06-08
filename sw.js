@@ -12,7 +12,7 @@
    ========================================================================== */
 'use strict';
 
-var VERSION = '20260608-1100';
+var VERSION = '20260608-2030';
 var CACHE = 'flynn-' + VERSION;
 
 // Minimal offline shell — the start_url so an offline launch shows something.
