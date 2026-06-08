@@ -12,9 +12,10 @@ desktop.ini
 screenshots/
 *.log
 
-# ---- build / packaging artifacts (export should ship source only) ----
+# ---- build / packaging artifacts ----
 *.zip
 ziptest/
+dist/
 
 # ---- source material (kept locally / in cloud, not in the repo) ----
 # Raw drops that the deployed site does not reference (it uses assets/).
@@ -28,4 +29,3 @@ uploads/
 # ---- dependencies (only if a toolchain is ever added) ----
 node_modules/
 .cache/
-dist/

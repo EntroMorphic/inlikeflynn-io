@@ -7,8 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
-- **Flynn Overview** — a boardroom one-pager infographic (`Flynn Overview.html`)
-  with a print build (`Flynn Overview-print.html`): problem → on-device detection
+- **Service worker (`sw.js`) + registration (`assets/js/sw-register.js`)** — makes
+  the site meet Android/Chrome's installability criteria so phones mint a real
+  installed app (WebAPK) instead of a permission-gated home-screen shortcut (fixes
+  install stalling on Samsung/Android), and adds a light offline shell on Android
+  & iOS. Caching is designed around the existing `?v=` busting: network-first for
+  HTML, cache-first for versioned assets, with a version-keyed cache that
+  self-cleans on activate. Registered at root scope from every page; degrades
+  silently where unsupported.
+- **iOS install accommodations** — the install popover now shows an inline Share
+  glyph and Safari-specific "tap Share → Add to Home Screen" guidance (iOS has no
+  programmatic install prompt). Pairs with the existing `apple-mobile-web-app-*`
+  meta tags and `apple-touch-icon` for a clean standalone launch.
+- **Flynn Overview** — a boardroom one-pager infographic (`flynn-overview.html`)
+  with a print build (`flynn-overview-print.html`): problem → on-device detection
   → "one binary, many worlds" → lifecycle → proof (with the live detection scope)
   → market value. Refined-Tron, orange reserved for moments of value, auto-fit print.
 - Echoed the **Install** control (floating bloom emblem + PWA flow) into the site
@@ -24,7 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   verifiable against published test vectors + certification-ready artifacts, with
   full source available to certifying authorities under NDA / escrow.
 - Renamed the install instructions modal header to **"INSTALL inlikeflynn.io"**.
-- Bumped the asset cache version to `20260607-1530`.
+- Bumped the asset cache version to `20260608-1100` (also the service worker's
+  cache `VERSION`).
 
 ### Removed
 - `Flynn.pptx` (a fresh deck will be authored separately).

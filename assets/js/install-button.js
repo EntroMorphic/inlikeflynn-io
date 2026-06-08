@@ -61,8 +61,12 @@
     closePop();
     pop = document.createElement('div');
     pop.className = 'install-pop';
+    var iosShare = '<svg class="ios-share-glyph" viewBox="0 0 24 28" width="13" height="15" aria-hidden="true" ' +
+      'style="vertical-align:-2px;margin:0 1px;fill:none;stroke:#7ee6ff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;">' +
+      '<path d="M12 3 L12 17" /><path d="M7.5 7.5 L12 3 L16.5 7.5" />' +
+      '<path d="M8 11 H6 a1 1 0 0 0-1 1 V24 a1 1 0 0 0 1 1 H18 a1 1 0 0 0 1-1 V12 a1 1 0 0 0-1-1 H16" /></svg>';
     var steps = isIOS
-      ? 'Tap the <b>Share</b> icon, then <b>“Add to Home Screen.”</b>'
+      ? 'In <b>Safari</b>, tap ' + iosShare + ' <b>Share</b>, then scroll to <b>“Add to Home Screen.”</b>'
       : 'Open your browser menu and choose <b>“Install app”</b> or <b>“Add to Home Screen.”</b> Some browsers show an install icon in the address bar.';
     pop.innerHTML =
       '<div class="install-pop-h">Install <span class="install-pop-dn">inlikeflynn.io</span></div>' +
