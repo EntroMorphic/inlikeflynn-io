@@ -1,0 +1,926 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="theme-color" content="#06090f" />
+<title>Flynn — Embedded Anomaly Detection · Business Overview</title>
+<meta name="description" content="Flynn is a patent-pending, 2,180-byte embedded anomaly detector that lives on the microcontroller already inside your equipment. It locks its baseline on day one, so slow-developing faults stay visible — flagging a NASA bearing fault 17 days before failure, fully offline, deterministic to the bit." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #06090f;
+    --panel: rgba(13, 20, 29, 0.55);
+    --panel-solid: #0b1119;
+    --hair: rgba(120, 180, 210, 0.16);
+    --hair-soft: rgba(120, 180, 210, 0.09);
+    --cyan: #47d8ff;
+    --cyan-deep: #1f8fc4;
+    --orange: #ff8a3a;
+    --text: #e9eff5;
+    --muted: #9bb0c0;
+    --faint: #617484;
+    --dim: #647584;
+    --font: "Geist", system-ui, sans-serif;
+    --mono: "Geist Mono", ui-monospace, monospace;
+    --display: "Orbitron", var(--font);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: #04060a;
+    color: var(--text);
+    font-family: var(--font);
+    -webkit-font-smoothing: antialiased;
+    display: flex; justify-content: center;
+    padding: 40px 20px;
+  }
+
+  /* ---- the sheet ---- */
+  .sheet {
+    position: relative;
+    width: 1000px;
+    background:
+      radial-gradient(125% 60% at 50% -8%, rgba(34, 70, 98, 0.45), transparent 62%),
+      radial-gradient(90% 40% at 50% 102%, rgba(40, 26, 14, 0.30), transparent 60%),
+      linear-gradient(var(--hair-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--hair-soft) 1px, transparent 1px),
+      var(--ink);
+    background-size: auto, auto, 50px 50px, 50px 50px, auto;
+    background-position: center;
+    border: 1px solid var(--hair);
+    box-shadow: 0 40px 120px -40px rgba(0,0,0,0.8), inset 0 0 120px -60px rgba(71,216,255,0.25);
+    overflow: hidden;
+  }
+  .pad { padding: 0 72px; }
+
+  /* ---- shared atoms ---- */
+  .eyebrow {
+    font-family: var(--mono); font-size: 12px; font-weight: 500;
+    letter-spacing: 0.28em; text-transform: uppercase; color: var(--cyan);
+    display: inline-flex; align-items: center; gap: 11px;
+  }
+  .eyebrow::before {
+    content: ""; width: 7px; height: 7px; background: var(--orange);
+    transform: rotate(45deg); box-shadow: 0 0 9px var(--orange);
+  }
+  .mono { font-family: var(--mono); }
+  .accent { color: var(--cyan); }
+  .hot { color: var(--orange); }
+
+  /* section header */
+  .shead { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+  .snum {
+    font-family: var(--mono); font-size: 13px; font-weight: 600; letter-spacing: 0.12em;
+    color: var(--ink); background: var(--cyan); padding: 3px 8px; border-radius: 3px;
+  }
+  .slabel {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.26em;
+    text-transform: uppercase; color: var(--muted); white-space: nowrap;
+  }
+  .sline { flex: 1; height: 1px;
+    background:
+      linear-gradient(90deg, transparent 0%, var(--cyan) 50%, transparent 100%) no-repeat,
+      rgba(71,216,255,0.14);
+    background-size: 26% 100%, 100% 100%;
+    background-position: 50% 0, 0 0;
+    box-shadow: 0 0 8px rgba(71,216,255,0.24);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .sline { animation: traceRun 7s linear infinite; }
+    .block:nth-of-type(even) .sline { animation-duration: 9s; animation-delay: -3s; }
+  }
+  @keyframes traceRun {
+    from { background-position: -30% 0, 0 0; }
+    to   { background-position: 130% 0, 0 0; }
+  }
+  .stitle {
+    font-size: 33px; line-height: 1.12; font-weight: 600; letter-spacing: -0.015em;
+    margin: 0 0 14px; color: var(--text); text-wrap: balance;
+  }
+  .stitle .accent { color: var(--cyan); }
+  .stitle .hot { color: var(--orange); }
+  .sbody { font-size: 16.5px; line-height: 1.6; color: var(--muted); margin: 0; max-width: 66ch; }
+  .sbody strong { color: var(--text); font-weight: 600; }
+  .sbody + .sbody { margin-top: 14px; }
+
+  section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid var(--hair-soft); }
+
+  /* ============ TICKER BAR ============ */
+  .ticker {
+    display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap;
+    padding: 11px 72px; border-bottom: 1px solid var(--hair);
+    background: rgba(71,216,255,0.04);
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--dim);
+  }
+  .ticker b { color: var(--cyan); font-weight: 600; }
+  .ticker .tk-sep { width: 5px; height: 5px; background: var(--orange); transform: rotate(45deg);
+    box-shadow: 0 0 7px var(--orange); flex: 0 0 auto; }
+
+  /* ============ MASTHEAD ============ */
+  .mast { padding-top: 50px; padding-bottom: 42px; }
+  .mast-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; }
+  .mast-brand { display: flex; align-items: center; gap: 14px; }
+  .mast-brand img { width: 50px; height: 50px; display: block;
+    filter: drop-shadow(0 0 14px rgba(71,216,255,0.4)); }
+  .mast-brand .pw { font-family: var(--mono); font-size: 12px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--muted); line-height: 1.5; }
+  .mast-brand .pw b { color: var(--text); font-weight: 600; }
+  .mast-meta { text-align: right; font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); line-height: 1.7; }
+
+  .wordmark {
+    font-family: var(--display); font-weight: 800; font-size: 92px; letter-spacing: 0.02em;
+    line-height: 0.92; margin: 0; color: var(--text);
+    text-shadow: 0 0 40px rgba(71,216,255,0.35);
+  }
+  .wordmark .dot { color: var(--cyan); }
+  .lede {
+    font-size: 25px; font-weight: 500; line-height: 1.34; letter-spacing: -0.01em;
+    margin: 24px 0 0; color: var(--text); max-width: 42ch; text-wrap: balance;
+  }
+  .lede .accent { color: var(--cyan); }
+  .definition {
+    font-size: 16.5px; line-height: 1.62; color: var(--muted); margin: 20px 0 0; max-width: 72ch;
+  }
+  .definition b { color: var(--text); font-weight: 600; }
+  .vitals { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+  .vital {
+    font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.04em; color: var(--text);
+    border: 1px solid var(--hair); border-radius: 5px; padding: 8px 13px;
+    background: rgba(71,216,255,0.04); white-space: nowrap;
+  }
+  .vital b { color: var(--cyan); font-weight: 600; }
+
+  /* ============ 01 — STORY CONTRAST ============ */
+  .story { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 26px; align-items: stretch; }
+  .scol {
+    border-radius: 10px; padding: 24px 24px 22px; border: 1px solid var(--hair);
+    position: relative; overflow: hidden;
+  }
+  .scol .sh {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: 14px; display: flex; align-items: center; gap: 9px;
+  }
+  .scol p { font-size: 14.5px; line-height: 1.58; margin: 0 0 12px; }
+  .scol p:last-child { margin-bottom: 0; }
+  .scol.fail { background: rgba(255,138,58,0.045); }
+  .scol.fail .sh { color: #d98b6a; }
+  .scol.fail .sh::before { content:""; width:7px;height:7px;border-radius:50%;
+    border:1.5px solid #d98b6a; }
+  .scol.fail p { color: var(--muted); }
+  .scol.fail strong { color: #e7a884; font-weight: 600; }
+  .scol.win {
+    background: linear-gradient(160deg, rgba(71,216,255,0.10), rgba(71,216,255,0.02));
+    border-color: rgba(71,216,255,0.4);
+    box-shadow: inset 0 0 50px -28px rgba(71,216,255,0.7);
+  }
+  .scol.win .sh { color: var(--cyan); }
+  .scol.win .sh::before { content:""; width:7px;height:7px;background:var(--cyan);
+    transform:rotate(45deg); box-shadow:0 0 8px var(--cyan); }
+  .scol.win p { color: var(--text); }
+  .scol.win strong { color: var(--cyan); font-weight: 600; }
+  .refuse {
+    font-family: var(--display); font-weight: 700; font-size: 17px; letter-spacing: 0.04em;
+    color: var(--cyan); margin: 0 0 14px; text-transform: uppercase;
+    text-shadow: 0 0 18px rgba(71,216,255,0.45);
+  }
+
+  /* cost delta */
+  .costdelta {
+    margin-top: 18px; border: 1px solid var(--hair); border-radius: 10px; overflow: hidden;
+    display: grid; grid-template-columns: 1fr auto 1fr auto; align-items: stretch;
+    background: var(--panel);
+  }
+  .cd-cell { padding: 20px 24px; }
+  .cd-cell .cl { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--dim); margin-bottom: 8px; }
+  .cd-cell .cv { font-size: 38px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+  .cd-cell .cn { font-size: 13px; color: var(--muted); margin-top: 8px; line-height: 1.4; }
+  .cd-cell.before .cv { color: var(--orange); }
+  .cd-cell.after .cv { color: var(--cyan); }
+  .cd-arrow { display: flex; align-items: center; justify-content: center; padding: 0 4px;
+    color: var(--cyan); font-size: 24px; background: var(--hair-soft); }
+  .cd-cell.gap { background: linear-gradient(160deg, rgba(255,138,58,0.10), rgba(71,216,255,0.04));
+    border-left: 1px solid var(--hair); display: flex; flex-direction: column; justify-content: center; }
+  .cd-cell.gap .cv { font-size: 30px; color: var(--text); }
+  .cd-cell.gap .cv .u { color: var(--orange); }
+
+  /* ============ 01 — INDUSTRY VERDICT ============ */
+  .verdict { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 26px; }
+  .vstat { border: 1px solid var(--hair); border-radius: 10px; padding: 22px 22px 20px;
+    background: var(--panel); position: relative; overflow: hidden; }
+  .vstat::before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px;
+    background: var(--orange); box-shadow: 0 0 12px var(--orange); }
+  .vstat .vv { font-size: 46px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; color: var(--orange); }
+  .vstat .vd { font-size: 13.5px; line-height: 1.5; color: var(--text); margin-top: 12px; }
+  .vstat .vsrc { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.03em; color: var(--dim);
+    margin-top: 12px; font-style: italic; line-height: 1.4; }
+  .verdict-body { margin-top: 22px; font-size: 16px; line-height: 1.6; color: var(--muted); max-width: 78ch; }
+  .verdict-body strong { color: var(--text); font-weight: 600; }
+  .verdict-kicker { margin-top: 16px; font-family: var(--display); font-weight: 700; font-size: 22px;
+    letter-spacing: 0.01em; color: var(--cyan); text-shadow: 0 0 22px rgba(71,216,255,0.4); }
+
+  /* ============ 03 — INVERSION ============ */
+  .invert { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 26px; }
+  .imodel { border-radius: 10px; padding: 22px 22px 20px; border: 1px solid var(--hair);
+    position: relative; overflow: hidden; }
+  .imodel .ihead { font-family: var(--mono); font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: 14px; display: flex; align-items: center; gap: 9px; }
+  .imodel .flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .imodel .node { font-family: var(--mono); font-size: 12.5px; padding: 6px 10px; border-radius: 4px;
+    border: 1px solid var(--hair); white-space: nowrap; }
+  .imodel .arr { color: var(--dim); font-size: 13px; }
+  .imodel .note { font-size: 14.5px; line-height: 1.5; }
+  .imodel.cloud { background: rgba(120,140,160,0.05); }
+  .imodel.cloud .ihead { color: var(--dim); }
+  .imodel.cloud .ihead::before { content:""; width:7px;height:7px;border-radius:50%;
+    border:1.5px solid var(--dim); }
+  .imodel.cloud .node { color: var(--muted); }
+  .imodel.cloud .note { color: var(--muted); }
+  .imodel.cloud .note b { color: #d98b6a; font-weight: 600; }
+  .imodel.flynn { background: linear-gradient(160deg, rgba(71,216,255,0.10), rgba(71,216,255,0.02));
+    border-color: rgba(71,216,255,0.4); box-shadow: inset 0 0 50px -28px rgba(71,216,255,0.7); }
+  .imodel.flynn .ihead { color: var(--cyan); }
+  .imodel.flynn .ihead::before { content:""; width:7px;height:7px;background:var(--cyan);
+    transform:rotate(45deg); box-shadow:0 0 8px var(--cyan); }
+  .imodel.flynn .node { color: var(--text); border-color: rgba(71,216,255,0.35);
+    background: rgba(71,216,255,0.06); }
+  .imodel.flynn .note { color: var(--text); }
+  .imodel.flynn .note b { color: var(--cyan); font-weight: 600; }
+
+  /* ============ 03 — COMPARISON TABLE ============ */
+  .ctable { width: 100%; border-collapse: collapse; margin-top: 26px; font-size: 14.5px; }
+  .ctable th, .ctable td { text-align: left; padding: 13px 18px; vertical-align: top; line-height: 1.4; }
+  .ctable thead th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; border-bottom: 1px solid var(--hair); }
+  .ctable thead th.cattr { color: transparent; }
+  .ctable thead th.ccloud { color: var(--dim); }
+  .ctable thead th.cflynn { color: var(--cyan); }
+  .ctable tbody td.cattr { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+  .ctable tbody td.ccloud { color: var(--muted); }
+  .ctable tbody td.cflynn { color: var(--text); font-weight: 500; }
+  .ctable tbody tr { border-bottom: 1px solid var(--hair-soft); }
+  .ctable .cflynn-col { background: rgba(71,216,255,0.04); }
+  .ctable tbody tr.decisive td { background: linear-gradient(90deg, rgba(255,138,58,0.06), rgba(71,216,255,0.07)); }
+  .ctable tbody tr.decisive td.cattr { color: var(--orange); }
+  .ctable tbody tr.decisive td.cflynn { color: var(--cyan); font-weight: 600; }
+  .ctable tbody tr.decisive td.ccloud { color: #d98b6a; }
+  .tnote {
+    margin-top: 20px; font-size: 16px; line-height: 1.55; color: var(--text);
+    border-left: 2px solid var(--cyan); padding-left: 16px; font-weight: 500; max-width: 74ch;
+  }
+  .tnote b { color: var(--cyan); }
+
+  /* ============ 04 — LIFECYCLE ============ */
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 28px; }
+  .step { padding: 0 20px; position: relative; }
+  .step:not(:first-child)::before {
+    content: ""; position: absolute; left: 0; top: 14px; bottom: 14px; width: 1px; background: var(--hair);
+  }
+  .step:not(:last-child)::after {
+    content: "→"; position: absolute; right: -9px; top: 6px; color: var(--cyan); font-size: 16px; z-index: 2;
+  }
+  .step .sn { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; color: var(--dim); }
+  .step .st { font-size: 19px; font-weight: 700; letter-spacing: 0.04em; color: var(--cyan);
+    margin: 7px 0 9px; text-transform: uppercase; }
+  .step .sd { font-size: 13.5px; line-height: 1.5; color: var(--muted); }
+  .step .sd b { color: var(--text); font-weight: 600; }
+  .step:last-child .st { color: var(--orange); }
+  .stepnote { margin-top: 18px; font-family: var(--mono); font-size: 11.5px; line-height: 1.5;
+    color: var(--dim); max-width: 80ch; }
+  .callout {
+    margin-top: 24px; border: 1px solid rgba(71,216,255,0.4); border-radius: 10px;
+    padding: 24px 28px; background: linear-gradient(160deg, rgba(71,216,255,0.10), rgba(71,216,255,0.02));
+    box-shadow: inset 0 0 60px -34px rgba(71,216,255,0.7);
+    font-size: 21px; font-weight: 600; line-height: 1.4; color: var(--text); letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .callout b { color: var(--cyan); font-weight: 700; }
+
+  /* ============ 05 — CONSTELLATION ============ */
+  .hero { padding-top: 50px; padding-bottom: 50px; border-top: 1px solid var(--hair-soft); }
+  .hero-head { text-align: center; margin-bottom: 4px; }
+  .hero-head .eyebrow { justify-content: center; }
+  .hero-title {
+    font-family: var(--display); font-weight: 700; font-size: 40px; letter-spacing: 0.005em;
+    margin: 16px 0 0; color: var(--text); text-shadow: 0 0 36px rgba(71,216,255,0.3); text-wrap: balance;
+  }
+  .hero-sub { font-size: 16.5px; line-height: 1.55; color: var(--muted); margin: 16px auto 0;
+    max-width: 70ch; text-align: center; }
+  .hero-sub b { color: var(--text); font-weight: 600; }
+
+  .constellation { position: relative; width: 856px; margin: 38px auto 0; }
+  .core {
+    width: 168px; margin: 0 auto; position: relative; z-index: 3;
+    background: radial-gradient(120% 120% at 50% 30%, rgba(71,216,255,0.22), rgba(11,17,25,0.9));
+    border: 1.5px solid rgba(71,216,255,0.55); border-radius: 12px;
+    box-shadow: 0 0 50px -10px rgba(71,216,255,0.5), inset 0 0 30px -16px rgba(71,216,255,0.8);
+    padding: 16px 10px 14px; text-align: center;
+  }
+  .core .cm { font-family: var(--display); font-weight: 800; font-size: 26px; letter-spacing: 0.06em;
+    color: var(--cyan); text-shadow: 0 0 18px rgba(71,216,255,0.6); }
+  .core .cs { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.1em; color: var(--text);
+    margin-top: 6px; }
+  .core .ct { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--dim); margin-top: 5px; }
+
+  .fan { position: absolute; left: 0; right: 0; top: 100px; height: 70px; z-index: 1; }
+
+  .worlds { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-top: 12px;
+    position: relative; z-index: 2; }
+  .world {
+    border: 1px solid var(--hair); border-radius: 9px; padding: 16px 13px 15px;
+    background: var(--panel); text-align: center; position: relative;
+  }
+  .world .wnode {
+    position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
+    width: 8px; height: 8px; border-radius: 50%; background: var(--cyan);
+    box-shadow: 0 0 9px var(--cyan);
+  }
+  .world .ico { color: var(--cyan); height: 30px; display: flex; align-items: center; justify-content: center; margin-bottom: 11px; }
+  .world .ico svg { width: 30px; height: 30px; }
+  .world .wname { font-family: var(--mono); font-size: 13px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--text); }
+  .world .wenv { font-size: 11.5px; letter-spacing: 0.02em; color: var(--cyan); margin-top: 5px; font-weight: 500; }
+  .world .wwhy { font-size: 11.5px; line-height: 1.45; color: var(--muted); margin-top: 10px; text-align: left; }
+
+  .hero-foot {
+    margin: 30px auto 0; text-align: center; font-size: 16px; line-height: 1.55;
+    color: var(--muted); max-width: 72ch;
+  }
+  .hero-foot b { color: var(--text); font-weight: 600; }
+
+  /* ============ 06 — PROOF ============ */
+  .scope { margin: 0 0 22px; }
+  .scope img {
+    display: block; width: 100%; height: auto; border-radius: 9px;
+    border: 1px solid rgba(71,216,255,0.28);
+    box-shadow: 0 18px 50px -28px rgba(0,0,0,0.9), inset 0 0 60px -40px rgba(71,216,255,0.5);
+  }
+  .scope-cap {
+    margin-top: 12px; font-size: 13.5px; line-height: 1.5; color: var(--muted); max-width: 80ch;
+  }
+  .scope-cap b { color: var(--text); font-weight: 600; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 26px; }
+  .stat { border: 1px solid var(--hair); border-radius: 9px; padding: 18px 18px 16px; background: var(--panel); }
+  .stat .sv { font-size: 38px; font-weight: 700; letter-spacing: -0.02em; color: var(--text); line-height: 1;
+    font-family: var(--font); }
+  .stat .sv .u { font-size: 19px; font-weight: 600; color: var(--muted); margin-left: 3px; }
+  .stat .sk { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.13em; text-transform: uppercase;
+    color: var(--cyan); margin-top: 11px; }
+  .stat .sx { font-size: 13px; line-height: 1.45; color: var(--muted); margin-top: 6px; }
+  .stat.hotstat { border-color: rgba(255,138,58,0.45); background: linear-gradient(160deg, rgba(255,138,58,0.10), rgba(255,138,58,0.02));
+    box-shadow: inset 0 0 50px -28px rgba(255,138,58,0.7); }
+  .stat.hotstat .sv { color: var(--orange); }
+  .stat.hotstat .sk { color: var(--orange); }
+
+  .timeline { margin-top: 22px; border: 1px solid var(--hair); border-radius: 10px; padding: 22px 26px 20px;
+    background: var(--panel); }
+  .tl-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; }
+  .tl-head .tt { font-family: var(--mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+  .tl-head .tg { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; color: var(--orange); font-weight: 600; white-space: nowrap; }
+  .tl-track { position: relative; height: 4px; border-radius: 2px;
+    background: linear-gradient(90deg, var(--cyan), var(--orange)); margin: 46px 0 30px; }
+  .tl-mark { position: absolute; top: 50%; transform: translate(-50%, -50%); }
+  .tl-mark .pt { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--ink); }
+  .tl-mark.start .pt { background: var(--cyan); box-shadow: 0 0 12px var(--cyan); }
+  .tl-mark.end .pt { background: var(--orange); box-shadow: 0 0 12px var(--orange); }
+  .tl-mark .lab { position: absolute; left: 50%; transform: translateX(-50%); white-space: nowrap;
+    top: 20px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--muted); text-align: center; }
+  .tl-mark .day { position: absolute; left: 50%; transform: translateX(-50%); white-space: nowrap;
+    bottom: 20px; font-size: 12.5px; font-weight: 700; }
+  .tl-mark.start .day { color: var(--cyan); }
+  .tl-mark.end .day { color: var(--orange); }
+  .tl-mark.mid .pt { background: var(--cyan); box-shadow: 0 0 12px var(--cyan); }
+  .tl-mark.mid .day { color: var(--cyan); }
+  .tl-mark.start .lab, .tl-mark.start .day { left: 0; transform: none; text-align: left; }
+  .tl-mark.end .lab, .tl-mark.end .day { left: auto; right: 0; transform: none; text-align: right; }
+
+  /* ============ 07 — WHAT CHANGES ============ */
+  .outcomes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 26px; }
+  .outcome { border: 1px solid var(--hair); border-radius: 10px; padding: 22px 24px; background: var(--panel); }
+  .outcome .oh { font-size: 26px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.1; margin-bottom: 10px; }
+  .outcome .oh .arr { color: var(--cyan); margin: 0 6px; }
+  .outcome .oh .before { color: var(--orange); }
+  .outcome .oh .after { color: var(--cyan); }
+  .outcome .ohx { font-family: var(--mono); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--cyan); font-weight: 600; margin-bottom: 10px; }
+  .outcome p { font-size: 13.5px; line-height: 1.55; color: var(--muted); margin: 0; }
+  .outcome p b { color: var(--text); font-weight: 600; }
+
+  .markets { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 20px; }
+  .market { border: 1px solid var(--hair); border-radius: 10px; padding: 20px 24px; background: var(--panel); }
+  .market .ml { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 14px; }
+  .market .mrow { display: flex; align-items: baseline; gap: 12px; }
+  .market .mnow { font-size: 24px; font-weight: 600; color: var(--text); }
+  .market .marr { color: var(--cyan); font-size: 17px; }
+  .market .mfut { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; color: var(--cyan); }
+  .market.space .mfut { color: var(--orange); }
+  .market .myr { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; color: var(--dim); margin-top: 10px; }
+
+  .valnote { margin-top: 18px; font-size: 14.5px; line-height: 1.55; color: var(--muted); max-width: 78ch; }
+  .valnote b { color: var(--text); font-weight: 600; }
+  .pipeline { margin-top: 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em; color: var(--muted); }
+  .pipeline .pk { color: var(--cyan); }
+  .pipeline .pi { padding: 4px 10px; border: 1px solid var(--hair); border-radius: 4px; color: var(--text); white-space: nowrap; }
+
+  /* ============ FOOTER ============ */
+  .foot { padding: 48px 72px 52px; border-top: 1px solid var(--hair);
+    background: linear-gradient(0deg, rgba(71,216,255,0.05), transparent); }
+  .foot-tag { font-family: var(--display); font-weight: 700; font-size: 38px; letter-spacing: 0.01em; color: var(--text); line-height: 1.1; }
+  .foot-tag .accent { color: var(--cyan); }
+  .foot-cta { display: inline-flex; align-items: baseline; gap: 10px; margin-top: 20px;
+    font-size: 17px; font-weight: 600; color: var(--text); }
+  .foot-cta .arr { color: var(--cyan); }
+  .foot-cta .url { font-family: var(--mono); color: var(--cyan); letter-spacing: 0.04em; }
+  .foot-meta { display: flex; align-items: center; gap: 16px; margin-top: 26px;
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+  .foot-meta .fm-strong { color: var(--cyan); }
+  .foot-meta .sep { color: var(--hair); }
+
+  /* ============ PRINT ============ */
+  @media print {
+    @page { size: A4 portrait; margin: 0; }
+    body { background: #04060a; padding: 0; display: block; }
+    .sheet { width: 1000px; border: none; box-shadow: none;
+      transform: scale(var(--pscale, 0.79)); transform-origin: top center; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet" id="sheet">
+
+  <!-- ===================== TICKER ===================== -->
+  <div class="ticker">
+    <b>EntroMorphic</b><span class="tk-sep"></span>
+    <span>Flynn Overview</span><span class="tk-sep"></span>
+    <span>Embedded Anomaly Detection</span><span class="tk-sep"></span>
+    <span>Patent-pending</span><span class="tk-sep"></span>
+    <span>2026</span>
+  </div>
+
+  <!-- ===================== MASTHEAD / HERO ===================== -->
+  <header class="mast pad" data-screen-label="Masthead">
+    <div class="mast-top">
+      <div class="mast-brand">
+        <img src="assets/img/flynn-logo.png?v=20260608-1100" alt="Flynn" onerror="this.style.display='none'" />
+        <div class="pw"><b>EntroMorphic</b><br />Flynn Overview</div>
+      </div>
+      <div class="mast-meta">Embedded anomaly detection<br />Patent-pending · 2026</div>
+    </div>
+
+    <h1 class="wordmark">FLYNN<span class="dot">.</span></h1>
+    <p class="lede"><span class="accent">Catches equipment faults days before they happen</span> — on the device itself, with no cloud, no network, and no round-trip delay.</p>
+    <p class="definition">A patent-pending embedded detector. <b>One compiled binary.</b> Lives on the microcontroller already inside the equipment it monitors: self-calibrating, fully offline, and identical in its answers every time it runs.</p>
+
+    <div class="vitals">
+      <div class="vital"><b>2,180-byte</b> core</div>
+      <div class="vital"><b>integer-only</b> · radiation-resilient</div>
+      <div class="vital"><b>zero</b> dependencies · offline</div>
+      <div class="vital"><b>&lt;$10</b> hardware</div>
+      <div class="vital"><b>deterministic</b> to the bit</div>
+    </div>
+  </header>
+
+  <!-- ===================== 01 — THE INDUSTRY'S VERDICT ===================== -->
+  <section class="block pad" data-screen-label="01 The industry's verdict">
+    <div class="shead">
+      <span class="snum">01</span>
+      <span class="slabel">The industry's own verdict</span>
+      <span class="sline"></span>
+    </div>
+    <h2 class="stitle">The tools were adopted. <span class="hot">The downtime rose.</span></h2>
+
+    <div class="verdict">
+      <div class="vstat">
+        <div class="vv">79%</div>
+        <div class="vd">of maintenance teams adopted AI-powered predictive tools. Unplanned downtime stayed the same — or increased.</div>
+        <div class="vsrc">MaintainX State of Industrial Maintenance Report, 2026</div>
+      </div>
+      <div class="vstat">
+        <div class="vv">$852M</div>
+        <div class="vd">lost every week to unplanned downtime across manufacturing.</div>
+        <div class="vsrc">Fluke Corporation, October 2025</div>
+      </div>
+      <div class="vstat">
+        <div class="vv">39%</div>
+        <div class="vd">of leaders say each downtime incident is getting more expensive than the year before.</div>
+        <div class="vsrc">MaintainX, 2026</div>
+      </div>
+    </div>
+
+    <p class="verdict-body">The dashboards are running. The alerts are firing. The downtime is rising. The tools adopted over the past decade share one architecture: <strong>sensors transmit to the cloud, models process remotely, alerts return over a network.</strong> The data leaves the equipment — and by the time the intelligence reaches the fault, the adaptive baseline has absorbed the drift, and the runway is gone.</p>
+    <p class="verdict-kicker">The intelligence is in the wrong place.</p>
+  </section>
+
+  <!-- ===================== 02 — THE FAILURE MODE ===================== -->
+  <section class="block pad" data-screen-label="02 The failure mode">
+    <div class="shead">
+      <span class="snum">02</span>
+      <span class="slabel">The failure mode</span>
+      <span class="sline"></span>
+    </div>
+    <h2 class="stitle">Adaptive monitors silently absorb <span class="hot">the faults they're built to catch</span>.</h2>
+
+    <div class="story">
+      <div class="scol fail">
+        <div class="sh">The adaptive baseline</div>
+        <p>A bearing wears. Slowly. Over six weeks, the vibration roughens and the motor current creeps upward. A conventional monitoring system watches this happen — and <strong>adapts</strong>. It absorbs the worsening signal into its picture of "normal" and quietly raises the threshold to match. The drift that should have triggered an alarm is absorbed into the new baseline.</p>
+        <p>Six weeks later: the compressor seizes. Emergency replacement, three days of unplanned downtime. The monitoring system was online the entire time — <strong>trained, by the fault itself, to ignore it.</strong></p>
+      </div>
+      <div class="scol win">
+        <div class="refuse">Flynn refuses.</div>
+        <p>Flynn locks its baseline on day one and <strong>never moves it</strong>. When the bearing starts to wear, Flynn sees the departure immediately — because its reference point is frozen.</p>
+        <p>On NASA IMS run-to-failure data, Flynn flagged the developing fault <strong>17 days before failure</strong>. An adaptive system following that same drift would have flagged nothing.</p>
+      </div>
+    </div>
+
+    <div class="costdelta">
+      <div class="cd-cell before">
+        <div class="cl">Emergency replacement</div>
+        <div class="cv">$94,000</div>
+        <div class="cn">+ three days of unplanned downtime</div>
+      </div>
+      <div class="cd-arrow">→</div>
+      <div class="cd-cell after">
+        <div class="cl">Planned swap at first anomaly</div>
+        <div class="cv">$800</div>
+        <div class="cn">scheduled into a maintenance window</div>
+      </div>
+      <div class="cd-cell gap">
+        <div class="cl">The gap</div>
+        <div class="cv">$93,200<span class="u"> + 3 days</span></div>
+        <div class="cn">per incident</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 03 — THE INVERSION ===================== -->
+  <section class="block pad" data-screen-label="03 The inversion">
+    <div class="shead">
+      <span class="snum">03</span>
+      <span class="slabel">The inversion</span>
+      <span class="sline"></span>
+    </div>
+    <h2 class="stitle">Flynn detects and categorizes <span class="accent">at the source</span>.</h2>
+
+    <div class="invert">
+      <div class="imodel cloud">
+        <div class="ihead">The cloud model</div>
+        <div class="flow">
+          <span class="node">Sensors</span><span class="arr">→</span>
+          <span class="node">Transmit</span><span class="arr">→</span>
+          <span class="node">Cloud models</span><span class="arr">→</span>
+          <span class="node">Return</span>
+        </div>
+        <div class="note">Breaks down wherever <b>connectivity, latency, power, or radiation</b> break the chain.</div>
+      </div>
+      <div class="imodel flynn">
+        <div class="ihead">Flynn</div>
+        <div class="flow">
+          <span class="node">On the device</span>
+        </div>
+        <div class="note">Self-calibrating, offline, deterministic — on hardware under $10, inside equipment already being manufactured. <b>Integer-only math survives the radiation that scrambles ordinary chips.</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 04 — HOW FLYNN IS DIFFERENT ===================== -->
+  <section class="block pad" data-screen-label="04 How Flynn is different">
+    <div class="shead">
+      <span class="snum">04</span>
+      <span class="slabel">How Flynn is different</span>
+      <span class="sline"></span>
+    </div>
+    <h2 class="stitle">Zero-latency, <span class="accent">on-device intelligence</span>.</h2>
+
+    <table class="ctable">
+      <thead>
+        <tr>
+          <th class="cattr">Attribute</th>
+          <th class="ccloud">Cloud predictive analytics</th>
+          <th class="cflynn cflynn-col">Flynn</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="cattr">Where it runs</td>
+          <td class="ccloud">Remote servers</td>
+          <td class="cflynn cflynn-col">On the equipment's own chip</td>
+        </tr>
+        <tr>
+          <td class="cattr">Connectivity</td>
+          <td class="ccloud">Required — always</td>
+          <td class="cflynn cflynn-col">Never</td>
+        </tr>
+        <tr>
+          <td class="cattr">Training data</td>
+          <td class="ccloud">Labeled fault examples — expensive, scarce</td>
+          <td class="cflynn cflynn-col">Healthy signal only — abundant, free</td>
+        </tr>
+        <tr>
+          <td class="cattr">Configuration</td>
+          <td class="ccloud">Custom per deployment</td>
+          <td class="cflynn cflynn-col">Zero — same binary, every domain</td>
+        </tr>
+        <tr class="decisive">
+          <td class="cattr">Slow-developing faults</td>
+          <td class="ccloud">Baseline adapts — fault becomes invisible</td>
+          <td class="cflynn cflynn-col">Baseline locks — fault stays visible</td>
+        </tr>
+        <tr>
+          <td class="cattr">Detection speed</td>
+          <td class="ccloud">Minutes to hours (round-trip)</td>
+          <td class="cflynn cflynn-col">Microseconds (on-device)</td>
+        </tr>
+        <tr>
+          <td class="cattr">Footprint</td>
+          <td class="ccloud">Cloud infrastructure (gigabytes)</td>
+          <td class="cflynn cflynn-col">2,180 bytes (on-chip)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="tnote">The critical difference is baseline behavior. An adaptive baseline <b>absorbs the fault it was built to catch</b>. A locked baseline forces it into the open.</p>
+  </section>
+
+  <!-- ===================== 05 — HOW IT WORKS ===================== -->
+  <section class="block pad" data-screen-label="05 How it works">
+    <div class="shead">
+      <span class="snum">05</span>
+      <span class="slabel">How it works</span>
+      <span class="sline"></span>
+    </div>
+    <h2 class="stitle">Four stages for <span class="accent">continuous, autonomous detection</span>.</h2>
+
+    <div class="steps">
+      <div class="step">
+        <div class="sn">STAGE 01</div>
+        <div class="st">Deploy</div>
+        <div class="sd">Drop a compiled binary onto the chip already inside the equipment.</div>
+      </div>
+      <div class="step">
+        <div class="sn">STAGE 02</div>
+        <div class="st">Enroll</div>
+        <div class="sd">Learn the healthy operating envelope — <b>~1,700 samples,†</b> under two seconds. Where cloud systems need hours of labeled data, Flynn enrolls from raw signal alone.</div>
+      </div>
+      <div class="step">
+        <div class="sn">STAGE 03</div>
+        <div class="st">Lock</div>
+        <div class="sd">Freeze the baseline. <b>Permanently.</b></div>
+      </div>
+      <div class="step">
+        <div class="sn">STAGE 04</div>
+        <div class="st">Observe</div>
+        <div class="sd">Score every subsequent reading against the frozen reference. Forever.</div>
+      </div>
+    </div>
+
+    <p class="stepnote">† Samples required for complete enrollment will vary by equipment type, state, and operational envelope.</p>
+
+    <div class="callout">The baseline locks. <b>A slow fault can never teach Flynn to accept it.</b> Same input. Same answer. Always.</div>
+  </section>
+
+  <!-- ===================== 06 — ONE BINARY MANY WORLDS ===================== -->
+  <section class="hero pad" data-screen-label="06 One binary many worlds">
+    <div class="hero-head">
+      <span class="eyebrow">06 · One binary. Many worlds.</span>
+      <h2 class="hero-title">Five environments. Five failure modes. One 2,180-byte detector.</h2>
+    </div>
+
+    <div class="constellation">
+      <div class="core">
+        <div class="cm">FLYNN</div>
+        <div class="cs">2,180-byte core</div>
+        <div class="ct">one binary</div>
+      </div>
+
+      <svg class="fan" viewBox="0 0 856 70" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="fang" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#47d8ff" stop-opacity="0.8" />
+            <stop offset="1" stop-color="#47d8ff" stop-opacity="0.15" />
+          </linearGradient>
+        </defs>
+        <g stroke="url(#fang)" stroke-width="1.4" fill="none">
+          <path d="M428 0 C428 35, 84 25, 84 70" />
+          <path d="M428 0 C428 35, 256 30, 256 70" />
+          <path d="M428 0 L428 70" />
+          <path d="M428 0 C428 35, 600 30, 600 70" />
+          <path d="M428 0 C428 35, 772 25, 772 70" />
+        </g>
+      </svg>
+
+      <div class="worlds">
+        <div class="world">
+          <span class="wnode"></span>
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.4"/><ellipse cx="12" cy="12" rx="9.6" ry="4.6" transform="rotate(-28 12 12)"/><circle cx="19.2" cy="7.6" r="1.5" fill="currentColor" stroke="none"/></svg></div>
+          <div class="wname">Orbit</div>
+          <div class="wwhy">Reaction-wheel bearing wear ended the Kepler, Dawn &amp; SDO missions. Flynn flags bearing-friction anomalies from nominal data alone.</div>
+        </div>
+        <div class="world">
+          <span class="wnode"></span>
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9.5 9.5 L5 5 M14.5 9.5 L19 5 M9.5 14.5 L5 19 M14.5 14.5 L19 19"/><circle cx="4.4" cy="4.4" r="2"/><circle cx="19.6" cy="4.4" r="2"/><circle cx="4.4" cy="19.6" r="2"/><circle cx="19.6" cy="19.6" r="2"/></svg></div>
+          <div class="wname">Drone</div>
+          <div class="wwhy">Motor-bearing failure is the #1 cause of UAV crashes. Flynn watches motor current on the flight controller — no added sensors, no added weight.</div>
+        </div>
+        <div class="world">
+          <span class="wnode"></span>
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="6.2"/><path d="M6.6 9.7 L17.4 16.3 M17.4 9.7 L6.6 16.3"/><path d="M12 6.8 V4 M9.5 4 H14.5"/></svg></div>
+          <div class="wname">Valve</div>
+          <div class="wwhy">79% adopted predictive tools; downtime still rose. Flynn's locked baseline catches what adaptive systems absorb — on the controller already in the line.</div>
+        </div>
+        <div class="world">
+          <span class="wnode"></span>
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6 q2.6 -2.6 5.2 0 t5.2 0 t5.2 0"/><rect x="5" y="12" width="11" height="5.4" rx="2.7"/><path d="M16 14.7 h2.4 M18.4 13.2 v3"/><circle cx="8" cy="14.7" r="0.9" fill="currentColor" stroke="none"/></svg></div>
+          <div class="wname">Subsea</div>
+          <div class="wwhy">The next maintenance vessel is days away. Flynn watches between visits — every sample, zero connectivity required.</div>
+        </div>
+        <div class="world">
+          <span class="wnode"></span>
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7.5" width="18" height="9" rx="2.4"/><path d="M6 12 h3 l1.5 -3 l2.2 6 l1.4 -3 H18"/></svg></div>
+          <div class="wname">Implant</div>
+          <div class="wwhy">Deterministic, bounded, zero dynamic allocation — architecturally aligned with IEC 62304 medical-software certification.</div>
+        </div>
+      </div>
+
+      <div class="hero-foot">Flynn enrolls on <b>your</b> equipment's healthy signal, locks the envelope, and watches. The domain is irrelevant — <b>the signal is what matters</b>. Validated across five industrial signal domains with zero configuration changes.</div>
+    </div>
+  </section>
+
+  <!-- ===================== 07 — THE EVIDENCE ===================== -->
+  <section class="block pad" data-screen-label="07 The evidence">
+    <div class="shead">
+      <span class="snum">07</span>
+      <span class="slabel">The evidence</span>
+      <span class="sline"></span>
+    </div>
+    <h2 class="stitle">Tested. Measured. <span class="accent">Published.</span></h2>
+
+    <figure class="scope">
+      <img src="assets/img/flynn-scope.png?v=20260608-1100" alt="Flynn detection scope: a sensor stream is learned during calibration, the threshold is locked, and a developing fault crosses it — Flynn raises an alert." />
+      <figcaption class="scope-cap"><b>Learn, freeze, detect.</b> Flynn learns the healthy signal, freezes the threshold, then checks every reading against it. When a developing fault crosses the locked band — alert.</figcaption>
+    </figure>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="sv">98.8<span class="u">%</span></div>
+        <div class="sk">Precision</div>
+        <div class="sx">Bearing-fault detection</div>
+      </div>
+      <div class="stat">
+        <div class="sv">0</div>
+        <div class="sk">False positives</div>
+        <div class="sx">Across 120 hours of healthy-equipment data</div>
+      </div>
+      <div class="stat hotstat">
+        <div class="sv">17<span class="u">days</span></div>
+        <div class="sk">Advance warning</div>
+        <div class="sx">On NASA IMS run-to-failure bearing data</div>
+      </div>
+      <div class="stat">
+        <div class="sv">5</div>
+        <div class="sk">Signal domains</div>
+        <div class="sx">Validated cross-domain, zero config changes</div>
+      </div>
+      <div class="stat">
+        <div class="sv">8,480<span class="u">B</span></div>
+        <div class="sk">Full footprint</div>
+        <div class="sx">Core detector is just 2,180 bytes</div>
+      </div>
+      <div class="stat">
+        <div class="sv">✓</div>
+        <div class="sk">Deterministic</div>
+        <div class="sx">Same signal, same answer — every time, every platform</div>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-head">
+        <span class="tt">Run-to-failure · NASA IMS bearing</span>
+        <span class="tg">17-day advance warning</span>
+      </div>
+      <div class="tl-track">
+        <div class="tl-mark start" style="left: 4%;">
+          <div class="day">DAY 1</div>
+          <div class="pt"></div>
+          <div class="lab">Flynn enrollment completed</div>
+        </div>
+        <div class="tl-mark mid" style="left: 49%;">
+          <div class="day">DAY 17</div>
+          <div class="pt"></div>
+          <div class="lab">Flynn flags the developing fault</div>
+        </div>
+        <div class="tl-mark end" style="left: 96%;">
+          <div class="day">DAY 34</div>
+          <div class="pt"></div>
+          <div class="lab">Run-to-failure</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 08 — WHAT CHANGES ===================== -->
+  <section class="block pad" data-screen-label="08 What changes">
+    <div class="shead">
+      <span class="snum">08</span>
+      <span class="slabel">What changes</span>
+      <span class="sline"></span>
+    </div>
+    <h2 class="stitle">When equipment monitors itself, <span class="accent">the economics click</span>.</h2>
+
+    <div class="outcomes">
+      <div class="outcome">
+        <div class="oh"><span class="before">$94,000</span><span class="arr">→</span><span class="after">$800</span></div>
+        <p>Emergency replacements become planned swaps. Unplanned downtime becomes a scheduled window.</p>
+      </div>
+      <div class="outcome">
+        <div class="ohx">Fewer technicians, more coverage</div>
+        <p>Experienced workers are retiring and the talent gap is widening. <b>Flynn watches autonomously</b> — enrolls in two seconds, needs zero ongoing configuration, and scales with every unit shipped.</p>
+      </div>
+      <div class="outcome">
+        <div class="ohx">Bids won on capability</div>
+        <p><b>"Our equipment monitors itself — deterministic, auditable, no cloud dependency."</b> A differentiator that survives procurement scrutiny.</p>
+      </div>
+      <div class="outcome">
+        <div class="ohx">Specified, then respecified</div>
+        <p>Equipment that calls before it fails <b>earns the next project</b>. The switching cost shifts from price to embedded intelligence.</p>
+      </div>
+    </div>
+
+    <div class="markets">
+      <div class="market earth">
+        <div class="ml">Predictive maintenance · terrestrial</div>
+        <div class="mrow">
+          <span class="mnow">$10.6B</span>
+          <span class="marr">→</span>
+          <span class="mfut">$47.8B</span>
+        </div>
+        <div class="myr">2025 → 2032</div>
+      </div>
+      <div class="market space">
+        <div class="ml">Global space economy</div>
+        <div class="mrow">
+          <span class="mnow">$570B</span>
+          <span class="marr">→</span>
+          <span class="mfut">$1.8T</span>
+        </div>
+        <div class="myr">2024 → 2035</div>
+      </div>
+    </div>
+
+    <p class="valnote">Flynn is <b>licensed per unit and recurring</b> — scaling with every piece of equipment that ships with it. The same binary serves thousands of equipment manufacturers on Earth and a growing number in orbit.</p>
+
+    <div class="pipeline">
+      <span class="pk">Eight active prospects · six industries:</span>
+      <span class="pi">Flow control</span>
+      <span class="pi">HVAC</span>
+      <span class="pi">Autonomous aviation</span>
+      <span class="pi">Semiconductor</span>
+      <span class="pi">Industrial IoT</span>
+      <span class="pi">Space</span>
+    </div>
+  </section>
+
+  <!-- ===================== CLOSER ===================== -->
+  <footer class="foot" data-screen-label="Closer">
+    <div class="foot-tag">Equipment talks. <span class="accent">Flynn listens.</span></div>
+    <div class="foot-cta">See what Flynn hears <span class="arr">→</span> <span class="url">inlikeflynn.io</span></div>
+    <div class="foot-meta">
+      <span class="fm-strong">inlikeflynn.io</span>
+      <span class="sep">·</span>
+      <span>EntroMorphic, LLC</span>
+      <span class="sep">·</span>
+      <span>Patent-pending</span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // Compute a print scale so the whole sheet fits one A4 portrait page.
+  (function () {
+    var sheet = document.getElementById('sheet');
+    function setScale() {
+      var h = sheet.scrollHeight;
+      var pageH = 1122, pageW = 794;
+      var s = Math.min(pageW / 1000, pageH / h);
+      document.documentElement.style.setProperty('--pscale', s.toFixed(4));
+    }
+    setScale();
+    window.addEventListener('beforeprint', setScale);
+    window.addEventListener('resize', setScale);
+  })();
+</script>
+
+</body>
+</html>
