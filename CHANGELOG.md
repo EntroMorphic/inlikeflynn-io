@@ -7,13 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- **Flynn Overview** — a boardroom one-pager infographic (`Flynn Overview.html`)
+  with a print build (`Flynn Overview-print.html`): problem → on-device detection
+  → "one binary, many worlds" → lifecycle → proof (with the live detection scope)
+  → market value. Refined-Tron, orange reserved for moments of value, auto-fit print.
 - Echoed the **Install** control (floating bloom emblem + PWA flow) into the site
   **footer**, under the brand tagline — same `[data-install]` the script auto-wires.
 - `CNAME` (`inlikeflynn.io`) and `.nojekyll` for GitHub Pages custom-domain serving.
 
 ### Changed
+- **Delivery model corrected across the site: Flynn ships as a compiled binary for
+  the customer's hardware, not as source.** Reconciled every "ships as one
+  human-readable C source file / Source files: 1 / auditable line-by-line" claim
+  (whitepaper, index, validation, industries, industries-print, roadmap).
+  Auditability re-grounded as *auditable by construction* — deterministic +
+  verifiable against published test vectors + certification-ready artifacts, with
+  full source available to certifying authorities under NDA / escrow.
 - Renamed the install instructions modal header to **"INSTALL inlikeflynn.io"**.
-- Bumped the asset cache version to `20260605-1145`.
+- Bumped the asset cache version to `20260607-1530`.
 
 ### Removed
 - `Flynn.pptx` (a fresh deck will be authored separately).

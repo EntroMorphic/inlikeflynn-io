@@ -35,20 +35,22 @@
     window.addEventListener('resize', resize);
 
     // signal state
-    const TOTAL = 2600;      // total samples shown across the canvas
-    const WARMUP = 1700;     // learning window (matches whitepaper)
-    const FAULT_AT = 2200;   // anomaly begins
-    const ALERT_AT = 2280;   // detection fires
+    const TOTAL = 17000;     // total samples shown across the canvas
+    const WARMUP = 1700;     // learning window — first 10% (matches whitepaper's 1,700)
+    const FAULT_AT = 15528;  // anomaly begins — near the end (~91%)
+    const ALERT_AT = 15608;  // detection fires
     let t = 0;               // sample index (loops 0..TOTAL+pause)
-    const PAUSE = 700;
-    let speed = 6;           // samples per frame
+    const PAUSE = 1400;
+    let speed = 20;          // samples per frame
     const samples = new Float32Array(TOTAL);
     let threshold = 0;       // locked threshold (set at warmup)
     let runningMin = 0, runningMax = 0;
 
     // procedural signal: baseline sine + harmonic + gaussian-ish noise
     function gen(i) {
-      const base = Math.sin(i * 0.07) * 0.45 + Math.sin(i * 0.18 + 1.2) * 0.18;
+      // baseline rhythm — frequencies scaled to TOTAL so the wave keeps a readable
+      // ~29 cycles across the canvas regardless of sample count
+      const base = Math.sin(i * 0.0107) * 0.45 + Math.sin(i * 0.0275 + 1.2) * 0.18;
       const noise = (Math.random() - 0.5) * 0.18 + (Math.random() - 0.5) * 0.12;
       let val = base + noise;
       // ramp up to a fault: gradual then sharp excursion
@@ -178,10 +180,16 @@
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // warmup label
-      ctx.fillStyle = inkRGBA(0.45);
+      // warmup label — rotated vertically inside the now-narrow calibration strip
+      ctx.save();
+      ctx.translate(15, H / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.textAlign = 'center';
+      ctx.fillStyle = inkRGBA(0.5);
       ctx.font = '500 10px "Geist Mono", ui-monospace, monospace';
-      ctx.fillText('CALIBRATION · 1,700 SAMPLES', 12, 18);
+      ctx.fillText('CALIBRATION · 1,700 SAMPLES', 0, 0);
+      ctx.restore();
+      ctx.fillStyle = inkRGBA(0.45);
       ctx.fillText('DETECTION', warmupX + 12, 18);
 
       // determine alert state
@@ -232,14 +240,18 @@
         ctx.arc(xa, ya, 4 + pulse * 22, 0, Math.PI * 2);
         ctx.stroke();
 
-        // event label
+        // event label — flips to the left of the spike when near the right edge
+        const lblY = Math.max(16, ya - 16);
+        const nearRight = xa > W - 170;
+        const lblX = nearRight ? xa - 10 : xa + 10;
+        ctx.textAlign = nearRight ? 'right' : 'left';
         ctx.fillStyle = getCSSVar('--ink') || '#14110d';
         ctx.font = '500 11px "Geist Mono", ui-monospace, monospace';
-        const lblY = Math.max(16, ya - 16);
-        ctx.fillText('ANOMALY DETECTED', xa + 10, lblY);
+        ctx.fillText('ANOMALY DETECTED', lblX, lblY);
         ctx.fillStyle = inkRGBA(0.55);
         ctx.font = '500 10px "Geist Mono", ui-monospace, monospace';
-        ctx.fillText('SCORE > THRESHOLD', xa + 10, lblY + 14);
+        ctx.fillText('SCORE > THRESHOLD', lblX, lblY + 14);
+        ctx.textAlign = 'left';
       }
 
       // moving cursor at the head of the wave
@@ -289,7 +301,7 @@
 
     // tweak hook
     window.__flynnWave = {
-      setSpeed: (v) => { speed = Math.max(1, Math.min(20, v)); },
+      setSpeed: (v) => { speed = Math.max(1, Math.min(80, v)); },
     };
 
     requestAnimationFrame(step);

@@ -6,7 +6,7 @@ const TRON_DEFAULTS = Object.assign({
   headlineFont: "Orbitron",
   glow: 1,
   motion: true,
-  speed: 6,
+  speed: 20,
   sfx: true,
   music: true,
 }, window.FLYNN_TWEAK_DEFAULTS || {});
@@ -99,9 +99,9 @@ function TronTweaks() {
         <TweakSlider
           label="Scope speed"
           value={t.speed}
-          min={2}
-          max={16}
-          step={1}
+          min={8}
+          max={60}
+          step={2}
           unit=" spf"
           onChange={(v) => setTweak("speed", v)}
         />
