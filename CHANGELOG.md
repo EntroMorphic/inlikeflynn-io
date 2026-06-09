@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- `assets/css/infographic.css` — shared design-system atoms (timeline, ticker,
+  masthead, divider, print color-adjust) extracted from the four one-pager
+  infographics after measuring byte-identical rules (TD-1).
+- `scripts/bump-cache.mjs` — one-command cache-version stamper for all `?v=`
+  refs, the injected-URL `var V` constants, and the service-worker `VERSION` (TD-5).
+
+### Changed
+- **Tech-debt remediation pass (see `docs/TECH-DEBT.md`):**
+  - TD-1: deduped the genuinely-shared infographic CSS into `infographic.css`
+    (only the 44 identical rules; each artifact keeps its tuned CSS inline).
+  - TD-2: merged continuous-page print into the main infographics and **deleted
+    `flynn-overview-print.html` + `flynn-overview-bd-print.html`**; `case-for-flynn`
+    now sizes its print page dynamically instead of a hard-coded height.
+  - TD-3/TD-6: nav, footer, and install button confirmed single-source; dead
+    `.nav*` / `.wf-*` rules removed.
+  - TD-4: per-page `<head>` SEO meta kept static by design (documented).
+- Unified the asset cache version to `20260609-0100`.
 - **Service worker (`sw.js`) + registration (`assets/js/sw-register.js`)** — makes
   the site meet Android/Chrome's installability criteria so phones mint a real
   installed app (WebAPK) instead of a permission-gated home-screen shortcut (fixes
@@ -19,8 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   glyph and Safari-specific "tap Share → Add to Home Screen" guidance (iOS has no
   programmatic install prompt). Pairs with the existing `apple-mobile-web-app-*`
   meta tags and `apple-touch-icon` for a clean standalone launch.
-- **Flynn Overview** — a boardroom one-pager infographic (`flynn-overview.html`)
-  with a print build (`flynn-overview-print.html`): problem → on-device detection
+- **Flynn Overview** — a boardroom one-pager infographic (`flynn-overview.html`):
+  problem → on-device detection
   → "one binary, many worlds" → lifecycle → proof (with the live detection scope)
   → market value. Refined-Tron, orange reserved for moments of value, auto-fit print.
 - Echoed the **Install** control (floating bloom emblem + PWA flow) into the site

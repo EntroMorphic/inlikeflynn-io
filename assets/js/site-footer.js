@@ -15,7 +15,7 @@
   var mount = document.getElementById('site-footer');
   if (!mount) return;
 
-  var V = '20260608-2030';
+  var V = '20260609-0100';
   var root = /\/pages\//.test(location.pathname) ? '../' : '';
 
   function li(href, label) { return '<li><a href="' + href + '">' + label + '</a></li>'; }
@@ -58,6 +58,12 @@
         '<span>v.q2.2026 · audit-ready</span>' +
       '</div>' +
     '</div>';
+
+  // animated "living circuit" backdrop — single source: inject the canvas if the
+  // page didn't supply one statically, so every footer (themed or standalone) has it.
+  if (!mount.querySelector('#grid-bg')) {
+    mount.insertAdjacentHTML('afterbegin', '<canvas id="grid-bg"></canvas>');
+  }
 
   mount.insertAdjacentHTML('beforeend', html);
 })();

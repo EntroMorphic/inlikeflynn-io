@@ -170,23 +170,7 @@ img, svg { display: block; max-width: 100%; }
   .cols-2, .cols-3, .cols-4 { grid-template-columns: 1fr; }
 }
 
-/* ----- nav ----- */
-.nav {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: color-mix(in oklab, var(--bone) 88%, transparent);
-  backdrop-filter: saturate(1.2) blur(10px);
-  -webkit-backdrop-filter: saturate(1.2) blur(10px);
-  border-bottom: 1px solid var(--hair);
-}
-.nav-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 64px;
-  padding: 12px 0;
-}
+/* ----- brand (used by the shared footer) ----- */
 .brand {
   display: inline-flex;
   align-items: center;
@@ -202,45 +186,8 @@ img, svg { display: block; max-width: 100%; }
   mix-blend-mode: screen;
   flex-shrink: 0;
 }
-.footer .brand-mark {
-  width: 112px; height: 112px;
-}
-.footer .brand {
-  font-size: 54px;
-  gap: 20px;
-}
 .brand-flynn {
   color: var(--accent-2);
-}
-.nav-links {
-  display: flex;
-  gap: 28px;
-  align-items: center;
-}
-.nav-links a {
-  font-family: "Share Tech Mono", var(--font-mono);
-  font-size: 15px;
-  color: var(--accent-2);
-  letter-spacing: 0.02em;
-  transition: color .2s;
-}
-.nav-links a:hover { color: var(--accent); }
-.nav-links a.cur { color: var(--ink); }
-.nav-cta {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  padding: 8px 14px;
-  border: 1px solid var(--accent-2);
-  border-radius: 999px;
-  background: var(--accent-2);
-  color: #14110d;
-  transition: background .2s, color .2s, border-color .2s;
-  white-space: nowrap;
-}
-.nav-cta:hover { background: var(--accent); border-color: var(--accent); color: #14110d; }
-@media (max-width: 720px) {
-  .nav-links a:not(.nav-cta) { display: none; }
 }
 
 /* ----- buttons ----- */
@@ -283,58 +230,6 @@ img, svg { display: block; max-width: 100%; }
   letter-spacing: 0.14em;
   color: var(--mid);
   margin-bottom: 16px;
-}
-
-/* ----- footer ----- */
-.footer {
-  border-top: 1px solid var(--hair);
-  padding: 56px 0 40px;
-  margin-top: 80px;
-}
-.footer-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 32px;
-  align-items: start;
-}
-.footer h4 {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--mid);
-  margin: 0 0 16px;
-  font-weight: 500;
-}
-.footer ul { list-style: none; padding: 0; margin: 0; }
-.footer li { margin-bottom: 8px; }
-.footer a { font-size: 14px; color: var(--accent-2); transition: color .2s; }
-.footer li a { font-family: "Share Tech Mono", var(--font-mono); letter-spacing: 0.02em; }
-.footer a:hover { color: var(--accent); }
-.footer-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 56px;
-  padding-top: 24px;
-  border-top: 1px solid var(--hair);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  color: var(--mid);
-  text-transform: uppercase;
-}
-@media (max-width: 720px) {
-  .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px 24px; }
-  .footer-meta {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    text-align: left;
-  }
-}
-@media (max-width: 480px) {
-  .footer-grid { grid-template-columns: 1fr; gap: 28px; }
 }
 
 /* ----- spec table ----- */

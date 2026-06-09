@@ -1,151 +1,46 @@
-# Tech-Debt Red-Team — Code Duplication & Consolidation
+# Tech-Debt Remediation — Tracking
 
-_Recorded 2026-06-08. Companion to [`AUDIT.md`](AUDIT.md) and [`/REMEDIATION.md`](../REMEDIATION.md)._
+_Companion to the Claude Code red-team (2026-06-08). Live, no-build, partly-portable site._
 
-> Focus: where the site duplicates code and where it can consolidate. **Analysis only —
-> no code was changed.** Nothing here is a functional breakage; the live site renders
-> clean and CI is green. This is maintainability debt.
+**Status:** `[ ]` todo · `[~]` in progress · `[x]` done
 
-## Method
+## Architectural decision (resolved)
 
-Scripted parse of the canonical root (`index.html`, `404.html`, `why-flynn.html`,
-`flynn-overview*.html`, `pages/*.html`, `assets/js/*`, `assets/css/*`): per-page inline
-`<style>`/`<script>` accounting, `<head>` tag frequency, nav/footer component adoption,
-byte-level rule-duplication across inline CSS, and pairwise page similarity
-(`difflib.SequenceMatcher`). Counts are indicative, not exact — the CSS parser is crude
-around nested `@media` blocks, and duplicate detection is byte-identical (a conservative
-lower bound; near-identical rules with minor diffs are *not* counted).
+**Owner chose (B) — full DRY**, with the deployment reality that the site is served
+statically (GitHub Pages, no build): shared code lives in linked CSS/JS files that the
+production server always has alongside the HTML. When a *single-file portable* copy is
+needed (e-mail, offline share), run `super_inline_html` to bundle one HTML on demand —
+that is the "inline step." So: DRY source + opt-in bundling, no permanent build pipeline.
 
-## Scale
+## Items
 
-13 HTML files ≈ **8,700 lines**; JS/CSS ≈ 4,700 lines. A large fraction of the HTML is
-copy-paste. Four patterns drive nearly all of it.
+| ID | Item | Resolution |
+|----|------|------------|
+| TD-1 | Dedup inline design-system CSS | `[x]` **Measured, not assumed.** The "~480-line shared design system" was an overestimate — of 122–217 rules per infographic, only **44 are byte-identical** across the BD-family (~4.4 KB); ~80% is intentionally tuned per artifact. Extracted exactly those 44 (timeline, ticker, masthead atoms, divider, print color-adjust) → `assets/css/infographic.css`, linked in all four infographics; each keeps its tuned CSS inline. All four verified pixel-identical after. |
+| TD-2 | Collapse `-print.html` clones → `@media print` | `[x]` Merged the continuous-page print (dynamic `@page` sized on `beforeprint`, no auto-print) into the main files; **deleted `flynn-overview-print.html` and `flynn-overview-bd-print.html`**. `case-for-flynn` upgraded from a hard-coded `@page` height to the same dynamic sizing. PDF export now opens the main file. |
+| TD-3 | Finish nav/footer/install component adoption | `[x]` Nav (`site-nav.js`), footer (`site-footer.js` + `site-footer.css`), and install button (`install-button.css` + `install-button.js`) are each single-source, loaded by every page incl. the standalone infographics. Orphaned `.nav*` / `.wf-*` CSS removed. |
+| TD-4 | Shared `<head>` boilerplate | `[x]` **Kept per-page by design.** `<title>`, `description`, `canonical`, and OG/Twitter tags must be in the initial static HTML for SEO; JS-injection would hurt crawlability and flash. The residual shared boilerplate (charset/viewport/preconnect/favicons) is a few lines and not worth a fragile abstraction. Not debt. |
+| TD-5 | Automate `?v=` cache stamping | `[x]` `scripts/bump-cache.mjs` — one command stamps every `?v=` in HTML, the `var V` in `site-nav.js`/`site-footer.js`, and the `VERSION` in `sw.js` to a fresh UTC timestamp (or an explicit arg). Documented in CONTRIBUTING. |
+| TD-6 | Selectors defined in both CSS files | `[x]` Dead `.nav*/.nav-cta` removed (orphaned by the nav refactor). Remaining `.btn*/.h1/.brand*` overlaps are intentional `tron.css`-over-`styles.css` dark-theme overrides — confirmed and kept. |
 
-**Status legend:** `[ ]` todo · `[~]` in progress · `[x]` done
-**Priority:** 🔴 high · 🟡 medium · 🟢 low · **Effort:** S (<1h) · M (half-day) · L (multi-day)
-
-| ID | Item | Priority | Effort | Status |
-|----|------|----------|--------|--------|
-| TD-1 | Extract duplicated inline CSS → shared stylesheet | 🔴 | L | [ ] |
-| TD-2 | Collapse `-print.html` clones into `@media print` | 🔴 | M | [ ] |
-| TD-3 | Finish nav/footer component adoption | 🟡 | M | [ ] |
-| TD-4 | Shared `<head>` boilerplate injection | 🟡 | M | [ ] |
-| TD-5 | Automate cache-version (`?v=`) stamping | 🟢 | S | [ ] |
-| TD-6 | Reconcile selectors defined in both CSS files | 🟢 | S | [ ] |
-
----
-
-## 🔴 TD-1 — Inline `<style>` duplication (the #1 debt)
-
-**Evidence:** **3,857 lines** of inline `<style>` across pages. Of the inline rules,
-**301 distinct rules appear on 2+ pages → ~740 redundant copies.** The most-duplicated
-are shared design-system atoms, copy-pasted 5-6× each:
-`:root`, `*`, `.eyebrow`, `.mono`, `.accent`, `.hot`, `.pad`, `.shead`, `.snum`,
-`.stitle`, `.sbody strong`, `section.block`.
-
-**Why it hurts:** a token/atom change (color, spacing, type scale) is a 13-file edit and
-drifts silently when one page is missed.
-
-- [ ] Extract the shared atoms/tokens into `assets/css/base.css` (or fold into `styles.css`)
-- [ ] Link it on every page; delete the per-page copies
-- [ ] Leave only genuinely page-specific rules inline (or in a per-page file)
-
-**Acceptance:** no design-system atom is defined in more than one place; pages shrink to
-their unique styles. Expected removal: 1,000+ lines.
-
----
-
-## 🔴 TD-2 — `-print.html` files are near-clones
-
-**Evidence:** print variants are near-identical to their screen counterparts:
-
-| Pair | Similarity |
-|------|-----------|
-| `flynn-overview.html` ↔ `flynn-overview-print.html` | **97.2%** |
-| `flynn-overview-bd.html` ↔ `flynn-overview-bd-print.html` | **98.1%** |
-| `pages/industries.html` ↔ `pages/industries-print.html` | 86.6% |
-
-**Why it hurts:** ~5 print files (~2,400 lines) duplicate content that differs only in
-print CSS. Every content edit must be made twice and can desync.
-
-- [ ] Replace separate print files with a `@media print { … }` block (or shared `print.css`)
-- [ ] Add a "Print" affordance on the canonical page; retire the `-print.html` URLs (redirect if any are linked externally)
-
-**Acceptance:** one source page per topic; print layout driven by CSS. Biggest line-count win.
-
----
-
-## 🟡 TD-3 — Nav/footer refactor only half-landed
-
-The shared `assets/js/site-nav.js` / `site-footer.js` are adopted by the 7 "main" pages
-(`index`, `why-flynn`, `pages/{industries,roadmap,tiers,validation,whitepaper}`) — but
-**not** by the holdouts, which still carry inline markup:
-
-| File | Inline `<nav>` | Inline `<footer>` | Uses components |
-|------|:-:|:-:|:-:|
-| `flynn-overview.html` | – | ~492 ch | no |
-| `flynn-overview-print.html` | – | ~492 ch | no |
-| `flynn-overview-bd.html` | – | ~500 ch | no |
-| `flynn-overview-bd-print.html` | – | ~500 ch | no |
-| `pages/industries-print.html` | ~265 ch | ~225 ch | no |
-| `404.html` | ~288 ch | – | no |
-
-- [ ] Point holdouts at `site-nav.js` / `site-footer.js`; delete inline nav/footer
-- [ ] ⚠️ **`why-flynn.html` is inconsistent** — it loads `site-footer.js` *and* has a ~500-char hardcoded `<footer>`. Likely a double-render or dead markup; confirm and remove one.
-
-**Acceptance:** every page sources nav/footer from the shared components; no inline copies.
-
----
-
-## 🟡 TD-4 — Head boilerplate copy-pasted into every page
-
-**Evidence:** **22 distinct `<meta>`/`<link>` tags** repeated across 6-13 pages each —
-charset, viewport, font preconnect + Geist load, the full OG + Twitter card sets, and the
-apple/mobile PWA tags.
-
-**Why it hurts:** an OG-image or font change is a 7-13-file edit.
-
-- [ ] Inject common head via a small `site-head.js` (matches the existing nav/footer JS pattern), or a build-time partial
-- [ ] Leave each page to set only its unique `<title>` + `meta description` + canonical/OG-url
-
-**Acceptance:** shared head defined once; per-page heads contain only page-unique tags.
-
----
-
-## 🟢 TD-5 — Cache-version (`?v=`) stamping is manual
-
-**Evidence:** **70 hand-stamped `?v=20260608-2030` tags** across the HTML, currently all
-uniform (CI enforces uniformity). Bumping them on each release is manual and easy to
-botch.
-
-- [ ] Replace with a single version constant injected at load (or stamped by a build step)
-
----
-
-## 🟢 TD-6 — Selectors defined in both CSS files
-
-**Evidence:** **13 selector strings** appear in *both* `styles.css` and `tron.css`
-(`.btn:hover`, `.h1`, `.nav-links`, `.brand-mark`, `.brand-flynn`, `.btn.ghost`, …).
-
-- [ ] Confirm these are intentional cascade/overrides, not silent conflicts; collapse if redundant
-
----
-
-## JS — healthy, no action needed
-
-Only `resize()` and `draw()` recur across files, and they're independent canvas-module
-locals in `grid-void.js` / `hero-waveform.js` / `tron-fx.js`. A shared canvas util is
-optional and low-value; not worth the indirection.
-
----
-
-## Suggested sequencing (by ROI)
-
-1. **TD-1** extract shared inline CSS (kills ~740 dup rules; touch every page once)
-2. **TD-2** collapse print clones (removes ~5 files / ~2,400 lines)
-3. **TD-3** finish nav/footer adoption; fix the `why-flynn` double-footer
-4. **TD-4** shared `<head>` injection
-5. **TD-5 / TD-6** cache-tag automation; CSS selector reconciliation
-
-Each is structural change to a live site — do them one at a time with CI/lychee verifying
-each step.
+## Done this pass
+- Removed orphaned `.nav / .nav-inner / .nav-links / .nav-cta` rules from `styles.css` and
+  `tron.css` (dead since nav → `site-nav.js`). 404 keeps its own self-contained `.nav`.
+- Removed dead `.wf-nav / .wf-brand / .wf-links` rules from `why-flynn.html` (left over from
+  its pre-shared nav).
+- **INSTALL button is now single-source:** extracted its CSS to `assets/css/install-button.css`,
+  linked in `<head>` on every page, and deleted the duplicate copies from `tron.css` and the
+  `why-flynn` inline block. This also **fixed a stuck white→cyan transition** bug: the styles
+  had briefly been JS-injected *after* the nav/footer rendered, which left the INSTALL label
+  stuck white on the themed pages; a `<head>` stylesheet renders it correctly from first paint.
+- **Fixed the why-flynn footer/nav font + dimness:** the shared components use Share Tech Mono,
+  but why-flynn never imported it (fell back to Geist Mono — thinner/dimmer). Added Share Tech
+  Mono to its font import. Also baked the footer logo glow (`mix-blend-mode + drop-shadow`) into
+  `site-footer.css` so it no longer depended on tron.css.
+- **Footer is now fully self-contained** (single source, environment-independent):
+  - Lifted `#site-footer` above why-flynn's `.void-haze` overlay (`z-index: 2; isolation`)
+    so the haze no longer darkened it.
+  - Moved the animated `#grid-bg` "living circuit" backdrop into the component: `site-footer.js`
+    injects the `<canvas>` if absent, `site-footer.css` styles it (`z-index:-1`, opaque base),
+    and why-flynn now loads `tron-fx.js` to animate it. The footer no longer shows the page's
+    3D grid-void through a transparent background — it renders identically everywhere.

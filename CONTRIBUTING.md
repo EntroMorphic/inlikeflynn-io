@@ -45,8 +45,10 @@ Mobile browsers cache `grid-void.js` / `tron.css` etc. hard. Every local asset
 reference carries a `?v=YYYYMMDD-HHMM` tag. Bump it in one pass so returning
 visitors get fresh code:
 
-> Ask Claude to **"bump the asset cache version"** — it re-stamps `index.html`,
-> `pages/*.html`, and `404.html` with a fresh timestamp.
+> Run **`node scripts/bump-cache.mjs`** — it re-stamps every `?v=` in `index.html`,
+> `pages/*.html`, the infographics, and `404.html`, plus the `var V` constants in
+> `site-nav.js` / `site-footer.js` and the `VERSION` in `sw.js`, to one fresh
+> UTC timestamp. Pass an explicit version as an arg to pin it: `node scripts/bump-cache.mjs 20260609-1200`.
 
 CI fails if the `?v=` tags are not uniform across all HTML.
 

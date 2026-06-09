@@ -1,0 +1,51 @@
+/* ============================================================================
+   site-footer.css — SINGLE SOURCE OF TRUTH for footer styling (every page).
+
+   Pairs with assets/js/site-footer.js (markup). All rules are scoped under the
+   #site-footer mount and use hard-coded resolved values (not theme vars) so the
+   footer renders identically on the themed pages AND the self-contained
+   infographics (why-flynn, etc.) — no per-page duplication.
+   ========================================================================== */
+#site-footer.footer {
+  position: relative; z-index: 2; isolation: isolate; width: 100%;
+  border-top: 1px solid rgba(120, 180, 210, 0.16);
+  padding: 56px 0 40px; margin-top: 80px; background: transparent;
+}
+/* animated "living circuit" backdrop (tron-fx.js paints to #grid-bg) — its own
+   opaque dark base so the footer reads identically regardless of what's behind
+   the page (e.g. why-flynn's 3D grid-void). z-index:-1 keeps it under content
+   within the footer's isolated stacking context. */
+#site-footer #grid-bg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  z-index: -1; pointer-events: none; background: #05080e;
+}
+#site-footer .wrap { max-width: 1240px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 56px); }
+#site-footer .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; align-items: start; }
+
+#site-footer .brand { display: inline-flex; align-items: center; gap: 20px; text-decoration: none;
+  color: oklch(0.88 0.16 200); font-weight: 600; font-size: 54px; line-height: 1; }
+#site-footer .brand-mark { width: 112px; height: 112px; display: block; object-fit: contain;
+  mix-blend-mode: screen; filter: drop-shadow(0 0 12px rgba(71, 216, 255, 0.55)); }
+#site-footer .muted { color: rgb(109, 128, 148); }
+
+#site-footer h4 { font-family: "Geist Mono", ui-monospace, monospace; font-size: 11px;
+  letter-spacing: 0.14em; text-transform: uppercase; color: rgb(109, 128, 148); margin: 0 0 16px; font-weight: 500; }
+#site-footer ul { list-style: none; padding: 0; margin: 0; }
+#site-footer li { margin-bottom: 8px; }
+#site-footer a { font-size: 14px; color: oklch(0.88 0.16 200); text-decoration: none; transition: color .2s; }
+#site-footer li a { font-family: "Share Tech Mono", "Geist Mono", ui-monospace, monospace; letter-spacing: 0.02em; }
+#site-footer a:hover { color: #ff8a3a; }
+
+#site-footer .footer-meta { display: flex; justify-content: space-between; align-items: center;
+  margin-top: 56px; padding-top: 24px; border-top: 1px solid rgba(120, 180, 210, 0.16);
+  font-family: "Geist Mono", ui-monospace, monospace; font-size: 11px; letter-spacing: 0.08em;
+  color: rgb(109, 128, 148); text-transform: uppercase; }
+#site-footer .footer-install { margin-top: 18px; }
+
+@media (max-width: 720px) {
+  #site-footer .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px 24px; }
+  #site-footer .brand { font-size: 40px; gap: 14px; }
+  #site-footer .brand-mark { width: 76px; height: 76px; }
+  #site-footer .footer-meta { flex-direction: column; align-items: flex-start; gap: 8px; }
+}
+@media (max-width: 480px) { #site-footer .footer-grid { grid-template-columns: 1fr; } }
