@@ -290,7 +290,7 @@ body {
 
     <h1 class="wordmark">FLYNN<span class="dot">.</span></h1>
     <p class="lede"><span class="accent">Catches equipment faults days before they happen.</span><br />On-device, no cloud, no network, and no round-trip delay.</p>
-    <p class="definition">A patent-pending embedded detector. <b>One compiled binary.</b> Lives on the microcontroller native to the equipment it monitors: self-calibrating, fully offline, and deterministic.</p>
+    <p class="definition">Flynn is software that lives on the chip already inside your equipment — it learns what healthy operation looks like, locks that picture permanently, and flags developing faults before they become failures. <b>Patent-pending. Fully offline. Under 9 KB. Zero false alarms.</b></p>
 
     <div class="vitals">
       <div class="vital"><b>2,180-byte</b> core</div>
@@ -381,7 +381,7 @@ body {
 
   <!-- ===================== 03 — FAILURE MODES ===================== -->
   <section class="block pad" data-screen-label="03 Failure modes">
-    <div class="shead"><span class="snum">03</span><span class="slabel">Three failure modes the industry identified</span><span class="sline"></span></div>
+    <div class="shead"><span class="snum">03</span><span class="slabel">Four failure modes the industry identified</span><span class="sline"></span></div>
     <h2 class="stitle">Industry problems and <span class="hot">architectural gaps</span>.</h2>
 
     <div class="fmodes">
@@ -418,11 +418,24 @@ body {
           <blockquote class="fm-q">"Maintenance organizations have not been able to harness the power of these technologies beyond pilots."
             <div class="fm-cite">— Deloitte, 2025</div>
           </blockquote>
-          <div class="fm-extra">$150K–$400K per facility. 6–18 months of data collection before predictions begin. Labeled fault examples required — expensive and scarce. Custom configuration per deployment.</div>
+          <div class="fm-extra">$150K–$400K per facility. 6–18 months of data collection before predictions begin. Labeled fault examples required — expensive and scarce. Custom configuration per deployment. Dedicated data-science teams to build and maintain the models.</div>
         </div>
         <div class="fm-right">
           <div class="fm-ans-tag">Flynn</div>
-          <div class="fm-ans"><b>2,180 bytes.</b> Under two seconds to enroll.<a class="dag" style="color:var(--orange);text-decoration:none;"> †</a> Healthy signal only. Zero per-deployment configuration. Same binary, every domain.</div>
+          <div class="fm-ans"><b>2,180 bytes.</b> Under two seconds to enroll.<a class="dag" style="color:var(--orange);text-decoration:none;"> †</a> Healthy signal only. No data scientists. Zero per-deployment configuration. Same binary, every domain.</div>
+        </div>
+      </div>
+      <div class="fm">
+        <div class="fm-left">
+          <div class="fm-tag"><span class="d"></span>Failure Mode 04 · The Interval Gap</div>
+          <blockquote class="fm-q">"Preventive maintenance misses 30–40% of failures that develop between scheduled inspections."
+            <div class="fm-cite">— McKinsey, 2024</div>
+          </blockquote>
+          <div class="fm-extra">Scheduled inspections run on fixed intervals. The equipment is unmonitored between technician visits — and that gap is where slow faults mature into failures.</div>
+        </div>
+        <div class="fm-right">
+          <div class="fm-ans-tag">Flynn</div>
+          <div class="fm-ans"><b>Continuous.</b> Flynn scores <b>every reading, every second</b>, on the device. The gap between visits disappears — the equipment is always monitored.</div>
         </div>
       </div>
     </div>
@@ -448,6 +461,17 @@ body {
       </tbody>
     </table>
     <p class="fnote" id="fn-enroll"><span class="dag">†</span> Enrollment time and samples required for complete enrollment vary by equipment type, state, and operational envelope.</p>
+
+    <div class="reach">
+      <p class="sbody"><strong>And where no one can reach the machine, the machine has to watch itself.</strong> In orbit, subsea, or inside a patient, maintenance access is impossible — so detection must live on the device. Flynn already does: deterministic, integer-only, radiation-resilient, IEC 62304-aligned.</p>
+      <div class="estrip" style="margin-top:14px;">
+        <span class="badge">Orbit</span>
+        <span class="badge">Subsea</span>
+        <span class="badge">Autonomous flight</span>
+        <span class="badge">Medical implant</span>
+        <span class="badge">Radiation-resilient</span>
+      </div>
+    </div>
   </section>
 
   <!-- ===================== 05 — THE EVIDENCE ===================== -->
@@ -459,7 +483,7 @@ body {
       <span class="badge"><b>98.8%</b> precision</span>
       <span class="badge"><b>0</b> false positives</span>
       <span class="badge"><b>17-day</b> lead time</span>
-      <span class="badge"><b>Deterministic</b></span>
+      <span class="badge"><b>0-latency</b> detection</span>
     </div>
 
     <div class="timeline">
@@ -496,6 +520,7 @@ body {
 
     <p class="sbody">These are the industry's proven returns — for the implementations where detection succeeds. 79% of implementations have the tools, the dashboards, and the data pipeline. What they lack is a detector that catches slow faults without false alarms, without cloud dependency, and without absorbing the drift it was built to detect.</p>
     <p class="pnote">Flynn's architecture eliminates every failure mode that separates the 21% from the 79%.</p>
+    <p class="pnote" style="margin-top:14px;"><b>And for the manufacturer:</b> equipment ships with Flynn compiled into its firmware — self-monitoring as a line in the bill of materials, on every unit from first power-on. “Our equipment monitors itself” becomes the procurement differentiator.</p>
   </section>
 
   <!-- ===================== CLOSER ===================== -->

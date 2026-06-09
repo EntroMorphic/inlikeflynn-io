@@ -629,7 +629,7 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
 
     <h1 class="wordmark">FLYNN<span class="dot">.</span></h1>
     <p class="lede"><span class="accent">Catches equipment faults days before they happen</span> — on the device itself, with no cloud, no network, and no round-trip delay.</p>
-    <p class="definition">A patent-pending embedded detector. <b>One compiled binary.</b> Lives on the microcontroller already inside the equipment it monitors: self-calibrating, fully offline, and identical in its answers every time it runs.</p>
+    <p class="definition">Flynn is software that lives on the chip already inside your equipment — it learns what healthy operation looks like, locks that picture permanently, and flags developing faults before they become failures. <b>Patent-pending. Fully offline. Under 9 KB. Zero false alarms.</b></p>
 
     <div class="vitals">
       <div class="vital"><b>2,180-byte</b> core</div>
@@ -675,12 +675,24 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
   <section class="block pad" data-screen-label="02 The failure mode">
     <div class="shead">
       <span class="snum">02</span>
-      <span class="slabel">The failure mode</span>
+      <span class="slabel">The failure modes</span>
       <span class="sline"></span>
     </div>
-    <h2 class="stitle">Adaptive monitors silently absorb <span class="hot">the faults they're built to catch</span>.</h2>
+    <h2 class="stitle">Two ways monitoring fails. <span class="hot">Flynn closes both.</span></h2>
 
     <div class="story">
+      <div class="scol fail">
+        <div class="sh">Failure one · Alert fatigue</div>
+        <p>Conventional monitors cry wolf. When operators <strong>“find no problems 8 of 10 times, they ignore alert 11 — the real failure.”</strong> The dashboard stays live; the trust is already dead.</p>
+        <p style="font-family:var(--mono);font-size:11.5px;letter-spacing:0.04em;color:var(--dim);font-style:italic;">— MaintenanceOnline, 2026</p>
+      </div>
+      <div class="scol win">
+        <div class="refuse">Flynn earns the alert.</div>
+        <p><strong>Zero false positives</strong> across 120 hours of healthy-equipment data. Every alert Flynn raises is real — so the program survives, <strong>because the trust survives.</strong></p>
+      </div>
+    </div>
+
+    <div class="story" style="margin-top:18px;">
       <div class="scol fail">
         <div class="sh">The adaptive baseline</div>
         <p>A bearing wears. Slowly. Over six weeks, the vibration roughens and the motor current creeps upward. A conventional monitoring system watches this happen — and <strong>adapts</strong>. It absorbs the worsening signal into its picture of "normal" and quietly raises the threshold to match. The drift that should have triggered an alarm is absorbed into the new baseline.</p>
@@ -836,6 +848,8 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
 
     <p class="stepnote">† Samples required for complete enrollment will vary by equipment type, state, and operational envelope.</p>
 
+    <p class="sbody" style="margin-top:6px;">Scheduled maintenance leaves gaps: preventive programs miss <strong>30–40% of failures</strong> between intervals (McKinsey, 2024). Flynn scores <strong>every reading, every second</strong> — the gap between visits disappears.</p>
+
     <div class="callout">The baseline locks. <b>A slow fault can never teach Flynn to accept it.</b> Same input. Same answer. Always.</div>
   </section>
 
@@ -917,7 +931,7 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
 
     <figure class="scope">
       <img src="assets/img/flynn-scope.png?v=20260609-0100" alt="Flynn detection scope: a sensor stream is learned during calibration, the threshold is locked, and a developing fault crosses it — Flynn raises an alert." />
-      <figcaption class="scope-cap"><b>Learn, freeze, detect.</b> Flynn learns the healthy signal, freezes the threshold, then checks every reading against it. When a developing fault crosses the locked band — alert.</figcaption>
+      <figcaption class="scope-cap"><b>Enroll, lock, observe.</b> Flynn enrolls on the healthy signal, locks the baseline, then scores every reading against it. When a developing fault crosses the locked band — alert.</figcaption>
     </figure>
 
     <div class="stats">
@@ -1003,6 +1017,14 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
       <div class="outcome">
         <div class="ohx">Specified, then respecified</div>
         <p>Equipment that calls before it fails <b>earns the next project</b>. The switching cost shifts from price to embedded intelligence.</p>
+      </div>
+      <div class="outcome">
+        <div class="ohx">No data scientists required</div>
+        <p>Cloud predictive maintenance needs ML engineers to build, train, and maintain models. <b>Flynn self-calibrates from the healthy signal</b> — zero specialized personnel. The plant that can't hire a data scientist deploys Flynn today.</p>
+      </div>
+      <div class="outcome">
+        <div class="ohx">Dumb equipment, made smart</div>
+        <p>Equipment that never monitored itself ships with Flynn <b>compiled into its firmware</b>. Self-monitoring becomes a line in the bill of materials — on every unit, from first power-on.</p>
       </div>
     </div>
 
