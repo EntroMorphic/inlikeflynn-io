@@ -628,7 +628,7 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
     </div>
 
     <h1 class="wordmark">FLYNN<span class="dot">.</span></h1>
-    <p class="lede"><span class="accent">Catches equipment faults days before they happen</span> — on the device itself, with no cloud, no network, and no round-trip delay.</p>
+    <p class="lede"><span class="accent">Flynn catches equipment faults days before they happen</span> — turning emergency replacements into planned repairs, before the damage compounds.</p>
     <p class="definition">Flynn is software that lives on the chip already inside your equipment — it learns what healthy operation looks like, locks that picture permanently, and flags developing faults before they become failures. <b>Patent-pending. Fully offline. Under 9 KB. Zero false alarms.</b></p>
 
     <div class="vitals">
@@ -789,6 +789,11 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
           <td class="cflynn cflynn-col">Healthy signal only — abundant, free</td>
         </tr>
         <tr>
+          <td class="cattr">Specialized personnel</td>
+          <td class="ccloud">Data-science team required</td>
+          <td class="cflynn cflynn-col">Self-calibrating — zero specialized staff</td>
+        </tr>
+        <tr>
           <td class="cattr">Configuration</td>
           <td class="ccloud">Custom per deployment</td>
           <td class="cflynn cflynn-col">Zero — same binary, every domain</td>
@@ -797,6 +802,11 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
           <td class="cattr">Slow-developing faults</td>
           <td class="ccloud">Baseline adapts — fault becomes invisible</td>
           <td class="cflynn cflynn-col">Baseline locks — fault stays visible</td>
+        </tr>
+        <tr class="decisive">
+          <td class="cattr">False alarm rate</td>
+          <td class="ccloud">High — programs die from alert fatigue</td>
+          <td class="cflynn cflynn-col">Zero false positives across 120 hours</td>
         </tr>
         <tr>
           <td class="cattr">Detection speed</td>
@@ -811,6 +821,7 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
       </tbody>
     </table>
 
+    <p class="tnote">The industry identified two options: static thresholds that miss slow faults, or adaptive baselines that absorb them. <b>Flynn is a third option</b> — learned from the full operating envelope, then locked permanently.</p>
     <p class="tnote">The critical difference is baseline behavior. An adaptive baseline <b>absorbs the fault it was built to catch</b>. A locked baseline forces it into the open.</p>
   </section>
 
@@ -832,7 +843,7 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
       <div class="step">
         <div class="sn">STAGE 02</div>
         <div class="st">Enroll</div>
-        <div class="sd">Learn the healthy operating envelope — <b>~1,700 samples,†</b> under two seconds. Where cloud systems need hours of labeled data, Flynn enrolls from raw signal alone.</div>
+        <div class="sd">Learn the healthy operating envelope — <b>~1,700 samples,†</b> under two seconds.</div>
       </div>
       <div class="step">
         <div class="sn">STAGE 03</div>
@@ -917,6 +928,7 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
       </div>
 
       <div class="hero-foot">Flynn enrolls on <b>your</b> equipment's healthy signal, locks the envelope, and watches. The domain is irrelevant — <b>the signal is what matters</b>. Validated across five industrial signal domains with zero configuration changes.</div>
+      <div class="hero-foot" style="margin-top:14px;">Where maintenance access is impossible — <b>in orbit, subsea, or inside a patient</b> — the equipment must monitor itself. Flynn is that monitor: deterministic, integer-only, radiation-resilient, IEC 62304-aligned.</div>
     </div>
   </section>
 
@@ -931,7 +943,7 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
 
     <figure class="scope">
       <img src="assets/img/flynn-scope.png?v=20260609-0100" alt="Flynn detection scope: a sensor stream is learned during calibration, the threshold is locked, and a developing fault crosses it — Flynn raises an alert." />
-      <figcaption class="scope-cap"><b>Enroll, lock, observe.</b> Flynn enrolls on the healthy signal, locks the baseline, then scores every reading against it. When a developing fault crosses the locked band — alert.</figcaption>
+      <figcaption class="scope-cap"><b>Enroll, lock, detect.</b> Flynn enrolls on the healthy signal, locks the baseline, then scores every reading against it. When a developing fault crosses the locked band — alert.</figcaption>
     </figure>
 
     <div class="stats">
@@ -1019,8 +1031,8 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
         <p>Equipment that calls before it fails <b>earns the next project</b>. The switching cost shifts from price to embedded intelligence.</p>
       </div>
       <div class="outcome">
-        <div class="ohx">No data scientists required</div>
-        <p>Cloud predictive maintenance needs ML engineers to build, train, and maintain models. <b>Flynn self-calibrates from the healthy signal</b> — zero specialized personnel. The plant that can't hire a data scientist deploys Flynn today.</p>
+        <div class="ohx">Warranty claims drop</div>
+        <p>Faults caught before cascade failure <b>eliminate the highest-cost warranty events</b>. The manufacturer's exposure decreases with every unit that monitors itself.</p>
       </div>
       <div class="outcome">
         <div class="ohx">Dumb equipment, made smart</div>
