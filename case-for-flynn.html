@@ -106,6 +106,7 @@ body {
 
 .bs::before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px;
     background: var(--cyan); box-shadow: 0 0 12px var(--cyan); }
+.bs.down::before { background: var(--orange); box-shadow: 0 0 12px var(--orange); }
 
 .bs .bv { font-family: var(--mono); font-size: 52px; font-weight: 500; letter-spacing: -0.02em; line-height: 1; color: var(--orange); }
 
@@ -133,6 +134,8 @@ body {
 
 /* ---- failure-mode cards ---- */
   .fmodes { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 26px; }
+  .fnote { margin: 16px 0 0; font-size: 12px; line-height: 1.5; color: var(--dim); font-style: italic; }
+  .fnote .dag { color: var(--orange); font-style: normal; }
 
 .fm { border: 1px solid var(--hair); border-radius: 12px; overflow: hidden; background: var(--panel);
     display: grid; grid-template-columns: 1.1fr 1fr; }
@@ -286,8 +289,8 @@ body {
     </div>
 
     <h1 class="wordmark">FLYNN<span class="dot">.</span></h1>
-    <p class="lede"><span class="accent">Catches equipment faults days before they happen</span> — on the device itself, with no cloud, no network, and no round-trip delay.</p>
-    <p class="definition">A patent-pending embedded detector. <b>One compiled binary.</b> Lives on the microcontroller already inside the equipment it monitors: self-calibrating, fully offline, and identical in its answers every time it runs.</p>
+    <p class="lede"><span class="accent">Catches equipment faults days before they happen.</span><br />On-device, no cloud, no network, and no round-trip delay.</p>
+    <p class="definition">A patent-pending embedded detector. <b>One compiled binary.</b> Lives on the microcontroller native to the equipment it monitors: self-calibrating, fully offline, and deterministic.</p>
 
     <div class="vitals">
       <div class="vital"><b>2,180-byte</b> core</div>
@@ -299,8 +302,8 @@ body {
 
     <div class="mast-divider"></div>
 
-    <h1 class="hero-statement">Tools were adopted.<br /><span class="hot">Downtime rose.</span></h1>
-    <p class="hero-sub2">The telemetry exists. The architecture is missing.</p>
+    <h1 class="hero-statement">Tools were adopted.<br /><span class="hot">Downtime increased.</span></h1>
+    <p class="hero-sub2">The telemetry exists. The architecture is misplaced.</p>
   </header>
 
   <!-- ===================== 01 — THE SCALE ===================== -->
@@ -348,7 +351,7 @@ body {
   <!-- ===================== 02 — THE PARADOX ===================== -->
   <section class="block pad" data-screen-label="02 The paradox">
     <div class="shead"><span class="snum">02</span><span class="slabel">The paradox</span><span class="sline"></span></div>
-    <h2 class="stitle">75% report ROI. 79% report no improvement. <span class="accent">Both are true.</span></h2>
+    <h2 class="stitle"><span style="color: var(--cyan);">75%</span> report ROI. <span style="color: var(--orange);">79%</span> report no improvement or worse.</h2>
 
     <div class="bigstats grid2">
       <div class="bs">
@@ -356,7 +359,7 @@ body {
         <div class="bd">of maintenance teams are using AI in their operations.</div>
         <div class="bsrc">MaintainX, 2026</div>
       </div>
-      <div class="bs">
+      <div class="bs down">
         <div class="bv">79%</div>
         <div class="bd">saw unplanned downtime stay the same — or increase.</div>
         <div class="bsrc">MaintainX, 2026</div>
@@ -366,20 +369,20 @@ body {
         <div class="bd">report measurable ROI from AI tools in under six months.</div>
         <div class="bsrc">MaintainX, 2026</div>
       </div>
-      <div class="bs">
+      <div class="bs down">
         <div class="bv">39%</div>
         <div class="bd">say each downtime incident is getting more expensive than the year before.</div>
         <div class="bsrc">MaintainX, 2026</div>
       </div>
     </div>
 
-    <p class="pnote">The tools are producing efficiency — faster work orders, better scheduling, streamlined reporting. The tools are failing at detection. The equipment still fails on the same schedule. <b>The AI optimized the paperwork around the failure. It missed the failure itself.</b></p>
+    <p class="pnote">The tools are producing efficiency — faster work orders, better scheduling, streamlined reporting. The tools are failing at detection. The equipment still fails on the same schedule. <b>The AI optimized the paperwork around the failure. It missed the failure.</b></p>
   </section>
 
   <!-- ===================== 03 — FAILURE MODES ===================== -->
   <section class="block pad" data-screen-label="03 Failure modes">
     <div class="shead"><span class="snum">03</span><span class="slabel">Three failure modes the industry identified</span><span class="sline"></span></div>
-    <h2 class="stitle">The industry named the problems. Each one points to <span class="hot">the same architectural gap</span>.</h2>
+    <h2 class="stitle">Industry problems and <span class="hot">architectural gaps</span>.</h2>
 
     <div class="fmodes">
       <div class="fm">
@@ -419,16 +422,17 @@ body {
         </div>
         <div class="fm-right">
           <div class="fm-ans-tag">Flynn</div>
-          <div class="fm-ans"><b>2,180 bytes.</b> Under two seconds to enroll. Healthy signal only. Zero per-deployment configuration. Same binary, every domain.</div>
+          <div class="fm-ans"><b>2,180 bytes.</b> Under two seconds to enroll.<a class="dag" style="color:var(--orange);text-decoration:none;"> †</a> Healthy signal only. Zero per-deployment configuration. Same binary, every domain.</div>
         </div>
       </div>
     </div>
+    <p class="fnote"><span class="dag">†</span> Enrollment time and samples required for complete enrollment vary by equipment type, state, and operational envelope.</p>
   </section>
 
   <!-- ===================== 04 — THE CORRECTION ===================== -->
   <section class="block pad" data-screen-label="04 The architectural correction">
     <div class="shead"><span class="snum">04</span><span class="slabel">The architectural correction</span><span class="sline"></span></div>
-    <h2 class="stitle">Eight failure modes. Eight answers. <span class="accent">One binary.</span></h2>
+    <h2 class="stitle">Eight failure modes. <span class="accent">One binary.</span></h2>
 
     <table class="ctable">
       <thead><tr><th class="cprob">Failure mode</th><th class="cans cans-col">Flynn's answer</th></tr></thead>
@@ -436,15 +440,14 @@ body {
         <tr><td class="cprob">Alert fatigue</td><td class="cans cans-col">Zero false positives</td></tr>
         <tr><td class="cprob">Adaptive drift</td><td class="cans cans-col">Locked baseline</td></tr>
         <tr><td class="cprob">Static thresholds</td><td class="cans cans-col">Self-calibrated envelope</td></tr>
-        <tr><td class="cprob">Cloud latency</td><td class="cans cans-col">Microsecond on-device detection</td></tr>
-        <tr><td class="cprob">Months to first prediction</td><td class="cans cans-col">Two seconds to enroll</td></tr>
+        <tr><td class="cprob">Cloud latency</td><td class="cans cans-col">Zero-latency, real-time, on-device detection</td></tr>
+        <tr><td class="cprob">Months to first prediction</td><td class="cans cans-col">Two seconds to enroll<a class="dag" href="#fn-enroll" style="color:var(--orange);text-decoration:none;"> †</a></td></tr>
         <tr><td class="cprob">Six-figure implementation</td><td class="cans cans-col">Zero per-deployment cost</td></tr>
         <tr><td class="cprob">Labeled fault data required</td><td class="cans cans-col">Healthy signal only</td></tr>
         <tr><td class="cprob">Cloud connectivity required</td><td class="cans cans-col">Fully offline</td></tr>
       </tbody>
     </table>
-
-    <p class="corr-note">2,180 bytes. One compiled binary. <b>Every answer is architectural</b> — built into the detector, permanent by design.</p>
+    <p class="fnote" id="fn-enroll"><span class="dag">†</span> Enrollment time and samples required for complete enrollment vary by equipment type, state, and operational envelope.</p>
   </section>
 
   <!-- ===================== 05 — THE EVIDENCE ===================== -->
@@ -456,7 +459,6 @@ body {
       <span class="badge"><b>98.8%</b> precision</span>
       <span class="badge"><b>0</b> false positives</span>
       <span class="badge"><b>17-day</b> lead time</span>
-      <span class="badge"><b>5</b> domains</span>
       <span class="badge"><b>Deterministic</b></span>
     </div>
 
@@ -483,7 +485,7 @@ body {
   <!-- ===================== 06 — THE ROI ===================== -->
   <section class="block pad" data-screen-label="06 The ROI">
     <div class="shead"><span class="snum">06</span><span class="slabel">The ROI — when detection works</span><span class="sline"></span></div>
-    <h2 class="stitle">The returns are proven. <span class="hot">The bottleneck is the detector.</span></h2>
+    <h2 class="stitle">21% of the time, <span class="hot">it works every time</span>.</h2>
 
     <div class="roi">
       <div class="rc"><div class="rv">10:1–30:1</div><div class="rd">ROI within 12–18 months.</div><div class="rsrc">McKinsey, 2024</div></div>
@@ -493,18 +495,18 @@ body {
     </div>
 
     <p class="sbody">These are the industry's proven returns — for the implementations where detection succeeds. 79% of implementations have the tools, the dashboards, and the data pipeline. What they lack is a detector that catches slow faults without false alarms, without cloud dependency, and without absorbing the drift it was built to detect.</p>
-    <p class="pnote">Flynn's architecture eliminates every failure mode that separates the 21% from the 79%. <b>The ROI case is structural:</b> remove the detection bottleneck, and the proven returns follow.</p>
+    <p class="pnote">Flynn's architecture eliminates every failure mode that separates the 21% from the 79%.</p>
   </section>
 
   <!-- ===================== CLOSER ===================== -->
   <footer class="foot" data-screen-label="Closer">
-    <h2 class="foot-h">The data points to one conclusion.</h2>
-    <p class="foot-sum">$1.4 trillion in annual losses. 79% of AI adopters seeing flat or rising downtime. Alert fatigue killing detection programs. Adaptive baselines absorbing the faults they were built to catch. Implementation timelines measured in months and six-figure budgets.</p>
-    <p class="foot-flynn"><b>Flynn:</b> 2,180 bytes. Two seconds. Zero false positives. On the device. Locked against drift. Forever.</p>
+    <h2 class="foot-h">Conclusion.</h2>
+    <p class="foot-sum">$1.4 trillion in annual losses. 79% of AI adopters realize no benefit or increased downtime. Alert fatigue killing detection programs. Adaptive baselines masking faults. Real-time telemetry lost to latency.</p>
+    <p class="foot-flynn"><b>Flynn:</b> 2,180 bytes. Zero-latency. Zero pretraining. Zero false positives. 100% real-time, on-device detection.</p>
     <div class="foot-tag">Equipment talks. <span class="accent">Flynn listens.</span></div>
-    <div class="foot-cta">See what Flynn hears <span class="arr">→</span> <span class="url">inlikeflynn.io</span></div>
+    <div class="foot-cta">See what Flynn hears <span class="arr">→</span> <a class="url" href="https://inlikeflynn.io" style="color:inherit;text-decoration:none;">inlikeflynn.io</a></div>
     <div class="foot-meta">
-      <span>inlikeflynn.io</span><span class="sep">·</span>
+      <span><a href="https://inlikeflynn.io" style="color:inherit;text-decoration:none;">inlikeflynn.io</a></span><span class="sep">·</span>
       <span>EntroMorphic, LLC</span><span class="sep">·</span>
       <span>Patent-pending</span>
     </div>
