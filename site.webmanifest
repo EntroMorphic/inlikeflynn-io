@@ -28,7 +28,7 @@
       "sizes": "720x1280",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Flynn — embedded anomaly detection. Telemetry talks. Flynn listens."
+      "label": "Flynn — embedded anomaly detection. Equipment talks. Flynn listens."
     }
   ]
 }

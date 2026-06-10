@@ -11,6 +11,7 @@ desktop.ini
 # ---- working artifacts (not part of the deployed site) ----
 screenshots/
 *.log
+explorations/
 
 # ---- build / packaging artifacts ----
 *.zip

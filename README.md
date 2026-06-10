@@ -1,7 +1,7 @@
 # inlikeflynn.io
 
 Marketing site for **Flynn** — an embedded, self-calibrating anomaly detector for
-industrial telemetry. *Telemetry talks. Flynn listens.*
+industrial telemetry. *Equipment talks. Flynn listens.*
 
 A static, dependency-light site with a custom Tron-flavored visual system — and a
 fully playable arcade game hidden inside it.

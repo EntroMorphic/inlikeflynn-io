@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="theme-color" content="#06090f" />
 <title>Why Flynn — embedded anomaly detection</title>
-<meta name="description" content="Why Flynn: a patent-pending, 2,180-byte embedded anomaly detector that lives on the microcontroller already inside your equipment. It locks its baseline on day one, so slow-developing faults stay visible — flagging a NASA bearing fault 17 days before failure, fully offline, deterministic to the bit." />
+<meta name="description" content="Why Flynn: a patent-pending, 8,480-byte embedded anomaly detector that lives on the microcontroller already inside your equipment. It locks its baseline on day one, so slow-developing faults stay visible — flagging a NASA bearing fault 17 days before failure, fully offline, deterministic to the bit." />
 <link rel="canonical" href="https://inlikeflynn.io/why-flynn.html" />
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16.png" />
@@ -632,7 +632,7 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
     <p class="definition">Flynn is software that lives on the chip already inside your equipment — it learns what healthy operation looks like, locks that picture permanently, and flags developing faults before they become failures. <b>Patent-pending. Fully offline. Under 9 KB. Zero false alarms.</b></p>
 
     <div class="vitals">
-      <div class="vital"><b>2,180-byte</b> core</div>
+      <div class="vital"><b>8,480-byte</b> binary</div>
       <div class="vital"><b>integer-only</b> · radiation-resilient</div>
       <div class="vital"><b>zero</b> dependencies · offline</div>
       <div class="vital"><b>&lt;$10</b> hardware</div>
@@ -651,14 +651,14 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
 
     <div class="verdict">
       <div class="vstat">
-        <div class="vv">79%</div>
-        <div class="vd">of maintenance teams adopted AI-powered predictive tools. Unplanned downtime stayed the same — or increased.</div>
-        <div class="vsrc">MaintainX State of Industrial Maintenance Report, 2026</div>
+        <div class="vv">$1.4T</div>
+        <div class="vd">lost every year to unplanned downtime across the Fortune 500 — up 62% since 2019.</div>
+        <div class="vsrc">Siemens True Cost of Downtime, 2024</div>
       </div>
       <div class="vstat">
-        <div class="vv">$852M</div>
-        <div class="vd">lost every week to unplanned downtime across manufacturing.</div>
-        <div class="vsrc">Fluke Corporation, October 2025</div>
+        <div class="vv">79%</div>
+        <div class="vd">of teams using AI-powered predictive tools saw unplanned downtime stay the same — or increase. 58% have already adopted them.</div>
+        <div class="vsrc">MaintainX State of Industrial Maintenance Report, 2026</div>
       </div>
       <div class="vstat">
         <div class="vv">39%</div>
@@ -816,7 +816,7 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
         <tr>
           <td class="cattr">Footprint</td>
           <td class="ccloud">Cloud infrastructure (gigabytes)</td>
-          <td class="cflynn cflynn-col">2,180 bytes (on-chip)</td>
+          <td class="cflynn cflynn-col">8,480 bytes (on-chip)</td>
         </tr>
       </tbody>
     </table>
@@ -868,13 +868,13 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
   <section class="hero pad" data-screen-label="06 One binary many worlds">
     <div class="hero-head">
       <span class="eyebrow">06 · One binary. Many worlds.</span>
-      <h2 class="hero-title">Five environments. Five failure modes. One 2,180-byte detector.</h2>
+      <h2 class="hero-title">Five environments. Five failure modes. One 8,480-byte detector.</h2>
     </div>
 
     <div class="constellation">
       <div class="core">
         <div class="cm">FLYNN</div>
-        <div class="cs">2,180-byte core</div>
+        <div class="cs">8,480-byte binary</div>
         <div class="ct">one binary</div>
       </div>
 
@@ -970,7 +970,7 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
       <div class="stat">
         <div class="sv">8,480<span class="u">B</span></div>
         <div class="sk">Full footprint</div>
-        <div class="sx">Core detector is just 2,180 bytes</div>
+        <div class="sx">One compiled binary, zero dependencies</div>
       </div>
       <div class="stat">
         <div class="sv">✓</div>

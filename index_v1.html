@@ -9,7 +9,7 @@
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="theme-color" content="#05080e" />
 <title>Flynn — Equipment talks. Flynn listens.</title>
-<meta name="description" content="Flynn lives on the chip already inside your equipment, watches the sensor data, and catches problems before they become failures — fully offline, in 8,480 bytes, with zero false alarms." />
+<meta name="description" content="Flynn is an embedded, self-calibrating anomaly detector for industrial telemetry. 8,480 bytes. Deterministic. Bare-metal. Auditable." />
 <link rel="canonical" href="https://inlikeflynn.io/" />
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16.png" />
@@ -18,7 +18,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Flynn" />
 <meta property="og:title" content="Flynn — Equipment talks. Flynn listens." />
-<meta property="og:description" content="Flynn lives on the chip already inside your equipment, watches the sensor data, and catches problems before they become failures — fully offline, in 8,480 bytes, with zero false alarms." />
+<meta property="og:description" content="Flynn is an embedded, self-calibrating anomaly detector for industrial telemetry. 8,480 bytes. Deterministic. Bare-metal. Auditable." />
 <meta property="og:url" content="https://inlikeflynn.io/" />
 <meta property="og:image" content="https://inlikeflynn.io/assets/img/og-flynn.png" />
 <meta property="og:image:width" content="1200" />
@@ -26,7 +26,7 @@
 <meta property="og:image:alt" content="Flynn — embedded anomaly detection. Equipment talks. Flynn listens." />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Flynn — Equipment talks. Flynn listens." />
-<meta name="twitter:description" content="Flynn lives on the chip already inside your equipment, watches the sensor data, and catches problems before they become failures — fully offline, in 8,480 bytes, with zero false alarms." />
+<meta name="twitter:description" content="Flynn is an embedded, self-calibrating anomaly detector for industrial telemetry. 8,480 bytes. Deterministic. Bare-metal. Auditable." />
 <meta name="twitter:image" content="https://inlikeflynn.io/assets/img/og-flynn.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -547,31 +547,31 @@
     <div class="cols-2" style="margin-bottom: 64px;">
       <div>
         <span class="eyebrow"><span class="dot"></span>The Problem</span>
-        <h2 class="h1" style="margin-top: 20px;">Tools were adopted. Downtime increased.</h2>
+        <h2 class="h1" style="margin-top: 20px;">Equipment talks in telemetry.</h2>
       </div>
-      <p class="lede" style="margin-top: 72px;">Equipment failure costs the Fortune 500 $1.4 trillion a year — up 62% since 2019. 58% of teams now run AI-powered predictive tools; 79% saw unplanned downtime hold steady or rise. The tools made maintenance more efficient. They never caught the failure.</p>
+      <p class="lede" style="margin-top: 72px;">From sub-sea to deep space, equipment talks in telemetry: vibration, current, temperature, pressure, flow, timing. The signals are everywhere. The on-device detector that listens to the equipment has been missing. Until now.</p>
     </div>
 
     <div class="cols-4">
       <div class="gap-card">
         <div class="num">01</div>
-        <h3 class="h3">Alert fatigue</h3>
-        <p style="margin-top:12px">Cloud tools cry wolf. After eight false alarms, operators ignore alert nine — the real one. Flynn raises zero false positives across 120 hours of healthy data. Every alert is real.</p>
+        <h3 class="h3">High decision latency</h3>
+        <p style="margin-top:12px">The signal travels to a distant server and the verdict travels back. For a pump that can wreck itself in seconds, the round trip is the failure.</p>
       </div>
       <div class="gap-card">
         <div class="num">02</div>
-        <h3 class="h3">Adaptive-baseline drift</h3>
-        <p style="margin-top:12px">Cloud tools update “normal” as conditions change, absorbing a slow fault into the new baseline. Flynn locks its baseline on day one — 17 days of advance warning on NASA IMS bearings.</p>
+        <h3 class="h3">No labeled training data</h3>
+        <p style="margin-top:12px">Supervised models demand labeled failures. Industrial equipment runs for years between them, so the labels never accumulate. The training set does not exist.</p>
       </div>
       <div class="gap-card">
         <div class="num">03</div>
-        <h3 class="h3">Implementation barrier</h3>
-        <p style="margin-top:12px">$150K–$400K per facility, 6–18 months of data, labeled faults, a data-science team. Flynn enrolls in about two seconds from healthy signal — zero configuration, zero specialized staff.</p>
+        <h3 class="h3">Equipment lacks connectivity</h3>
+        <p style="margin-top:12px">The most consequential machines run where backhaul is intermittent, costly, or gone. A cloud-bound detector goes dark exactly when it is needed most.</p>
       </div>
       <div class="gap-card">
         <div class="num">04</div>
-        <h3 class="h3">Interval gap</h3>
-        <p style="margin-top:12px">Scheduled inspections miss 30–40% of failures that develop between visits. Flynn watches every reading, every second. The gap between visits disappears.</p>
+        <h3 class="h3">Monitoring tools exceed firmware constraints</h3>
+        <p style="margin-top:12px">Monitoring stacks are built for dashboards: large, dynamic, hungry for external services. A microcontroller offers kilobytes and a fixed budget.</p>
       </div>
     </div>
   </div>
@@ -625,7 +625,7 @@
     </p>
 
     <p class="pull" style="margin-top: 56px;">
-      Your system watches the signal and updates its picture of normal. When a problem develops slowly, it learns to accept it. Flynn freezes its picture of normal on day one — a slow problem stays visible because Flynn refuses to move the line.
+      Once the equipment’s nominal signal envelope is learned through enrollment, it’s locked in permanently. When the equipment telemetry trends towards a threshold it does not change the enrollment data.
     </p>
   </div>
 </section>
@@ -640,7 +640,7 @@
         <span class="eyebrow"><span class="dot"></span>How Flynn works</span>
         <h2 class="h1" style="margin-top: 20px;">Learn &amp; detect. Fire &amp; forget.</h2>
       </div>
-      <p class="lede" style="margin-top: 72px;">Install. Deploy. Walk away. Once the equipment’s normal operating envelope is learned, every alert marks a real, sustained departure from the conditions at installation — turning a $94,000 emergency replacement into an $800 planned swap.</p>
+      <p class="lede" style="margin-top: 72px;">Install. Deploy. Walk away. After the equipment normal operation envelope has been learned, and every alert marks a real, sustained departure from the conditions present at installation.</p>
     </div>
 
     <div class="flow">
@@ -668,9 +668,9 @@
     <div class="cols-2" style="margin-bottom: 56px;">
       <div>
         <span class="eyebrow"><span class="dot"></span>Validated across domains</span>
-        <h2 class="h1" style="margin-top: 20px;">One binary. All domains.</h2>
+        <h2 class="h1" style="margin-top: 20px;">One binary. Infinite domains. Zero configuration.</h2>
       </div>
-      <p class="lede" style="margin-top: 72px;">One binary, validated across five signal domains that share no common assumptions. Flynn’s capabilities are industry agnostic. Where there is telemetry, Flynn translates it into actionable intelligence.</p>
+      <p class="lede" style="margin-top: 72px;">One binary, validated across five signal domains that share no common assumptions.</p>
     </div>
 
     <div class="v-list">

@@ -330,11 +330,11 @@
   }
   function startCharge(x, y) {
     if (game.over || game.attract) return;
+    // Commercial site: no press-and-hold-to-fire. Charging/firing only exists
+    // during active gameplay; on the marketing pages a hold does nothing.
+    if (!(game.active && !game.paused)) return;
     charging = true; chargeStart = performance.now(); cx = x; cy = y;
-    // in-game: charge UI is immediate. on the site (incl. paused): defer until
-    // it's a real hold, so quick taps make nothing (no orb, no whine, no shot).
-    if (game.active && !game.paused) beginChargeVisuals();
-    else chargeArmTimer = setTimeout(() => { if (charging) beginChargeVisuals(); }, WEB_HOLD_MIN);
+    beginChargeVisuals();
   }
   function moveCharge(x, y) {
     cx = x; cy = y;
