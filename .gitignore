@@ -12,6 +12,7 @@ desktop.ini
 screenshots/
 *.log
 explorations/
+backups/
 
 # ---- build / packaging artifacts ----
 *.zip

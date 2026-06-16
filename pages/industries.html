@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Flynn" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="theme-color" content="#05080e" />
-<title>Industries — Flynn · Deterministic anomaly detection embedded at the edge of the world and beyond.</title>
+<title>Industries — Flynn</title>
 <meta name="description" content="Where Flynn runs: automotive, consumer electronics, sea/air/space, healthcare and industrial robotics — embedded anomaly detection at the edge." />
 <link rel="canonical" href="https://inlikeflynn.io/pages/industries.html" />
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png" />
@@ -17,7 +17,7 @@
 <link rel="manifest" href="../site.webmanifest" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Flynn" />
-<meta property="og:title" content="Industries — Flynn · Deterministic anomaly detection embedded at the edge of the world and beyond." />
+<meta property="og:title" content="Industries — Flynn" />
 <meta property="og:description" content="Where Flynn runs: automotive, consumer electronics, sea/air/space, healthcare and industrial robotics — embedded anomaly detection at the edge." />
 <meta property="og:url" content="https://inlikeflynn.io/pages/industries.html" />
 <meta property="og:image" content="https://inlikeflynn.io/assets/img/og-flynn.png" />
@@ -25,7 +25,7 @@
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="Flynn — embedded anomaly detection. Equipment talks. Flynn listens." />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Industries — Flynn · Deterministic anomaly detection embedded at the edge of the world and beyond." />
+<meta name="twitter:title" content="Industries — Flynn" />
 <meta name="twitter:description" content="Where Flynn runs: automotive, consumer electronics, sea/air/space, healthcare and industrial robotics — embedded anomaly detection at the edge." />
 <meta name="twitter:image" content="https://inlikeflynn.io/assets/img/og-flynn.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -249,6 +249,7 @@
   .fit .chip {
     border-color: color-mix(in oklab, var(--accent-2) 35%, transparent);
     color: var(--accent-2);
+    white-space: nowrap;
     transition: color .2s, border-color .2s;
   }
   .industry:hover .fit .chip {
@@ -360,12 +361,7 @@
         <div class="meta">01 · Automotive</div>
         <h2>The software-defined vehicle, listened to from inside.</h2>
         <p class="deck">A modern vehicle is a fleet of microcontrollers — powertrain, ADAS, body, infotainment, gateway. Each one already emits telemetry the OEM cannot afford to ignore once it leaves the line.</p>
-        <div class="fit">
-          <span class="chip">MCU-class</span>
-          <span class="chip">AUTOSAR-friendly</span>
-          <span class="chip">Bare-metal</span>
         </div>
-      </div>
       <div class="right-col">
         <div class="challenge">
           <h4>The Challenge</h4>
@@ -375,6 +371,11 @@
             <li>Long lifecycle (10–15 years on the road) with no path for re-validation of changing models.</li>
             <li>Behaviour anomalies — sensor drift, control-loop deviation, bus contention — manifest in the signal long before they manifest on the road.</li>
           </ul>
+        </div>
+        <div class="fit">
+          <span class="chip">MCU-class</span>
+          <span class="chip">AUTOSAR-friendly</span>
+          <span class="chip">Bare-metal</span>
         </div>
       </div>
     </div>
@@ -414,12 +415,7 @@
         <div class="meta">02 · Consumer Electronics</div>
         <h2>On-device detection. No cloud round-trip, no battery tax.</h2>
         <p class="deck">On-device detection works offline, runs inside the existing power envelope, and sends no sample beyond the chip.</p>
-        <div class="fit">
-          <span class="chip">8,480 bytes</span>
-          <span class="chip">Zero heap</span>
-          <span class="chip">Offline by default</span>
         </div>
-      </div>
       <div class="right-col">
         <div class="challenge">
           <h4>The Challenge</h4>
@@ -429,6 +425,11 @@
             <li>On-device AI/ML accelerators need lightweight watchdogs that don't compete for compute.</li>
             <li>Privacy posture means many users will never opt into telemetry leaving the device at all.</li>
           </ul>
+        </div>
+        <div class="fit">
+          <span class="chip">8,480 bytes</span>
+          <span class="chip">Zero heap</span>
+          <span class="chip">Offline by default</span>
         </div>
       </div>
     </div>
@@ -466,14 +467,9 @@
     <div class="industry-head">
       <div>
         <div class="meta">03 · Sea, Air &amp; Space</div>
-        <h2>Where the cloud doesn't reach and the silicon doesn't come back.</h2>
-        <p class="deck">Most consequential equipment operates in environments where backhaul is impossible by physics, update cycles are measured in years, and the asset under measurement cannot be reached for maintenance. Flynn was designed for it.</p>
-        <div class="fit">
-          <span class="chip">Air-gapped</span>
-          <span class="chip">Rad-tolerant compatible</span>
-          <span class="chip">Decade lifecycle</span>
+        <h2>Operational beyond the point of no return.</h2>
+        <p class="deck">Most consequential equipment operates in environments where backhaul is impossible by physics, update cycles are measured in years, and the asset under measurement cannot be reached for maintenance. Flynn was designed for it — and for the SWaP-C budgets these platforms live by: zero added size, weight, power, or cost beyond the silicon already on board.</p>
         </div>
-      </div>
       <div class="right-col">
         <div class="challenge">
           <h4>The Challenge</h4>
@@ -483,6 +479,12 @@
             <li>Equipment lifecycles are decades. The detector that ships today must still be valid — and identical — in 2036.</li>
             <li>Defense, aerospace, and maritime regulators demand deterministic, replayable, and auditable behaviour.</li>
           </ul>
+        </div>
+        <div class="fit">
+          <span class="chip">Near-zero SWaP-C</span>
+          <span class="chip">Air-gapped</span>
+          <span class="chip">Rad-tolerant compatible</span>
+          <span class="chip">Decade lifecycle</span>
         </div>
       </div>
     </div>
@@ -522,12 +524,7 @@
         <div class="meta">04 · Healthcare &amp; Life Sciences</div>
         <h2>Auditable integrity for the equipment patients depend on.</h2>
         <p class="deck">SaMD, HIPAA, and clinical workflows demand transparent, deterministic, and replayable detection. Flynn's single-binary, locked-threshold architecture is designed for the documentation packages regulators ask for.</p>
-        <div class="fit">
-          <span class="chip">SaMD-ready</span>
-          <span class="chip">Audit-ready</span>
-          <span class="chip">No PHI leaves the device</span>
         </div>
-      </div>
       <div class="right-col">
         <div class="challenge">
           <h4>The Challenge</h4>
@@ -537,6 +534,11 @@
             <li>Large, opaque AI models stall approval; certification demands detection logic that can be verified, not a black box.</li>
             <li>PHI protection means many architectures cannot send raw signal anywhere — the listener has to live on the device.</li>
           </ul>
+        </div>
+        <div class="fit">
+          <span class="chip">SaMD-ready</span>
+          <span class="chip">Audit-ready</span>
+          <span class="chip">No PHI leaves the device</span>
         </div>
       </div>
     </div>
@@ -576,12 +578,7 @@
         <div class="meta">05 · Industrial Robotics</div>
         <h2>Industry 4.0 at the speed of the actuator.</h2>
         <p class="deck">Sub-millisecond control loops, 24/7 duty cycles, and cascading-failure topologies are not compatible with cloud-centric detection. Flynn sits on the drive, the PLC, the cell controller — where the decisions actually need to be made.</p>
-        <div class="fit">
-          <span class="chip">PLC / drive-resident</span>
-          <span class="chip">Sub-ms response</span>
-          <span class="chip">IT/OT bridge</span>
         </div>
-      </div>
       <div class="right-col">
         <div class="challenge">
           <h4>The Challenge</h4>
@@ -591,6 +588,11 @@
             <li>Sub-millisecond control loops are structurally incompatible with off-asset detection.</li>
             <li>One compromised robotic cell cascades — bearing, drive, conveyor, line — within seconds.</li>
           </ul>
+        </div>
+        <div class="fit">
+          <span class="chip">PLC / drive-resident</span>
+          <span class="chip">Sub-ms response</span>
+          <span class="chip">IT/OT bridge</span>
         </div>
       </div>
     </div>
@@ -639,6 +641,10 @@
         <div class="stat-row">
           <span class="l">Footprint</span>
           <span class="v accent">8,480 bytes</span>
+        </div>
+        <div class="stat-row">
+          <span class="l">SWaP-C</span>
+          <span class="v accent">Near-zero</span>
         </div>
         <div class="stat-row">
           <span class="l">Calibration</span>

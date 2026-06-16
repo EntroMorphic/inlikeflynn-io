@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="theme-color" content="#06090f" />
-<title>Why Flynn · Deterministic anomaly detection embedded at the edge of the world and beyond.</title>
+<title>Why Flynn — embedded anomaly detection</title>
 <meta name="description" content="Why Flynn: a patent-pending, 8,480-byte embedded anomaly detector that lives on the microcontroller already inside your equipment. It locks its baseline on day one, so slow-developing faults stay visible — flagging a NASA bearing fault 17 days before failure, fully offline, deterministic to the bit." />
 <link rel="canonical" href="https://inlikeflynn.io/why-flynn.html" />
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
@@ -12,12 +12,12 @@
 <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Flynn" />
-<meta property="og:title" content="Why Flynn · Deterministic anomaly detection embedded at the edge of the world and beyond." />
+<meta property="og:title" content="Why Flynn — embedded anomaly detection" />
 <meta property="og:description" content="On-device, deterministic anomaly detection. The intelligence goes to the data — not the other way around." />
 <meta property="og:url" content="https://inlikeflynn.io/why-flynn.html" />
 <meta property="og:image" content="https://inlikeflynn.io/assets/img/og-flynn.png" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Why Flynn · Deterministic anomaly detection embedded at the edge of the world and beyond." />
+<meta name="twitter:title" content="Why Flynn — embedded anomaly detection" />
 <meta name="twitter:description" content="On-device, deterministic anomaly detection. The intelligence goes to the data — not the other way around." />
 <meta name="twitter:image" content="https://inlikeflynn.io/assets/img/og-flynn.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -421,6 +421,49 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
 
 .world .wwhy { font-size: 11.5px; line-height: 1.45; color: var(--muted); margin-top: 10px; text-align: left; }
 
+/* SWaP-C band under the constellation */
+.swapc-band { margin-top: 24px; border: 1px solid var(--hair); border-top: 2px solid var(--cyan); border-radius: 10px; background: var(--panel); padding: 18px 22px; display: flex; align-items: center; gap: 16px 26px; flex-wrap: wrap; }
+.swapc-band .sb-lead { font-size: 13.5px; line-height: 1.5; color: var(--muted); flex: 1 1 340px; }
+.swapc-band .sb-lead b { color: var(--cyan); font-weight: 600; }
+.swapc-band .sb-items { display: flex; gap: 9px; flex-wrap: wrap; }
+.swapc-band .sb-items span { font-family: var(--mono); font-size: 12px; letter-spacing: 0.03em; color: var(--text); border: 1px solid var(--hair); border-radius: 7px; padding: 8px 12px; }
+.swapc-band .sb-items b { color: var(--cyan); font-weight: 700; }
+@media (max-width: 640px) { .swapc-band { flex-direction: column; align-items: flex-start; } }
+
+/* ============ FLOATING CONTENTS LOCATOR ============ */
+.locator {
+    position: fixed; left: 32px; top: 50%; transform: translateY(-50%);
+    z-index: 40; width: 170px;
+  }
+.locator h4 {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--faint); font-weight: 500; margin: 0 0 14px;
+  }
+.loc-list { position: relative; padding-left: 16px; }
+.loc-list::before {
+    content: ""; position: absolute; left: 0; top: 4px; bottom: 4px;
+    width: 2px; background: var(--hair);
+  }
+.loc-progress {
+    position: absolute; left: 0; top: 4px; width: 2px; height: 0;
+    background: var(--cyan); box-shadow: 0 0 9px rgba(71,216,255,0.65);
+    transition: height .4s cubic-bezier(.4,0,.2,1); pointer-events: none;
+  }
+.locator ol { list-style: none; padding: 0; margin: 0; counter-reset: t; }
+.locator li {
+    counter-increment: t; padding: 6.5px 0;
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.07em;
+    text-transform: uppercase; display: flex; gap: 9px; align-items: baseline;
+  }
+.locator li::before { content: counter(t, decimal-leading-zero); color: var(--faint); transition: color .25s; }
+.locator a { color: var(--muted); text-decoration: none; transition: color .25s; line-height: 1.3; }
+.locator a:hover { color: var(--cyan); }
+.locator li.active::before { color: var(--cyan); }
+.locator li.active a { color: var(--cyan); }
+.block[id], .hero[id] { scroll-margin-top: 96px; }
+@media (max-width: 1340px) { .locator { display: none; } }
+@media print { .locator { display: none; } }
+
 .hero-foot {
     margin: 30px auto 0; text-align: center; font-size: 16px; line-height: 1.55;
     color: var(--muted); max-width: 72ch;
@@ -604,6 +647,23 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
 
 <header id="site-nav"></header>
 
+<nav class="locator" aria-label="Contents">
+  <h4>Contents</h4>
+  <div class="loc-list">
+    <span class="loc-progress"></span>
+    <ol>
+      <li><a href="#s01">The verdict</a></li>
+      <li><a href="#s02">The failure mode</a></li>
+      <li><a href="#s03">The inversion</a></li>
+      <li><a href="#s04">How it differs</a></li>
+      <li><a href="#s05">How it works</a></li>
+      <li><a href="#s06">Many worlds</a></li>
+      <li><a href="#s07">The evidence</a></li>
+      <li><a href="#s08">What changes</a></li>
+    </ol>
+  </div>
+</nav>
+
 <div class="sheet" id="sheet">
 
   <!-- ===================== TICKER ===================== -->
@@ -641,13 +701,13 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
   </header>
 
   <!-- ===================== 01 — THE INDUSTRY'S VERDICT ===================== -->
-  <section class="block pad" data-screen-label="01 The industry's verdict">
+  <section class="block pad" id="s01" data-screen-label="01 The industry's verdict">
     <div class="shead">
       <span class="snum">01</span>
       <span class="slabel">The industry's own verdict</span>
       <span class="sline"></span>
     </div>
-    <h2 class="stitle">The tools were adopted. <span class="hot">The downtime rose.</span></h2>
+    <h2 class="stitle">Tools were adopted. <span class="hot">Downtime increased.</span></h2>
 
     <div class="verdict">
       <div class="vstat">
@@ -672,7 +732,7 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
   </section>
 
   <!-- ===================== 02 — THE FAILURE MODE ===================== -->
-  <section class="block pad" data-screen-label="02 The failure mode">
+  <section class="block pad" id="s02" data-screen-label="02 The failure mode">
     <div class="shead">
       <span class="snum">02</span>
       <span class="slabel">The failure modes</span>
@@ -726,7 +786,7 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
   </section>
 
   <!-- ===================== 03 — THE INVERSION ===================== -->
-  <section class="block pad" data-screen-label="03 The inversion">
+  <section class="block pad" id="s03" data-screen-label="03 The inversion">
     <div class="shead">
       <span class="snum">03</span>
       <span class="slabel">The inversion</span>
@@ -756,7 +816,7 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
   </section>
 
   <!-- ===================== 04 — HOW FLYNN IS DIFFERENT ===================== -->
-  <section class="block pad" data-screen-label="04 How Flynn is different">
+  <section class="block pad" id="s04" data-screen-label="04 How Flynn is different">
     <div class="shead">
       <span class="snum">04</span>
       <span class="slabel">How Flynn is different</span>
@@ -826,7 +886,7 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
   </section>
 
   <!-- ===================== 05 — HOW IT WORKS ===================== -->
-  <section class="block pad" data-screen-label="05 How it works">
+  <section class="block pad" id="s05" data-screen-label="05 How it works">
     <div class="shead">
       <span class="snum">05</span>
       <span class="slabel">How it works</span>
@@ -865,7 +925,7 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
   </section>
 
   <!-- ===================== 06 — ONE BINARY MANY WORLDS ===================== -->
-  <section class="hero pad" data-screen-label="06 One binary many worlds">
+  <section class="hero pad" id="s06" data-screen-label="06 One binary many worlds">
     <div class="hero-head">
       <span class="eyebrow">06 · One binary. Many worlds.</span>
       <h2 class="hero-title">Five environments. Five failure modes. One 8,480-byte detector.</h2>
@@ -929,11 +989,21 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
 
       <div class="hero-foot">Flynn enrolls on <b>your</b> equipment's healthy signal, locks the envelope, and watches. The domain is irrelevant — <b>the signal is what matters</b>. Validated across five industrial signal domains with zero configuration changes.</div>
       <div class="hero-foot" style="margin-top:14px;">Where maintenance access is impossible — <b>in orbit, subsea, or inside a patient</b> — the equipment must monitor itself. Flynn is that monitor: deterministic, integer-only, radiation-resilient, IEC 62304-aligned.</div>
+
+      <div class="swapc-band">
+        <div class="sb-lead"><b>Near-zero SWaP-C.</b> Every one of these worlds shares the same hard ceiling — no room, no payload mass, no power, no budget to spare. Flynn adds none of the four: it runs on the silicon already on board.</div>
+        <div class="sb-items">
+          <span><b>S</b>ize · 8,480 B</span>
+          <span><b>W</b>eight · zero</span>
+          <span><b>P</b>ower · bare-metal</span>
+          <span><b>C</b>ost · &lt;$10</span>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- ===================== 07 — THE EVIDENCE ===================== -->
-  <section class="block pad" data-screen-label="07 The evidence">
+  <section class="block pad" id="s07" data-screen-label="07 The evidence">
     <div class="shead">
       <span class="snum">07</span>
       <span class="slabel">The evidence</span>
@@ -1005,7 +1075,7 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
   </section>
 
   <!-- ===================== 08 — WHAT CHANGES ===================== -->
-  <section class="block pad" data-screen-label="08 What changes">
+  <section class="block pad" id="s08" data-screen-label="08 What changes">
     <div class="shead">
       <span class="snum">08</span>
       <span class="slabel">What changes</span>
@@ -1116,6 +1186,43 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
 <script src="assets/js/tron-fx.js?v=20260609-0100"></script>
 <script src="assets/js/install-button.js?v=20260609-0100"></script>
 <script src="assets/js/sw-register.js?v=20260609-0100"></script>
+
+<script>
+  /* Floating CONTENTS locator — scroll-spy + progress line. */
+  (function () {
+    var items = Array.prototype.slice.call(document.querySelectorAll('.locator li'));
+    if (!items.length) return;
+    var progress = document.querySelector('.loc-progress');
+    var sections = items.map(function (li) {
+      var a = li.querySelector('a');
+      var id = a && a.getAttribute('href').slice(1);
+      return id ? document.getElementById(id) : null;
+    });
+    var activeIndex = -1;
+    function setActive(i) {
+      if (i < 0 || i === activeIndex) return;
+      activeIndex = i;
+      items.forEach(function (li, idx) { li.classList.toggle('active', idx === i); });
+      var li = items[i];
+      if (li && progress) { progress.style.height = (li.offsetTop + li.offsetHeight - 4) + 'px'; }
+    }
+    var ticking = false;
+    function update() {
+      ticking = false;
+      var marker = 140;            // px below the viewport top
+      var best = 0;
+      for (var i = 0; i < sections.length; i++) {
+        var s = sections[i];
+        if (s && s.getBoundingClientRect().top <= marker) best = i;
+      }
+      setActive(best);
+    }
+    function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
+  })();
+</script>
 
 </body>
 </html>

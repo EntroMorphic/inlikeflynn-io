@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Flynn" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="theme-color" content="#05080e" />
-<title>Whitepaper — Flynn · Deterministic anomaly detection embedded at the edge of the world and beyond.</title>
+<title>Whitepaper — Flynn</title>
 <meta name="description" content="The Flynn whitepaper: deterministic, embedded anomaly detection in 8,480 bytes — self-calibrating, bare-metal, auditable telemetry intelligence." />
 <link rel="canonical" href="https://inlikeflynn.io/pages/whitepaper.html" />
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png" />
@@ -17,7 +17,7 @@
 <link rel="manifest" href="../site.webmanifest" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Flynn" />
-<meta property="og:title" content="Whitepaper — Flynn · Deterministic anomaly detection embedded at the edge of the world and beyond." />
+<meta property="og:title" content="Whitepaper — Flynn" />
 <meta property="og:description" content="The Flynn whitepaper: deterministic, embedded anomaly detection in 8,480 bytes — self-calibrating, bare-metal, auditable telemetry intelligence." />
 <meta property="og:url" content="https://inlikeflynn.io/pages/whitepaper.html" />
 <meta property="og:image" content="https://inlikeflynn.io/assets/img/og-flynn.png" />
@@ -25,7 +25,7 @@
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="Flynn — embedded anomaly detection. Equipment talks. Flynn listens." />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Whitepaper — Flynn · Deterministic anomaly detection embedded at the edge of the world and beyond." />
+<meta name="twitter:title" content="Whitepaper — Flynn" />
 <meta name="twitter:description" content="The Flynn whitepaper: deterministic, embedded anomaly detection in 8,480 bytes — self-calibrating, bare-metal, auditable telemetry intelligence." />
 <meta name="twitter:image" content="https://inlikeflynn.io/assets/img/og-flynn.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -262,7 +262,7 @@
     <h2 id="summary">Executive summary</h2>
     <p>Industrial equipment fails for reasons that show up in the signal long before they show up in the world. A bearing wears. A pump cavitates. A motor drifts out of phase. The data is there. The listener is not.</p>
     <p>This whitepaper introduces <strong>Flynn</strong>, an embedded anomaly detector that turns equipment telemetry into local intelligence. Flynn runs bare-metal on the microcontroller already inside the machine, in <strong>8,480 bytes of deterministic C</strong>. It calibrates itself from normal operation in 1,700 samples<sup style="font-size: 0.7em; color: var(--accent-deep); margin-left: 1px; vertical-align: super;">†</sup> — under two seconds at kilohertz sampling rates — with no labels, no cloud, and no per-deployment tuning.</p>
-    <p class="pull">Flynn reads the signal where it lives.</p>
+    <p class="pull">Flynn monitors equipment telemetry at the source.</p>
 
     <h2 id="telemetry">The telemetry era</h2>
     <h3>The signal is everywhere</h3>
@@ -384,35 +384,34 @@
     var items = Array.prototype.slice.call(document.querySelectorAll('.toc li'));
     if (!items.length) return;
     var progress = document.querySelector('.toc-progress');
-    var headings = items.map(function (li) {
+    var sections = items.map(function (li) {
       var a = li.querySelector('a');
       var id = a && a.getAttribute('href').slice(1);
       return id ? document.getElementById(id) : null;
     });
     var activeIndex = -1;
-
     function setActive(i) {
-      if (i === activeIndex || i < 0) return;
+      if (i < 0 || i === activeIndex) return;
       activeIndex = i;
       items.forEach(function (li, idx) { li.classList.toggle('active', idx === i); });
       var li = items[i];
-      if (li && progress) {
-        progress.style.height = (li.offsetTop + li.offsetHeight - 6) + 'px';
-      }
+      if (li && progress) { progress.style.height = (li.offsetTop + li.offsetHeight - 6) + 'px'; }
     }
-
-    var visible = new Set();
-    var obs = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        var idx = headings.indexOf(e.target);
-        if (idx < 0) return;
-        if (e.isIntersecting) visible.add(idx); else visible.delete(idx);
-      });
-      if (visible.size) setActive(Math.min.apply(null, Array.from(visible)));
-    }, { rootMargin: '-84px 0px -64% 0px', threshold: 0 });
-
-    headings.forEach(function (h) { if (h) obs.observe(h); });
-    setActive(0);
+    var ticking = false;
+    function update() {
+      ticking = false;
+      var marker = 140;            // px below the viewport top
+      var best = 0;
+      for (var i = 0; i < sections.length; i++) {
+        var s = sections[i];
+        if (s && s.getBoundingClientRect().top <= marker) best = i;
+      }
+      setActive(best);
+    }
+    function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
   })();
 </script>
 </body>

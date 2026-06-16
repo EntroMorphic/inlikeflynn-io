@@ -41,7 +41,7 @@
     const ALERT_AT = 15608;  // detection fires
     let t = 0;               // sample index (loops 0..TOTAL+pause)
     const PAUSE = 1400;
-    let speed = 20;          // samples per frame
+    let speed = (typeof window !== 'undefined' && window.FLYNN_WAVE_SPEED) || 20;          // samples per frame
     const samples = new Float32Array(TOTAL);
     let threshold = 0;       // locked threshold (set at warmup)
     let runningMin = 0, runningMax = 0;

@@ -9,9 +9,13 @@
 (function () {
   'use strict';
   if (!('serviceWorker' in navigator)) return;
+  // Skip in embedded previews: the editor runs this page inside an iframe, where
+  // /sw.js resolves to the sandbox host and 404s (noisy console, no benefit).
+  // The deployed site loads top-level, so registration still happens in production.
+  if (window.top !== window.self) return;
   window.addEventListener('load', function () {
     navigator.serviceWorker.register('/sw.js').catch(function () {
-      /* preview / non-HTTPS / non-root host — safe to ignore */
+      /* non-HTTPS / non-root host — safe to ignore */
     });
   });
 })();
