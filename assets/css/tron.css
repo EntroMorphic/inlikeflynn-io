@@ -144,11 +144,13 @@ body {
 /* the site uses Web Animations (fill:forwards) for reveals, which override CSS
    opacity/filter — so the fade itself is driven in JS (fadeSite). This class
    only handles the non-animated bits. */
+body.ah-playing #site-nav,
 body.ah-playing .nav,
 body.ah-playing .void-haze,
 body.ah-playing section,
 body.ah-playing .footer,
 body.ah-playing .strip,
+body.ah-playing .crumb,
 body.ah-playing .hero { pointer-events: none; }
 .ah-hud { position: fixed; inset: 0; z-index: 9990; pointer-events: none; display: none; font-family: "Share Tech Mono", var(--font-mono); }
 .ah-hud.on { display: block; }
@@ -763,22 +765,23 @@ body.cas-menu { cursor: auto; }
 .cas-howto { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(3,6,12,0.7); }
 .ah-hud.howto .cas-howto { display: flex; }
 .cas-howto-card {
-  width: min(520px, 88vw); padding: 34px 38px; text-align: left;
+  width: min(520px, 88vw); max-height: 88vh; overflow-y: auto;
+  padding: clamp(20px, 3.4vmin, 34px) clamp(22px, 3.8vmin, 38px); text-align: left;
   border: 1px solid color-mix(in oklab, var(--accent-2) 38%, transparent); border-radius: 14px;
   background: linear-gradient(180deg, rgba(10,16,26,0.96), rgba(6,10,18,0.97));
   box-shadow: 0 0 50px color-mix(in oklab, var(--glow-cyan) 16%, transparent);
 }
 .cas-howto-t {
-  font-family: var(--font-display); font-size: 22px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-2);
-  text-shadow: 0 0 18px color-mix(in oklab, var(--glow-cyan) 45%, transparent); margin-bottom: 20px; text-align: center;
+  font-family: var(--font-display); font-size: clamp(17px, 3vmin, 22px); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-2);
+  text-shadow: 0 0 18px color-mix(in oklab, var(--glow-cyan) 45%, transparent); margin-bottom: clamp(13px, 2.4vmin, 20px); text-align: center;
 }
-.cas-howto-list { list-style: none; margin: 0 0 24px; padding: 0; display: flex; flex-direction: column; gap: 13px; }
-.cas-howto-list li { display: grid; grid-template-columns: 78px 104px 1fr; gap: 12px; align-items: center; }
+.cas-howto-list { list-style: none; margin: 0 0 clamp(15px, 2.8vmin, 24px); padding: 0; display: flex; flex-direction: column; gap: clamp(9px, 1.7vmin, 13px); }
+.cas-howto-list li { display: grid; grid-template-columns: clamp(60px, 11vmin, 78px) clamp(86px, 15vmin, 104px) 1fr; gap: clamp(9px, 1.6vmin, 12px); align-items: center; }
 .cas-howto-list b {
-  font-family: "Share Tech Mono", var(--font-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+  font-family: "Share Tech Mono", var(--font-mono); font-size: clamp(10px, 1.7vmin, 12px); letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--accent); text-align: right; text-shadow: 0 0 10px color-mix(in oklab, var(--glow-orange) 40%, transparent);
 }
-.cas-howto-list span { font-size: 14px; line-height: 1.4; color: color-mix(in oklab, var(--accent-2) 78%, white); }
+.cas-howto-list span { font-size: clamp(12px, 2vmin, 14px); line-height: 1.4; color: color-mix(in oklab, var(--accent-2) 78%, white); }
 .cas-keys { display: inline-flex; align-items: center; gap: 6px; }
 .cas-key {
   display: inline-flex; align-items: center; gap: 6px;

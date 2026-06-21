@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Flynn" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="theme-color" content="#05080e" />
+<title>Team — Flynn</title>
+<meta name="description" content="The team behind Flynn — a small, senior group at EntroMorphic building deterministic anomaly detection for the equipment the world runs on." />
+<link rel="canonical" href="https://inlikeflynn.io/pages/team.html" />
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="../assets/img/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="../assets/img/apple-touch-icon.png" />
+<link rel="manifest" href="../site.webmanifest" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Flynn" />
+<meta property="og:title" content="Team — Flynn" />
+<meta property="og:description" content="The team behind Flynn — a small, senior group at EntroMorphic building deterministic anomaly detection for the equipment the world runs on." />
+<meta property="og:url" content="https://inlikeflynn.io/pages/team.html" />
+<meta property="og:image" content="https://inlikeflynn.io/assets/img/og-flynn.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Flynn — embedded anomaly detection. Equipment talks. Flynn listens." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Team — Flynn" />
+<meta name="twitter:description" content="The team behind Flynn — a small, senior group at EntroMorphic building deterministic anomaly detection for the equipment the world runs on." />
+<meta name="twitter:image" content="https://inlikeflynn.io/assets/img/og-flynn.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Orbitron:wght@400;500;600;700;800&family=Chakra+Petch:wght@400;500;600;700&family=Michroma&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/css/styles.css?v=20260609-0100" />
+<style>
+  .page-head {
+    padding: clamp(48px, 7vw, 96px) 0 clamp(40px, 5vw, 64px);
+  }
+  .page-head h1 { margin: 18px 0 24px; max-width: 16ch; }
+  .page-head h1 em { font-style: normal; color: var(--accent-2); }
+  .page-head .lede { max-width: 60ch; }
+
+  /* ----- team grid (Direction A — portrait cards) ----- */
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(18px, 2vw, 24px);
+    padding-bottom: clamp(64px, 9vw, 128px);
+  }
+  @media (max-width: 880px) { .team-grid { grid-template-columns: 1fr; max-width: 440px; } }
+
+  .member {
+    border: 1px solid var(--hair);
+    border-radius: var(--r-lg);
+    background: color-mix(in oklab, var(--bone) 55%, transparent);
+    overflow: hidden;
+    transition: border-color .25s, transform .25s;
+  }
+  .member:hover { border-color: color-mix(in oklab, var(--accent-2) 45%, transparent); transform: translateY(-3px); }
+
+  /* photo slot — monogram now; a real headshot drops straight in */
+  .ph-slot {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 50% 36%, color-mix(in oklab, var(--accent-2) 16%, transparent), transparent 70%),
+      var(--bone-2);
+    border-bottom: 1px solid var(--hair);
+  }
+  .ph-slot::after {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(color-mix(in oklab, var(--accent-2) 8%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in oklab, var(--accent-2) 8%, transparent) 1px, transparent 1px);
+    background-size: 26px 26px;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  /* the real photo: covers the monogram when it loads; removes itself on 404 */
+  .ph-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 2;
+  }
+  .ph-mono {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    text-align: center;
+  }
+  .ph-mono .ini {
+    font-family: "Orbitron", var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(44px, 5vw, 60px);
+    letter-spacing: 0.02em;
+    color: var(--accent-2);
+    text-shadow: 0 0 26px color-mix(in oklab, var(--accent-2) 45%, transparent);
+  }
+  .ph-mono .ph-tag {
+    position: absolute;
+    bottom: -34px; left: 50%; transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mid);
+    white-space: nowrap;
+  }
+
+  .member-body { padding: 22px 24px 28px; }
+  .member-role {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    transition: color .2s;
+  }
+  .member-name {
+    font-family: "Orbitron", var(--font-sans);
+    font-weight: 600;
+    font-size: clamp(20px, 1.7vw, 23px);
+    letter-spacing: -0.005em;
+    line-height: 1.15;
+    margin: 10px 0 0;
+  }
+  .member-bio {
+    color: var(--ink-2);
+    font-size: 15px;
+    line-height: 1.5;
+    margin: 14px 0 0;
+  }
+  .member-links {
+    display: flex;
+    gap: 14px;
+    margin-top: 18px;
+  }
+  .member-links a {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    border-bottom: 1px solid color-mix(in oklab, var(--accent-2) 30%, transparent);
+    padding-bottom: 2px;
+    transition: color .2s, border-color .2s;
+  }
+  .member-links a:hover { color: var(--accent-2); border-color: var(--accent-2); }
+
+  /* tron-fx hover accents */
+  .team-grid:hover .member:not(:hover) { border-color: var(--hair); }
+  .member:hover .member-role { color: var(--accent); }
+</style>
+<link rel="stylesheet" href="../assets/css/tron.css?v=20260609-0100" />
+<link rel="stylesheet" href="../assets/css/install-button.css?v=20260609-0100" />
+<link rel="stylesheet" href="../assets/css/site-footer.css?v=20260609-0100" />
+</head>
+<body>
+<canvas id="grid-void"></canvas>
+<div class="void-haze"></div>
+
+<header id="site-nav"></header>
+
+<div class="wrap crumb">
+  <a href="../index.html">Flynn</a> &nbsp;/&nbsp; Team
+</div>
+
+<section class="page-head" data-screen-label="01 Team hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span>The team behind Flynn · EntroMorphic</span>
+    <h1 class="h-display" style="font-size: clamp(44px, 6vw, 92px);">Built by people who refuse to <em>move the line.</em></h1>
+    <p class="lede">A small, senior team building deterministic intelligence for the equipment the world runs on — from the factory floor to the deep field. No dashboards-first detours, no adaptive baselines that learn to accept a fault. Just detection that holds.</p>
+  </div>
+</section>
+
+<section data-screen-label="02 The founders">
+  <div class="wrap">
+    <div class="team-grid">
+
+      <!-- Tripp Josserand-Austin -->
+      <article class="member">
+        <div class="ph-slot">
+          <!-- Headshot: drop a square photo at assets/img/team/tripp-josserand-austin.jpg and
+               replace this comment with:
+               <img class="ph-img" src="../assets/img/team/tripp-josserand-austin.jpg" alt="Tripp Josserand-Austin" loading="lazy" /> -->
+          <div class="ph-mono"><span class="ini">TJ</span><span class="ph-tag">Headshot</span></div>
+        </div>
+        <div class="member-body">
+          <div class="member-role">Founder · Acting CEO</div>
+          <h2 class="member-name">Tripp Josserand-Austin</h2>
+          <p class="member-bio">Conceived Flynn and the locked-baseline thesis behind it. Sets product direction and carries the company from first principle to first pilot.</p>
+        </div>
+      </article>
+
+      <!-- Robert Sitton -->
+      <article class="member">
+        <div class="ph-slot">
+          <!-- Headshot: drop a square photo at assets/img/team/robert-sitton.jpg and
+               replace this comment with:
+               <img class="ph-img" src="../assets/img/team/robert-sitton.jpg" alt="Robert Sitton" loading="lazy" /> -->
+          <div class="ph-mono"><span class="ini">RS</span><span class="ph-tag">Headshot</span></div>
+        </div>
+        <div class="member-body">
+          <div class="member-role">Chief Innovation Officer</div>
+          <h2 class="member-name">Robert Sitton</h2>
+          <p class="member-bio">Drives the research edge — translating the detection science into a binary that survives bare-metal, radiation, and the deep field.</p>
+        </div>
+      </article>
+
+      <!-- John Josserand -->
+      <article class="member">
+        <div class="ph-slot">
+          <!-- Headshot: drop a square photo at assets/img/team/john-josserand.jpg and
+               replace this comment with:
+               <img class="ph-img" src="../assets/img/team/john-josserand.jpg" alt="John Josserand" loading="lazy" /> -->
+          <div class="ph-mono"><span class="ini">JJ</span><span class="ph-tag">Headshot</span></div>
+        </div>
+        <div class="member-body">
+          <div class="member-role">Chief Revenue Officer</div>
+          <h2 class="member-name">John Josserand</h2>
+          <p class="member-bio">Owns the path to market — pairing Flynn with the operators, OEMs, and programs where zero-latency detection changes the economics.</p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer" id="site-footer"><canvas id="grid-bg"></canvas></footer>
+
+<script src="../assets/js/site-footer.js?v=20260609-0100"></script>
+<script src="../assets/js/site-nav.js?v=20260609-0100"></script>
+<script src="../assets/js/tron-fx.js?v=20260609-0100"></script>
+
+<!-- Volumetric grid void (three.js) -->
+<script>window.FLYNN_GRID_CONFIG = { variant: 'industries' };</script>
+<script src="https://unpkg.com/three@0.149.0/build/three.min.js"></script>
+<script src="../assets/js/grid-void.js?v=20260609-0100"></script>
+<script src="../assets/js/install-button.js?v=20260609-0100"></script>
+<script src="../assets/js/sw-register.js?v=20260609-0100"></script>
+</body>
+</html>

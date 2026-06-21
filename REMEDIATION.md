@@ -12,7 +12,8 @@
 ## Summary
 
 > **✅ Remediated to v1.0.0 on 2026-06-04.** All items below are complete except
-> **HK-5** (deliberately deferred to a real build step — see note). See
+> **HK-5**, which was resolved on **2026-06-18** — not by precompiling the Tweaks
+> panel, but by **removing it from production entirely** (see HK-5 note). See
 > [`CHANGELOG.md`](CHANGELOG.md) for the shipped change set and
 > [`docs/AUDIT.md`](docs/AUDIT.md) for the audit record.
 
@@ -26,16 +27,19 @@
 | HK-2 | Remove orphaned `flynn-logo.jpg` | 🟢 | S | [x] |
 | HK-3 | Optimize nav logo (255 KB → 73 KB) | 🟢 | S | [x] |
 | HK-4 | Resolve footer placeholder links | 🟢 | M | [x] |
-| HK-5 | Precompile Babel / Tweaks for production | 🟢 | M | [~] deferred |
+| HK-5 | Precompile Babel / Tweaks for production | 🟢 | M | [x] resolved — panel removed |
 | HK-6 | Remove orphaned `assets/tweaks.jsx` | 🟢 | S | [x] |
-| DEC-1 | Tweaks panel home-only or site-wide? | 🟡 | S | [x] home-only |
+| DEC-1 | Tweaks panel home-only or site-wide? | 🟡 | S | [x] moot — panel removed |
 | A11Y-1 | Accessibility pass (contrast, headings, kbd) | 🟢 | M | [x] |
 | REPO | Professional-grade GitHub repo shape | 🟡 | L | [x] |
 
-**HK-5 deferral rationale:** hand-transpiling the live Tweaks JSX risks subtly
-breaking the panel; it should be precompiled by a real toolchain in CI, not by
-hand. Documented in README → Production notes and tracked for when a build step
-lands.
+**HK-5 resolution (2026-06-18):** rather than hand-transpile or add a build step,
+the Tweaks panel was **removed from the production home page**. Its four defaults
+(Orbitron headline, glow 1.2, motion on, scope speed 22) are baked in statically in
+`index.html` (a `<style>` block + `window.FLYNN_WAVE_SPEED`), so the page renders
+identically with no React, no in-browser Babel, and a clean console. The
+`tweaks-panel.jsx` / `tron-tweaks.jsx` modules are retained on disk solely as a
+dependency of the `index_v1.html` rollback snapshot.
 
 ### ✅ Verified healthy (no action needed)
 - **Reduced-motion is correctly handled** — `grid-void.js`, `tron-fx.js`, and `tron.css` all honor `prefers-reduced-motion: reduce` (grid, ribbons, and marquee calm down). Confirmed during audit.
@@ -165,13 +169,15 @@ canonical page — dead code that will confuse the next reader.
 
 ---
 
-## 🟢 HK-5 — Precompile Babel / Tweaks for production
-**Why:** In-browser Babel transpiles the React Tweaks panel on every load — a perf
-and console-warning cost. (README already notes this.)
+## 🟢 HK-5 — Precompile Babel / Tweaks for production  ✅ RESOLVED (panel removed)
+**Why:** In-browser Babel transpiled the React Tweaks panel on every home-page load
+— a perf and console-warning cost.
 
-- [ ] Precompile `tweaks-panel.jsx` + `tron-tweaks.jsx` to plain JS for prod, **or**
-- [ ] Gate the Tweaks panel behind a flag so Babel only loads when invoked
-- [ ] Confirm the in-browser Babel dev warning is gone in the prod build
+- [x] **Resolved 2026-06-18 by removing the panel from production** (not by
+      precompiling). Defaults baked in statically; React + Babel + the two
+      `text/babel` script tags deleted from `index.html`. In-browser Babel dev
+      warning and the JSX sourcemap 404s are gone; home-page console is clean of
+      site-attributable output.
 
 ---
 

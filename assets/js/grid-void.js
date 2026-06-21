@@ -1778,7 +1778,7 @@
   // later animation wins — and reverse it to restore.
   let fadeAnims = [];
   function fadeTargets() {
-    return document.querySelectorAll('.nav, .void-haze, section, .footer, .strip');
+    return document.querySelectorAll('#site-nav, .nav, .void-haze, section, .footer, .strip, .crumb');
   }
   function fadeSite(out) {
     if (out) {

@@ -5,6 +5,38 @@ Prepared 2026-06-09 · Source of truth: `uploads/flynn-executive-summary.md-0172
 
 ---
 
+## ✅ STATUS: RESOLVED — 2026-06-18
+
+> Every gap below has been remediated. This document is retained as the audit
+> record; the analysis in it describes the **pre-upgrade** state. What shipped:
+>
+> 1. **Brand line settled → "Equipment talks. Flynn listens."** Propagated to every
+>    page H1/`<title>`/OG/Twitter, all `og:image:alt`, `README`, and `site.webmanifest`.
+>    No "Telemetry talks" remains in any served file.
+> 2. **Footprint standardized — DECISION CHANGED.** The doc recommended leading with
+>    the 2,180-byte core. **Reversed by the owner:** the site now leads with
+>    **8,480 bytes everywhere**, and the 2,180-byte core is scrubbed from all live
+>    pages (still in development, not yet a public claim).
+> 3. **`why-flynn.html` factual slips fixed.** Now leads with **$1.4T (Siemens)** and
+>    states adoption correctly — **58% adopted / 79% saw no improvement** (the
+>    conflated "79% adopted" line and the $852M/Fluke headline are gone).
+> 4. **Landing page rebuilt around the business spine — in place, design untouched.**
+>    `index.html` now carries the $1.4T problem, the **58%/79%** paradox, the four
+>    **business** failure modes (alert fatigue, adaptive drift, implementation
+>    barrier, interval gap), the locked-baseline "quotable" line, and the
+>    **$94K→$800** economics. Meta/OG descriptions are now benefit-led.
+> 5. **Pitch sprawl consolidated → `why-flynn.html` is the single canonical pitch.**
+>    `case-for-flynn.html`, `flynn-overview.html`, and `flynn-overview-bd.html` were
+>    orphaned (no inbound links, not in the sitemap) and are archived to
+>    `backups/archived-pitch-pages/` (recoverable; removed from the deploy root).
+> 6. **Bonus, beyond this doc's scope:** SWaP-C messaging woven through `index`,
+>    `why-flynn`, and `industries`; the in-browser React/Babel **Tweaks panel removed**
+>    from the production home page (console now clean of site-attributable output).
+>
+> *The original analysis follows, unedited, for reference.*
+
+---
+
 ## TL;DR
 
 The **Executive Summary is the most current, complete, and business-literate articulation of Flynn.** It is built on a clean spine: *cost-of-downtime problem → four named failure modes → the architectural inversion → customer economics → where it operates → evidence → opportunity.*

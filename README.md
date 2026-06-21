@@ -15,9 +15,11 @@ fully playable arcade game hidden inside it.
 - **Plain HTML/CSS** — no build step, no framework for the site itself.
 - **three.js** — the volumetric "grid void" backdrop (`assets/js/grid-void.js`),
   shared across every page.
-- **React + Babel (in-browser)** — only for the optional **Tweaks** panel
-  (`assets/js/tron-tweaks.jsx`), which lets you live-adjust fonts, glow, and motion.
-  Loaded on the home page only (see [Production notes](#production-notes)).
+- **No framework on the served site.** The home page was previously the only page
+  to load React + in-browser Babel (for an optional **Tweaks** panel); that authoring
+  harness has been **removed from production** — the panel's settings are now baked in
+  statically (see [Production notes](#production-notes)). The `assets/js/*.jsx`
+  modules are retained only as a dependency of the `index_v1.html` rollback snapshot.
 - **Google Fonts** — Geist / Geist Mono (body), Orbitron / Chakra Petch / Michroma
   (display), Share Tech Mono (UI/mono).
 
@@ -43,7 +45,8 @@ pages/
 assets/
   css/                  styles.css (core), tron.css (Tron/void + game HUD)
   js/                   grid-void.js (grid + hidden game), tron-fx.js,
-                        hero-waveform.js, tweaks-panel.jsx, tron-tweaks.jsx
+                        hero-waveform.js, site-nav.js, site-footer.js
+                        (*.jsx modules retained only for the index_v1 rollback)
   img/                  flynn-logo.png, favicons, PWA icons, og-flynn.png
   audio/
     music/              In-game soundtrack (synthwave)
@@ -93,7 +96,7 @@ coin slot or press **Enter** to start.
   explosion, slow-mo sting. Sounds are decoded once and auto-trimmed of leading
   silence so shots fire instantly.
 - Audio unlocks on first interaction (browser autoplay policy); a mute toggle
-  lives in the HUD and in the Tweaks panel.
+  lives in the HUD.
 
 > The game's motion, fades, and audio require a **live, foreground browser tab** —
 > backgrounded tabs freeze animation timelines.
@@ -133,16 +136,15 @@ fails if the `?v=` tags are not uniform across all HTML.
 
 ## Production notes
 
-**Tweaks panel is home-page only.** Only `index.html` loads React/Babel + the
-Tweaks panel; the sub-pages stay lean (no React payload). This is intentional —
-the panel is a home-page affordance, not site chrome. To make it site-wide, add
-the defaults block + the three `text/babel` script tags to each sub-page.
-
-**In-browser Babel is deferred, not forgotten.** The Tweaks panel is transpiled in
-the browser, which prints a dev warning and costs a little CPU on the home page.
-Precompiling it to plain JS is worth doing — but as a real build step, not a
-hand-transpile that could subtly break the live panel. Track it for whenever a
-toolchain is introduced.
+**The Tweaks panel has been removed from production.** The home page once loaded
+React + in-browser Babel to power a live Tweaks panel (fonts, glow, motion). That
+shipped a dev-only transpiler and ~2 MB of framework to every home-page visitor and
+printed a Babel console warning. It has been **stripped out**: the panel's chosen
+defaults (Orbitron headline, glow 1.2, motion on, scope speed 22) are now **baked in
+statically** — a `<style>` block plus `window.FLYNN_WAVE_SPEED` in `index.html` — so
+the page looks identical with no React, no Babel, and a clean console. The
+`tweaks-panel.jsx` / `tron-tweaks.jsx` modules remain on disk only because the
+`index_v1.html` rollback snapshot still references them.
 
 ---
 

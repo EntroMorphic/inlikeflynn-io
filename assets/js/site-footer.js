@@ -49,6 +49,7 @@
           li('mailto:tripp@entromorphic.com', 'tripp@entromorphic.com') +
         '</ul></div>' +
         '<div><h4>Company</h4><ul>' +
+          li(root + 'pages/team.html', 'Team') +
           li(root + 'pages/whitepaper.html#about', 'About EntroMorphic') +
           li('mailto:tripp@entromorphic.com', 'Contact') +
         '</ul></div>' +

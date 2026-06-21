@@ -29,7 +29,8 @@
   var explore = [
     { id: 'validation.html', href: root + 'pages/validation.html', label: 'Validation', desc: 'Five domains, measured' },
     { id: 'industries.html', href: root + 'pages/industries.html', label: 'Industries', desc: 'Where Flynn runs' },
-    { id: 'roadmap.html',    href: root + 'pages/roadmap.html',    label: 'Roadmap',    desc: "What's shipping next" }
+    { id: 'roadmap.html',    href: root + 'pages/roadmap.html',    label: 'Roadmap',    desc: "What's shipping next" },
+    { id: 'team.html',       href: root + 'pages/team.html',       label: 'Team',       desc: 'The people behind Flynn' }
   ];
   var exploreActive = explore.some(function (i) { return i.id === here; });
 
