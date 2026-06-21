@@ -15,7 +15,7 @@
   if (!mount || mount.dataset.ready) return;
   mount.dataset.ready = '1';
 
-  var V = '20260609-0100';
+  var V = '20260621-0100';
   var root = /\/pages\//.test(location.pathname) ? '../' : '';
   var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
   if (here === '') here = 'index.html';
