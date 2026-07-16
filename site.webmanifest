@@ -17,16 +17,16 @@
   ],
   "screenshots": [
     {
-      "src": "/assets/img/screenshot-wide.png",
+      "src": "/assets/img/screenshot-wide.webp",
       "sizes": "1280x720",
-      "type": "image/png",
+      "type": "image/webp",
       "form_factor": "wide",
       "label": "The Flynn home page (inlikeflynn.io), opened as an app."
     },
     {
-      "src": "/assets/img/screenshot-narrow.png",
+      "src": "/assets/img/screenshot-narrow.webp",
       "sizes": "720x1280",
-      "type": "image/png",
+      "type": "image/webp",
       "form_factor": "narrow",
       "label": "Flynn — embedded anomaly detection. Equipment talks. Flynn listens."
     }

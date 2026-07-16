@@ -40,7 +40,7 @@ function htmlFiles(dir) {
     const p = join(dir, name);
     const st = statSync(p);
     if (st.isDirectory()) {
-      if (['assets', 'node_modules', '.git', 'scripts', 'docs', 'uploads', 'screenshots'].includes(name)) continue;
+      if (['assets', 'node_modules', '.git', 'scripts', 'docs', 'uploads', 'screenshots', 'backups', 'explorations', 'ziptest', 'dist'].includes(name)) continue;
       out.push(...htmlFiles(p));
     } else if (name.endsWith('.html')) {
       out.push(p);

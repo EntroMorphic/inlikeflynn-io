@@ -13,13 +13,15 @@ fully playable arcade game hidden inside it.
 ## Stack
 
 - **Plain HTML/CSS** — no build step, no framework for the site itself.
-- **three.js** — the volumetric "grid void" backdrop (`assets/js/grid-void.js`),
-  shared across every page.
+- **three.js (vendored)** — the volumetric "grid void" backdrop (`assets/js/grid-void.js`),
+  shared across every page. three r149 is **vendored locally** at `assets/js/three.min.js`
+  (no CDN) and precached by the service worker, so the grid renders fully offline and the
+  served site has **zero external `<script>` dependencies**.
 - **No framework on the served site.** The home page was previously the only page
   to load React + in-browser Babel (for an optional **Tweaks** panel); that authoring
   harness has been **removed from production** — the panel's settings are now baked in
-  statically (see [Production notes](#production-notes)). The `assets/js/*.jsx`
-  modules are retained only as a dependency of the `index_v1.html` rollback snapshot.
+  statically (see [Production notes](#production-notes)). The old `*.jsx` Tweaks modules and
+  the `index_v1.html` rollback snapshot now live under `backups/`, out of the served tree.
 - **Google Fonts** — Geist / Geist Mono (body), Orbitron / Chakra Petch / Michroma
   (display), Share Tech Mono (UI/mono).
 
@@ -45,8 +47,8 @@ pages/
 assets/
   css/                  styles.css (core), tron.css (Tron/void + game HUD)
   js/                   grid-void.js (grid + hidden game), tron-fx.js,
-                        hero-waveform.js, site-nav.js, site-footer.js
-                        (*.jsx modules retained only for the index_v1 rollback)
+                        hero-waveform.js, site-nav.js, site-footer.js,
+                        three.min.js (vendored three r149 — no CDN)
   img/                  flynn-logo.png, favicons, PWA icons, og-flynn.png
   audio/
     music/              In-game soundtrack (synthwave)
@@ -119,7 +121,7 @@ fetch/CORS quirks with the audio buffers.)
 
 Push to GitHub and enable **GitHub Pages** on the branch/root. All paths are
 relative, so no extra configuration is needed. The site needs internet at runtime
-for the three.js and Google Fonts CDNs.
+only for the Google Fonts CDN — three.js is vendored locally and renders offline.
 
 ### Cache-busting (do this before each deploy)
 
@@ -143,8 +145,9 @@ printed a Babel console warning. It has been **stripped out**: the panel's chose
 defaults (Orbitron headline, glow 1.2, motion on, scope speed 22) are now **baked in
 statically** — a `<style>` block plus `window.FLYNN_WAVE_SPEED` in `index.html` — so
 the page looks identical with no React, no Babel, and a clean console. The
-`tweaks-panel.jsx` / `tron-tweaks.jsx` modules remain on disk only because the
-`index_v1.html` rollback snapshot still references them.
+`tweaks-panel.jsx` / `tron-tweaks.jsx` modules and the `index_v1.html` rollback
+snapshot have since been moved out of the served tree into `backups/` (disallowed in
+`robots.txt`, `noindex`), so production no longer carries any React, Babel, or JSX at all.
 
 ---
 

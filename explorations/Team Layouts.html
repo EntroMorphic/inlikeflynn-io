@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Flynn — Team page layout directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; background: #0c0a07; }
+
+  .stage {
+    --bone: #14110d;
+    --ink: #f4efe6;
+    --ink-2: #d8d2c5;
+    --mid: #8a857a;
+    --mid-2: #a8a397;
+    --hair: rgba(244,239,230,0.12);
+    --hair-soft: rgba(120,180,210,0.085);
+    --panel: rgba(244,239,230,0.035);
+    --panel-2: rgba(244,239,230,0.06);
+    --cyan: #5fd6e8;
+    --cyan-deep: #2a9fb5;
+    --orange: #ff9d3c;
+    --font: "Geist", system-ui, sans-serif;
+    --mono: "Geist Mono", ui-monospace, monospace;
+    --display: "Orbitron", var(--font);
+    position: relative;
+    font-family: var(--font);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 55% at 50% -8%, rgba(34,70,98,0.34), transparent 60%),
+      linear-gradient(var(--hair-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--hair-soft) 1px, transparent 1px),
+      #0a0d12;
+    background-size: auto, 46px 46px, 46px 46px, auto;
+  }
+  .stage * { box-sizing: border-box; }
+  .pad { padding: 64px 72px; }
+
+  .eyebrow { font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--mid); display: inline-flex; align-items: center; gap: 11px; }
+  .eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 9px var(--cyan); }
+
+  .mission { font-family: var(--display); font-weight: 700; letter-spacing: -0.005em; line-height: 1.04;
+    margin: 22px 0 0; text-wrap: balance; }
+  .mission em { font-style: normal; color: var(--cyan); }
+  .msub { font-size: 18px; color: var(--ink-2); line-height: 1.5; max-width: 60ch; margin-top: 20px; }
+
+  .role { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--orange); }
+  .pname { font-family: var(--display); font-weight: 600; letter-spacing: -0.01em; }
+  .pbio { color: var(--ink-2); line-height: 1.5; }
+
+  /* monogram avatar (placeholder until headshots land) */
+  .mono-av { position: relative; display: grid; place-items: center; overflow: hidden;
+    background: radial-gradient(circle at 50% 36%, rgba(95,214,232,0.18), rgba(95,214,232,0.02) 70%);
+    border: 1px solid rgba(95,214,232,0.34); }
+  .mono-av::after { content: ""; position: absolute; inset: 0;
+    background-image: linear-gradient(var(--hair-soft) 1px, transparent 1px), linear-gradient(90deg, var(--hair-soft) 1px, transparent 1px);
+    background-size: 22px 22px; opacity: 0.5; }
+  .mono-av .ini { position: relative; font-family: var(--display); font-weight: 700; color: var(--cyan);
+    text-shadow: 0 0 22px rgba(95,214,232,0.45); letter-spacing: 0.02em; }
+  .mono-av .ph { position: absolute; bottom: 9px; left: 0; right: 0; text-align: center;
+    font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); }
+
+  .seam { height: 1px; background: var(--hair); }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+
+<script type="text/babel">
+const { DesignCanvas, DCSection, DCArtboard } = window;
+
+// roster — bios are PLACEHOLDER copy to judge layout; swap for real ones.
+const TEAM = [
+  { first: 'Tripp', last: 'Josserand-Austin', ini: 'TJ', role: 'Founder · Acting CEO',
+    bio: 'Conceived Flynn and the locked-baseline thesis behind it. Sets product direction and carries the company from first principle to first pilot.' },
+  { first: 'Robert', last: 'Sitton', ini: 'RS', role: 'Chief Innovation Officer',
+    bio: 'Drives the research edge — translating the detection science into a binary that survives bare-metal, radiation, and the deep field.' },
+  { first: 'John', last: 'Josserand', ini: 'JJ', role: 'Chief Revenue Officer',
+    bio: 'Owns the path to market — pairing Flynn with the operators, OEMs, and programs where zero-latency detection changes the economics.' },
+];
+
+function Mono({ size, fs, round }) {
+  const m = TEAM; // unused guard
+  return null;
+}
+function Avatar({ ini, style, fontSize, label = true }) {
+  return (
+    <div className="mono-av" style={style}>
+      <span className="ini" style={{ fontSize }}>{ini}</span>
+      {label && <span className="ph">Headshot</span>}
+    </div>
+  );
+}
+
+const Mission = ({ small }) => (
+  <>
+    <span className="eyebrow"><span className="dot"></span>The team behind Flynn · EntroMorphic</span>
+    <h1 className="mission" style={{ fontSize: small ? 38 : 46 }}>
+      Built by people who refuse<br/>to <em>move the line.</em>
+    </h1>
+    <p className="msub">A small, senior team building deterministic intelligence for the equipment the world runs on — from the factory floor to the deep field.</p>
+  </>
+);
+
+/* ============================ A · PORTRAIT CARDS ============================ */
+function DirA() {
+  return (
+    <div className="stage" style={{ width: 1180 }}>
+      <div className="pad">
+        <Mission />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 24, marginTop: 48 }}>
+          {TEAM.map((p) => (
+            <div key={p.ini} style={{ border: '1px solid var(--hair)', borderRadius: 16, background: 'linear-gradient(180deg,var(--panel-2),var(--panel))', overflow: 'hidden' }}>
+              <Avatar ini={p.ini} fontSize={52} style={{ width: '100%', aspectRatio: '1/1' }} />
+              <div style={{ padding: '22px 22px 26px' }}>
+                <div className="role">{p.role}</div>
+                <div className="pname" style={{ fontSize: 23, marginTop: 9 }}>{p.first} {p.last}</div>
+                <p className="pbio" style={{ fontSize: 14.5, marginTop: 12 }}>{p.bio}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============================ B · HORIZONTAL ROSTER ============================ */
+function DirB() {
+  return (
+    <div className="stage" style={{ width: 1180 }}>
+      <div className="pad">
+        <Mission />
+        <div style={{ marginTop: 44, border: '1px solid var(--hair)', borderRadius: 16, overflow: 'hidden', background: 'linear-gradient(180deg,var(--panel-2),var(--panel))' }}>
+          {TEAM.map((p, i) => (
+            <div key={p.ini}>
+              {i > 0 && <div className="seam"></div>}
+              <div style={{ display: 'grid', gridTemplateColumns: '110px 1fr', gap: 28, alignItems: 'center', padding: '26px 30px' }}>
+                <Avatar ini={p.ini} fontSize={34} label={false} style={{ width: 110, height: 110, borderRadius: '50%' }} />
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: 30, alignItems: 'baseline' }}>
+                  <div>
+                    <div className="pname" style={{ fontSize: 25 }}>{p.first} {p.last}</div>
+                    <div className="role" style={{ marginTop: 8 }}>{p.role}</div>
+                  </div>
+                  <p className="pbio" style={{ fontSize: 15.5, margin: 0 }}>{p.bio}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============================ C · CINEMATIC TILES ============================ */
+function DirC() {
+  return (
+    <div className="stage" style={{ width: 1180 }}>
+      <div className="pad">
+        <Mission />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 22, marginTop: 48 }}>
+          {TEAM.map((p) => (
+            <div key={p.ini} style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', border: '1px solid var(--hair)' }}>
+              <Avatar ini={p.ini} fontSize={68} label={false} style={{ width: '100%', aspectRatio: '4/5' }} />
+              {/* gradient scrim + overlaid identity */}
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 38%, rgba(8,12,18,0.62) 64%, rgba(8,12,18,0.95) 100%)' }}></div>
+              <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, padding: '0 20px 20px' }}>
+                <div className="role">{p.role}</div>
+                <div className="pname" style={{ fontSize: 22, marginTop: 7 }}>{p.first} {p.last}</div>
+                <p className="pbio" style={{ fontSize: 13.5, marginTop: 10, color: 'var(--ink-2)' }}>{p.bio}</p>
+              </div>
+              <div style={{ position: 'absolute', top: 14, right: 14, fontFamily: 'var(--mono)', fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--mid)', border: '1px solid var(--hair)', borderRadius: 5, padding: '4px 7px', background: 'rgba(8,12,18,0.5)' }}>Headshot</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <DesignCanvas>
+    <DCSection id="team" title="Team page — card / grid directions" subtitle="3 directions · existing Tron system · mission line + the 3 founders · monogram avatars stand in until headshots land">
+      <DCArtboard id="a" label="A · Portrait cards — square photo on top, classic three-up" width={1180} height={720}><DirA /></DCArtboard>
+      <DCArtboard id="b" label="B · Horizontal roster — circular avatar, editorial rows" width={1180} height={700}><DirB /></DCArtboard>
+      <DCArtboard id="c" label="C · Cinematic tiles — full-bleed portrait, overlaid identity" width={1180} height={760}><DirC /></DCArtboard>
+    </DCSection>
+  </DesignCanvas>
+);
+</script>
+</body>
+</html>

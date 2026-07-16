@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- **JSON-LD structured data** (`Organization` + `WebSite`) on `index.html`.
+
+### Fixed
+- **`scripts/bump-cache.mjs` skip-list gap:** the walker omitted `backups/`/`explorations/`,
+  so the next cache-bump would have silently re-stamped archived rollback snapshots. Added
+  them (plus `ziptest`, `dist`) to the exclusion list, matching CI's scope.
+- Archived (never deleted) two orphaned assets: `assets/audio/sfx/fire-z-missiles.mp3`
+  and `assets/svg/how-flynn-works.svg`, both confirmed unreferenced.
+- Converted three images to WebP (canvas re-encode) — `flynn-scope.png` −87%,
+  `screenshot-wide.png` −93%, `screenshot-narrow.png` −96% — wired into `why-flynn.html`
+  and `site.webmanifest`. `og-flynn.png`/`icon-512.png` remain PNG pending a proper
+  lossless-optimizer pass (outside this environment's toolset).
+- **Vendored three.js (r149) locally** at `assets/js/three.min.js` and precached it in the
+  service worker (`OFFLINE_URLS`, derived from `VERSION` so a cache bump keeps it in sync) —
+  the volumetric grid now renders fully offline and the served site has **zero external
+  `<script>` dependencies**. Replaced the `https://unpkg.com/three@0.149.0/...` tag (un-pinned,
+  no SRI) on all 9 grid pages — `index`, `why-flynn`, `404`, and
+  `pages/{whitepaper,validation,roadmap,industries,tiers,team}` — with the local `?v=`-tagged
+  reference. (Red-team **TD2-1**: kills both the supply-chain/SRI gap and the offline gap.)
+  The service worker now precaches the **full local app shell** (HTML + CSS + JS + nav/footer
+  logo) with a fault-tolerant per-asset install, so the home page — **grid included** — renders
+  on a cold offline launch; only Google Fonts and game audio defer to runtime caching.
+- **Subresource Integrity on three.js.** All 9 `three.min.js` tags carry
+  `integrity="sha384-RRHfJ6w…"`, so a tampered local copy is rejected by the browser
+  (verified live: enforced, three still executes at `REVISION 149`). The hash is byte-keyed
+  — `?v=` cache bumps stay valid; a three.js version upgrade must regenerate it (see `SECURITY.md`).
 - `assets/css/infographic.css` — shared design-system atoms (timeline, ticker,
   masthead, divider, print color-adjust) extracted from the four one-pager
   infographics after measuring byte-identical rules (TD-1).
@@ -14,6 +40,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   refs, the injected-URL `var V` constants, and the service-worker `VERSION` (TD-5).
 
 ### Changed
+- **Retired the dead in-browser toolchain (red-team TD2-2).** Moved the old-landing snapshot
+  `index_v1.html` and its only dependencies (`tweaks-panel.jsx` / `tron-tweaks.jsx`) into
+  `backups/` — **never deleted** — removing the last referrer of the React +
+  `@babel/standalone` CDN scripts from the served tree. Added `Disallow: /backups/` to
+  `robots.txt` and `noindex` to the archived snapshot so it is no longer publicly indexable.
+  Net with TD2-1: production loads no React, Babel, or JSX, and no external scripts at all.
+- **Scoped CI to the deployed surface.** The link (lychee) and cache-version checks now exclude
+  `backups/` and `explorations/` — archived rollback snapshots carry their own historical `?v=`
+  tags and root-relative paths, and dev scratch isn't shipped; linting them as live pages tripped
+  the uniformity + broken-link checks.
 - **Tech-debt remediation pass (see `docs/TECH-DEBT.md`):**
   - TD-1: deduped the genuinely-shared infographic CSS into `infographic.css`
     (only the 44 identical rules; each artifact keeps its tuned CSS inline).

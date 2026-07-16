@@ -12,16 +12,45 @@
    ========================================================================== */
 'use strict';
 
-var VERSION = '20260621-0100';
+var VERSION = '20260716-1943';
 var CACHE = 'flynn-' + VERSION;
 
-// Minimal offline shell — the start_url so an offline launch shows something.
-var OFFLINE_URLS = ['/', '/index.html'];
+// Offline app shell — every LOCAL asset the home page needs to render the full
+// page *and the grid* on a cold offline launch (HTML + CSS + JS + nav/footer logo),
+// not just a text shell. All carry the matching ?v= so they resolve to the
+// cache-first branch; each is built from VERSION so a cache bump keeps them in sync
+// (bump-cache.mjs rewrites VERSION). three.js is vendored locally, so the only thing
+// left to runtime caching is Google Fonts (cross-origin) + the game audio — both
+// cache on first online visit; the grid itself needs none of them.
+var V = '?v=' + VERSION;
+var OFFLINE_URLS = [
+  '/', '/index.html',
+  '/assets/css/styles.css' + V,
+  '/assets/css/tron.css' + V,
+  '/assets/css/install-button.css' + V,
+  '/assets/css/site-footer.css' + V,
+  '/assets/js/three.min.js' + V,
+  '/assets/js/grid-void.js' + V,
+  '/assets/js/tron-fx.js' + V,
+  '/assets/js/hero-waveform.js' + V,
+  '/assets/js/site-nav.js' + V,
+  '/assets/js/site-footer.js' + V,
+  '/assets/js/install-button.js' + V,
+  '/assets/js/sw-register.js' + V,
+  '/assets/img/flynn-logo.png' + V
+];
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();
+  // Cache each shell asset INDEPENDENTLY: addAll is atomic, so a single 404 would
+  // abort the whole precache and silently leave the site non-offline. Per-item
+  // c.add().catch() tolerates an odd miss and still caches everything else.
   e.waitUntil(
-    caches.open(CACHE).then(function (c) { return c.addAll(OFFLINE_URLS); }).catch(function () {})
+    caches.open(CACHE).then(function (c) {
+      return Promise.all(OFFLINE_URLS.map(function (u) {
+        return c.add(u).catch(function () {});
+      }));
+    }).catch(function () {})
   );
 });
 

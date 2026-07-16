@@ -38,8 +38,9 @@ the Tweaks panel was **removed from the production home page**. Its four default
 (Orbitron headline, glow 1.2, motion on, scope speed 22) are baked in statically in
 `index.html` (a `<style>` block + `window.FLYNN_WAVE_SPEED`), so the page renders
 identically with no React, no in-browser Babel, and a clean console. The
-`tweaks-panel.jsx` / `tron-tweaks.jsx` modules are retained on disk solely as a
-dependency of the `index_v1.html` rollback snapshot.
+`tweaks-panel.jsx` / `tron-tweaks.jsx` modules and the `index_v1.html` rollback
+snapshot have since been moved into `backups/` (out of the served tree; see the
+2026-06-21 follow-up in `docs/TECH-DEBT.md`).
 
 ### ✅ Verified healthy (no action needed)
 - **Reduced-motion is correctly handled** — `grid-void.js`, `tron-fx.js`, and `tron.css` all honor `prefers-reduced-motion: reduce` (grid, ribbons, and marquee calm down). Confirmed during audit.

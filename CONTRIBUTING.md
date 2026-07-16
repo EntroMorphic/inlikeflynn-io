@@ -3,15 +3,6 @@
 Thanks for working on Flynn's site. It's a **static, dependency-light** site with
 no build step — what's in the repo is what ships.
 
-## `main` is the source of truth
-
-Project-config files — `.gitignore`, `.github/workflows/ci.yml`, this file, etc. —
-are maintained on `main`. **Before exporting or building a drop, sync these from
-`main` into your working copy** (`git pull`, or copy the file from
-<https://github.com/EntroMorphic/inlikeflynn-io/blob/main/.gitignore>). Otherwise an
-older working copy re-ships stale config and silently reverts repo-side fixes (e.g.
-the lychee `ci.yml` args, or the `explorations/` / `backups/` ignore rules).
-
 ## Run it locally
 
 It's static; serve the folder with anything:

@@ -44,3 +44,16 @@ that is the "inline step." So: DRY source + opt-in bundling, no permanent build 
     injects the `<canvas>` if absent, `site-footer.css` styles it (`z-index:-1`, opaque base),
     and why-flynn now loads `tron-fx.js` to animate it. The footer no longer shows the page's
     3D grid-void through a transparent background — it renders identically everywhere.
+
+---
+
+## 2026-06-21 red-team follow-up (third-party JS)
+
+| ID | Item | Resolution |
+|----|------|------------|
+| TD2-1 | `three.min.js` loaded from unpkg, un-pinned (no SRI), and absent from the SW precache → not truly offline | `[x]` **Vendored locally.** three r149 now ships at `assets/js/three.min.js` (608 KB, verified `THREE.REVISION === "149"`), referenced with a `?v=` tag on all 9 grid pages. The SW now precaches the **full local app shell** (HTML + CSS + JS + logo, derived from `VERSION`) with a fault-tolerant per-asset install, so the home page renders **grid-and-all on a cold offline launch**. Same-origin ⇒ SRI moot; zero external `<script>` deps. |
+| TD2-2 | `index_v1.html` is the only referrer keeping the React + `@babel/standalone` + `*.jsx` toolchain alive, and is publicly indexable | `[x]` **Archived, not deleted.** `index_v1.html` + `tweaks-panel.jsx` + `tron-tweaks.jsx` moved to `backups/`; `Disallow: /backups/` added to `robots.txt` and `noindex` to the snapshot. Production now loads no React/Babel/JSX. Rollback: restore those three files to root (`index.html`, `assets/js/`) and run `scripts/bump-cache.mjs`. |
+
+| TD2-3 | Vendored `three.min.js` could be tampered with locally (SRI moot for transport but not for integrity) | `[x]` **SRI added.** All 9 tags carry `integrity="sha384-RRHfJ6w…"` (verified live: browser enforces it and three still executes, `REVISION 149`). Hash is byte-keyed, so `?v=` bumps stay valid; a three.js **upgrade** must regenerate it (documented in `SECURITY.md`). |
+
+_Note: the dated report `docs/TECH-DEBT-2026-06-21.md` referenced in the brief was not present in the repo; this follow-up records the resolution here alongside the original tracking._

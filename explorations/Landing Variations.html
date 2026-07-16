@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Flynn — Landing hero / problem directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Orbitron:wght@500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; background: #f0eee9; }
+
+  /* ---- shared Tron tokens (scoped to each artboard root .ab) ---- */
+  .ab {
+    --ink: #f4efe6;
+    --ink-2: #cfd6dc;
+    --mid: #8a949c;
+    --faint: #5d6b76;
+    --cyan: #47d8ff;
+    --cyan-deep: #1f8fc4;
+    --orange: #ff8a3a;
+    --hair: rgba(120,180,210,0.16);
+    --hair-soft: rgba(120,180,210,0.085);
+    --panel: rgba(13,20,29,0.55);
+    --font: "Geist", system-ui, sans-serif;
+    --mono: "Geist Mono", ui-monospace, monospace;
+    --display: "Orbitron", var(--font);
+    width: 1320px;
+    box-sizing: border-box;
+    font-family: var(--font);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 55% at 50% -6%, rgba(34,70,98,0.50), transparent 60%),
+      radial-gradient(80% 38% at 50% 104%, rgba(40,26,14,0.30), transparent 62%),
+      linear-gradient(var(--hair-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--hair-soft) 1px, transparent 1px),
+      #05080e;
+    background-size: auto, auto, 48px 48px, 48px 48px, auto;
+  }
+  .ab * { box-sizing: border-box; }
+  .ab .pad { padding: 0 84px; }
+
+  /* horizon glow line near top */
+  .ab .horizon { position: absolute; left: 0; right: 0; top: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent); opacity: 0.5; }
+
+  /* ---- top chrome (faux nav) ---- */
+  .ab .nav { display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 84px 0; }
+  .ab .nav .brand { display: flex; align-items: center; gap: 11px;
+    font-family: var(--display); font-weight: 700; font-size: 19px; letter-spacing: 0.04em; }
+  .ab .nav .brand .mk { width: 11px; height: 11px; background: var(--cyan); transform: rotate(45deg);
+    box-shadow: 0 0 12px var(--cyan); }
+  .ab .nav .links { display: flex; gap: 26px; font-family: var(--mono); font-size: 12px;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--mid); }
+
+  .ab .eyebrow { font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--mid); display: inline-flex; align-items: center; gap: 11px; }
+  .ab .eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan);
+    box-shadow: 0 0 9px var(--cyan); }
+
+  .ab h1.head { font-family: var(--display); font-weight: 800; line-height: 0.98;
+    letter-spacing: -0.01em; margin: 0; text-wrap: balance;
+    text-shadow: 0 0 48px rgba(71,216,255,0.22); }
+  .ab .listens { color: var(--cyan); }
+
+  .ab .oneliner { color: var(--ink-2); line-height: 1.5; letter-spacing: -0.005em; }
+  .ab .oneliner b { color: var(--ink); font-weight: 600; }
+
+  .ab .ctarow { display: flex; gap: 14px; flex-wrap: wrap; }
+  .ab .btn { font-family: var(--mono); font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 15px 24px; border-radius: 999px; display: inline-flex; align-items: center; gap: 9px;
+    border: 1px solid var(--cyan); background: var(--cyan); color: #062330; font-weight: 500; }
+  .ab .btn.ghost { background: transparent; color: var(--cyan);
+    border-color: rgba(71,216,255,0.42); }
+
+  /* spec vitals */
+  .ab .vitals { display: flex; flex-wrap: wrap; gap: 10px; }
+  .ab .vital { font-family: var(--mono); font-size: 12px; letter-spacing: 0.02em; color: var(--ink-2);
+    border: 1px solid var(--hair); border-radius: 7px; padding: 8px 13px; background: rgba(13,20,29,0.4); }
+  .ab .vital b { color: var(--cyan); font-weight: 600; }
+
+  /* divider */
+  .ab .div { height: 1px; background: var(--hair); margin: 0 84px; }
+
+  /* section label */
+  .ab .slabel { display: flex; align-items: center; gap: 14px; font-family: var(--mono);
+    font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--mid); }
+  .ab .slabel .sn { font-weight: 600; color: #062330; background: var(--cyan); padding: 3px 9px;
+    border-radius: 4px; letter-spacing: 0.05em; }
+
+  /* big number callouts */
+  .ab .bignum { font-family: var(--mono); font-weight: 500; letter-spacing: -0.02em; line-height: 0.92;
+    color: var(--orange); }
+
+  /* economics before/after */
+  .ab .econ { display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; align-items: center; }
+  .ab .econ .cell { border: 1px solid var(--hair); border-radius: 13px; padding: 26px 28px;
+    background: var(--panel); }
+  .ab .econ .cell.before { border-color: rgba(255,138,58,0.32); }
+  .ab .econ .cell.after { border-color: rgba(71,216,255,0.34); }
+  .ab .econ .lbl { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--mid); margin-bottom: 12px; }
+  .ab .econ .v { font-family: var(--mono); font-size: 46px; font-weight: 500; letter-spacing: -0.02em; line-height: 1; }
+  .ab .econ .before .v { color: var(--orange); }
+  .ab .econ .after .v { color: var(--cyan); }
+  .ab .econ .n { font-size: 13px; color: var(--mid); margin-top: 11px; line-height: 1.45; }
+  .ab .econ .arrow { font-size: 30px; color: var(--mid); }
+
+  /* paradox chips */
+  .ab .paradox { display: flex; gap: 22px; flex-wrap: wrap; font-family: var(--mono); font-size: 13.5px;
+    color: var(--mid); }
+  .ab .paradox b { color: var(--ink); }
+  .ab .paradox .hot { color: var(--orange); }
+
+  /* quote */
+  .ab .quote { font-family: var(--display); font-weight: 600; letter-spacing: -0.005em; line-height: 1.28;
+    color: var(--ink); text-wrap: balance; }
+  .ab .quote .frozen { color: var(--cyan); }
+  .ab .quote .drift { color: var(--orange); }
+
+  /* footnote */
+  .ab .src { font-family: var(--mono); font-size: 11px; letter-spacing: 0.02em; color: var(--faint); font-style: italic; }
+
+  /* live-scope (static SVG) */
+  .ab .scope { border: 1px solid var(--hair); border-radius: 14px; overflow: hidden; background: rgba(8,13,20,0.6); }
+  .ab .scope .sh { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;
+    border-bottom: 1px solid var(--hair); font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--mid); }
+  .ab .scope .sh .led { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan);
+    box-shadow: 0 0 0 3px rgba(71,216,255,0.22); display: inline-block; margin-right: 9px; }
+  .ab .scope .foot { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--hair); }
+  .ab .scope .foot .c { padding: 13px 16px; border-right: 1px solid var(--hair); }
+  .ab .scope .foot .c:last-child { border-right: 0; }
+  .ab .scope .foot .l { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mid); }
+  .ab .scope .foot .v { font-family: var(--mono); font-size: 15px; margin-top: 4px; }
+  .ab .scope .foot .v.cy { color: var(--cyan); }
+  .ab .scope .foot .v.or { color: var(--orange); }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+
+<script type="text/babel">
+const { DesignCanvas, DCSection, DCArtboard } = window;
+
+// shared bits ---------------------------------------------------------------
+function Nav() {
+  return (
+    <div className="nav">
+      <div className="brand"><span className="mk"></span>FLYNN</div>
+      <div className="links"><span>WHY FLYNN</span><span>WHITEPAPER</span><span>VALIDATION</span><span>CONTACT</span></div>
+    </div>
+  );
+}
+const ONELINER = (
+  <>Flynn is software that lives on the chip <b>already inside your equipment</b> — it watches the sensor data and catches problems before they become failures. <b>Fully offline, in 8,480 bytes, with zero false alarms.</b></>
+);
+
+// ============================================================ A — THE LEDGER
+function DirA() {
+  return (
+    <div className="ab" style={{ minHeight: 1500 }}>
+      <div className="horizon"></div>
+      <Nav />
+      <div className="pad" style={{ paddingTop: 70 }}>
+        <span className="eyebrow"><span className="dot"></span>Embedded anomaly detection · Bare-metal · 8,480 bytes</span>
+        <h1 className="head" style={{ fontSize: 92, marginTop: 26 }}>Equipment talks.<br/><span className="listens">Flynn listens.</span></h1>
+        <p className="oneliner" style={{ fontSize: 23, maxWidth: '60ch', marginTop: 26 }}>{ONELINER}</p>
+        <div className="ctarow" style={{ marginTop: 34 }}>
+          <span className="btn">Request evaluation access →</span>
+          <span className="btn ghost">Read the whitepaper</span>
+        </div>
+      </div>
+
+      <div className="div" style={{ marginTop: 64 }}></div>
+
+      {/* PROBLEM — the number leads */}
+      <div className="pad" style={{ paddingTop: 56 }}>
+        <span className="slabel"><span className="sn">01</span>The problem</span>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, marginTop: 36, alignItems: 'center' }}>
+          <div>
+            <div className="bignum" style={{ fontSize: 150 }}>$1.4T</div>
+            <p style={{ fontSize: 19, color: 'var(--ink-2)', lineHeight: 1.5, marginTop: 18, maxWidth: '34ch' }}>
+              lost every year to unplanned downtime across the Fortune 500 — <b style={{ color: 'var(--ink)' }}>up 62% since 2019.</b>
+            </p>
+            <div className="src" style={{ marginTop: 10 }}>Siemens True Cost of Downtime, 2024</div>
+          </div>
+          <div>
+            <p style={{ fontFamily: 'var(--display)', fontWeight: 600, fontSize: 30, lineHeight: 1.3, margin: 0 }}>
+              The industry adopted the tools.<br/><span style={{ color: 'var(--orange)' }}>The downtime kept rising.</span>
+            </p>
+            <div className="paradox" style={{ marginTop: 26, flexDirection: 'column', gap: 16 }}>
+              <div><b style={{ fontSize: 17 }}>58%</b> of teams now use AI-powered predictive tools.</div>
+              <div><span className="hot" style={{ fontSize: 17 }}>79%</span> saw unplanned downtime stay the same — or increase.</div>
+            </div>
+            <div className="src" style={{ marginTop: 16 }}>MaintainX State of Industrial Maintenance, 2026</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="div" style={{ marginTop: 56 }}></div>
+
+      {/* ECONOMICS */}
+      <div className="pad" style={{ paddingTop: 54, paddingBottom: 64 }}>
+        <span className="slabel"><span className="sn">02</span>What changes</span>
+        <div className="econ" style={{ marginTop: 34 }}>
+          <div className="cell before">
+            <div className="lbl">Emergency replacement</div>
+            <div className="v">$94,000</div>
+            <div className="n">+ three days of unplanned downtime</div>
+          </div>
+          <div className="arrow">→</div>
+          <div className="cell after">
+            <div className="lbl">Planned swap at first anomaly</div>
+            <div className="v">$800</div>
+            <div className="n">scheduled into a maintenance window</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================ B — THE LINE
+function DirB() {
+  return (
+    <div className="ab" style={{ minHeight: 1440 }}>
+      <div className="horizon"></div>
+      <Nav />
+      <div className="pad" style={{ paddingTop: 60, textAlign: 'center' }}>
+        <span className="eyebrow"><span className="dot"></span>Equipment talks. Flynn listens.</span>
+        <h1 className="head" style={{ fontSize: 60, marginTop: 30, maxWidth: '20ch', marginInline: 'auto' }}>
+          A slow fault hides in a moving baseline.
+        </h1>
+        <p className="oneliner" style={{ fontSize: 20, maxWidth: '64ch', margin: '24px auto 0' }}>{ONELINER}</p>
+      </div>
+
+      {/* THE QUOTE + locked-baseline motif */}
+      <div className="pad" style={{ paddingTop: 52 }}>
+        <div style={{ border: '1px solid var(--hair)', borderRadius: 18, background: 'var(--panel)', padding: '44px 52px' }}>
+          <span className="slabel"><span className="sn">01</span>Why monitoring fails</span>
+          <p className="quote" style={{ fontSize: 33, marginTop: 26, maxWidth: '40ch' }}>
+            Your system watches the signal and <span className="drift">updates its picture of normal</span>. When a problem develops slowly, it learns to accept it.
+            <br/><br/>
+            Flynn <span className="frozen">freezes its picture of normal on day one</span>. A slow problem stays visible — because Flynn <span className="frozen">refuses to move the line.</span>
+          </p>
+
+          {/* SVG: locked cyan baseline vs. rising orange drift */}
+          <svg viewBox="0 0 1130 230" style={{ width: '100%', marginTop: 30, display: 'block' }} aria-hidden="true">
+            <defs>
+              <linearGradient id="dg" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stopColor="#ff8a3a" stopOpacity="0.25"/>
+                <stop offset="1" stopColor="#ff8a3a" stopOpacity="0.95"/>
+              </linearGradient>
+            </defs>
+            {/* locked baseline */}
+            <line x1="0" y1="150" x2="1130" y2="150" stroke="#47d8ff" strokeWidth="2.5" strokeDasharray="2 0"/>
+            <text x="6" y="138" fill="#47d8ff" fontFamily="'Geist Mono',monospace" fontSize="13" letterSpacing="0.12em">LOCKED BASELINE · DAY 1</text>
+            {/* drifting fault that crosses */}
+            <path d="M0 150 C 380 150, 600 140, 760 110 S 980 40, 1130 18" fill="none" stroke="url(#dg)" strokeWidth="3"/>
+            <circle cx="905" cy="70" r="6" fill="#ff8a3a"/>
+            <text x="918" y="64" fill="#ff8a3a" fontFamily="'Geist Mono',monospace" fontSize="13" letterSpacing="0.1em">DEPARTURE → ALERT</text>
+            <text x="6" y="210" fill="#5d6b76" fontFamily="'Geist Mono',monospace" fontSize="12" letterSpacing="0.08em">17 days of advance warning · NASA IMS run-to-failure bearings</text>
+          </svg>
+        </div>
+      </div>
+
+      {/* supporting stat row */}
+      <div className="pad" style={{ paddingTop: 36, paddingBottom: 60 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+          <div style={{ border: '1px solid rgba(255,138,58,0.3)', borderRadius: 13, padding: '24px 28px', background: 'var(--panel)' }}>
+            <div className="bignum" style={{ fontSize: 56 }}>$1.4T</div>
+            <p style={{ fontSize: 15, color: 'var(--ink-2)', marginTop: 12, lineHeight: 1.45 }}>lost a year to unplanned downtime across the Fortune 500, up 62% since 2019. <span className="src">Siemens, 2024</span></p>
+          </div>
+          <div style={{ border: '1px solid rgba(71,216,255,0.32)', borderRadius: 13, padding: '24px 28px', background: 'var(--panel)' }}>
+            <div className="bignum" style={{ fontSize: 56, color: 'var(--cyan)' }}>$94K → $800</div>
+            <p style={{ fontSize: 15, color: 'var(--ink-2)', marginTop: 12, lineHeight: 1.45 }}>Emergency replacements become planned swaps. Unplanned downtime becomes a scheduled window.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================ C — SIGNAL DESK
+function DirC() {
+  return (
+    <div className="ab" style={{ minHeight: 1500 }}>
+      <div className="horizon"></div>
+      <Nav />
+      <div className="pad" style={{ paddingTop: 60 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.05fr 0.95fr', gap: 56, alignItems: 'center' }}>
+          {/* left: hook */}
+          <div>
+            <span className="eyebrow"><span className="dot"></span>Embedded · Bare-metal · 8,480 bytes</span>
+            <h1 className="head" style={{ fontSize: 74, marginTop: 24 }}>Equipment talks.<br/><span className="listens">Flynn listens.</span></h1>
+            <p className="oneliner" style={{ fontSize: 19, maxWidth: '46ch', marginTop: 22 }}>{ONELINER}</p>
+            <div className="vitals" style={{ marginTop: 26 }}>
+              <span className="vital"><b>8,480-byte</b> binary</span>
+              <span className="vital"><b>0</b> false positives / 120 h</span>
+              <span className="vital"><b>~2 s</b> to enroll</span>
+              <span className="vital"><b>fully</b> offline</span>
+            </div>
+            <div className="ctarow" style={{ marginTop: 30 }}>
+              <span className="btn">Request evaluation access →</span>
+              <span className="btn ghost">Read the whitepaper</span>
+            </div>
+          </div>
+          {/* right: live scope (static) */}
+          <div className="scope">
+            <div className="sh"><span><span className="led"></span>FLYNN · MCU-EMBEDDED · STREAM 01</span><span>SR · 1 kHz</span></div>
+            <svg viewBox="0 0 560 300" style={{ width: '100%', display: 'block', background: 'rgba(6,12,18,0.6)' }} aria-hidden="true">
+              <line x1="0" y1="170" x2="560" y2="170" stroke="rgba(71,216,255,0.5)" strokeWidth="1.5" strokeDasharray="4 5"/>
+              <text x="12" y="160" fill="#47d8ff" fontFamily="'Geist Mono',monospace" fontSize="11" letterSpacing="0.12em">LOCKED THRESHOLD</text>
+              {/* learned healthy band */}
+              <path d="M0 175 q14 -10 28 0 t28 0 t28 2 t28 -3 t28 1 t28 0 t28 -2 t28 2 t28 0 t28 -1 t28 1 t28 0 t28 -2 t28 1 t28 0 t28 1 t28 -1 t28 0 t28 0"
+                    fill="none" stroke="#9fb6c4" strokeWidth="1.6" opacity="0.7"/>
+              {/* departure spike crossing up */}
+              <path d="M392 176 q12 -14 24 -2 t22 -30 t22 -50 t22 30" fill="none" stroke="#ff8a3a" strokeWidth="2.4"/>
+              <circle cx="460" cy="64" r="5" fill="#ff8a3a"/>
+              <text x="350" y="44" fill="#ff8a3a" fontFamily="'Geist Mono',monospace" fontSize="12" letterSpacing="0.1em">ANOMALY</text>
+            </svg>
+            <div className="foot">
+              <div className="c"><div className="l">Phase</div><div className="v cy">LOCKED</div></div>
+              <div className="c"><div className="l">Sample</div><div className="v">041,920</div></div>
+              <div className="c"><div className="l">Threshold</div><div className="v">0.61σ</div></div>
+              <div className="c"><div className="l">State</div><div className="v or">ALERT</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="div" style={{ marginTop: 60 }}></div>
+
+      {/* one tight problem→economics rail */}
+      <div className="pad" style={{ paddingTop: 52, paddingBottom: 60 }}>
+        <span className="slabel"><span className="sn">01</span>The problem · and what changes</span>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: 40, marginTop: 34, alignItems: 'center' }}>
+          <div>
+            <div className="bignum" style={{ fontSize: 92 }}>$1.4T</div>
+            <p style={{ fontSize: 16, color: 'var(--ink-2)', marginTop: 14, lineHeight: 1.45, maxWidth: '32ch' }}>
+              lost a year to unplanned downtime across the Fortune 500. <b style={{ color: 'var(--ink)' }}>58% adopted AI tools; 79% saw downtime hold or rise.</b>
+            </p>
+            <div className="src" style={{ marginTop: 8 }}>Siemens, 2024 · MaintainX, 2026</div>
+          </div>
+          <div style={{ fontSize: 34, color: 'var(--mid)' }}>→</div>
+          <div className="econ" style={{ gridTemplateColumns: '1fr auto 1fr', gap: 16 }}>
+            <div className="cell before" style={{ padding: '20px 22px' }}>
+              <div className="lbl">Emergency</div>
+              <div className="v" style={{ fontSize: 36 }}>$94,000</div>
+            </div>
+            <div className="arrow" style={{ fontSize: 24 }}>→</div>
+            <div className="cell after" style={{ padding: '20px 22px' }}>
+              <div className="lbl">Planned swap</div>
+              <div className="v" style={{ fontSize: 36 }}>$800</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <DesignCanvas>
+    <DCSection id="hero" title="Landing — hero + problem" subtitle="3 directions · existing Tron system · canonical brand line, 8,480 B, $1.4T + $94K→$800 + the locked-baseline line">
+      <DCArtboard id="a" label="A · The Ledger — business-first, number leads" width={1320} height={1500}><DirA /></DCArtboard>
+      <DCArtboard id="b" label="B · The Line — quote-led, locked-baseline motif" width={1320} height={1440}><DirB /></DCArtboard>
+      <DCArtboard id="c" label="C · Signal Desk — keeps the live scope, grafts the spine" width={1320} height={1500}><DirC /></DCArtboard>
+    </DCSection>
+  </DesignCanvas>
+);
+</script>
+</body>
+</html>
