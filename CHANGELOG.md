@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- **New whitepaper page — "Two Birds. One Stone."** (`pages/two-birds-one-stone.html`):
+  LINK, Swift, and blind autonomy, with two supporting images (`assets/img/link-spacecraft.jpeg`,
+  `assets/img/swift-observatory.jpg`). Added to `sitemap.xml`.
+- **Grouped site nav.** `site-nav.js` now renders ordered link/dropdown groups: the
+  whitepapers ("Equipment talks. Flynn listens." + "Two Birds. One Stone.") collapse into a
+  **Whitepaper** dropdown, and Explore keeps its panel. Propagated across all pages with a
+  cache bump to `20260822-0253`.
 - **JSON-LD structured data** (`Organization` + `WebSite`) on `index.html`.
 
 ### Fixed

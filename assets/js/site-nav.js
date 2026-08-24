@@ -15,16 +15,15 @@
   if (!mount || mount.dataset.ready) return;
   mount.dataset.ready = '1';
 
-  var V = '20260716-1943';
+  var V = '20260822-0253';
   var root = /\/pages\//.test(location.pathname) ? '../' : '';
   var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
   if (here === '') here = 'index.html';
 
   // ---- nav model -----------------------------------------------------------
-  var primary = [
-    { id: 'why-flynn.html',         href: root + 'why-flynn.html',          label: 'Why Flynn' },
-    { id: 'whitepaper.html',        href: root + 'pages/whitepaper.html',   label: 'Whitepaper' },
-    { id: 'tiers.html',             href: root + 'pages/tiers.html',        label: 'Tiers' }
+  var whitepapers = [
+    { id: 'whitepaper.html',           href: root + 'pages/whitepaper.html',           label: 'Equipment talks. Flynn listens.', desc: 'Deterministic anomaly detection in 8,480 bytes' },
+    { id: 'two-birds-one-stone.html',  href: root + 'pages/two-birds-one-stone.html',  label: 'Two Birds. One Stone.',           desc: 'LINK, Swift, and blind autonomy' }
   ];
   var explore = [
     { id: 'validation.html', href: root + 'pages/validation.html', label: 'Validation', desc: 'Five domains, measured' },
@@ -32,14 +31,45 @@
     { id: 'roadmap.html',    href: root + 'pages/roadmap.html',    label: 'Roadmap',    desc: "What's shipping next" },
     { id: 'team.html',       href: root + 'pages/team.html',       label: 'Team',       desc: 'The people behind Flynn' }
   ];
-  var exploreActive = explore.some(function (i) { return i.id === here; });
+
+  // Ordered primary nav: plain links and dropdown groups, rendered in sequence.
+  var nav = [
+    { type: 'link', id: 'why-flynn.html', href: root + 'why-flynn.html', label: 'Why Flynn' },
+    { type: 'drop', label: 'Whitepaper', eye: 'Whitepapers', align: 'left', items: whitepapers },
+    { type: 'link', id: 'tiers.html', href: root + 'pages/tiers.html', label: 'Tiers' },
+    { type: 'drop', label: 'Explore', eye: 'Explore', align: 'right', items: explore }
+  ];
+
+  function groupActive(items) { return items.some(function (i) { return i.id === here; }); }
 
   function linkHTML(it) {
     var cur = it.id === here ? ' cur' : '';
     return '<a class="snav-link' + cur + '" href="' + it.href + '">' + it.label + '</a>';
   }
-  function panelLink(it) {
-    return '<a href="' + it.href + '"><span class="t">' + it.label + '</span><span class="d">' + it.desc + '</span></a>';
+  function dropHTML(g) {
+    var act = groupActive(g.items);
+    return '<div class="snav-drop' + (act ? ' is-cur' : '') + '">' +
+      '<button class="snav-link snav-trigger' + (act ? ' cur' : '') + '" type="button" aria-haspopup="true" aria-expanded="false">' +
+        g.label + ' <span class="snav-caret" aria-hidden="true"></span>' +
+      '</button>' +
+      '<div class="snav-panel' + (g.align === 'left' ? ' left' : '') + '" role="menu">' +
+        '<span class="snav-panel-bar" aria-hidden="true"></span>' +
+        '<div class="snav-panel-body">' +
+          '<div class="snav-panel-eye"><span class="dot"></span>' + g.eye + '</div>' +
+          g.items.map(function (it) {
+            var cur = it.id === here ? ' class="cur"' : '';
+            return '<a' + cur + ' href="' + it.href + '" role="menuitem"><span class="t">' + it.label + '</span><span class="d">' + it.desc + '</span></a>';
+          }).join('') +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+  function mobileGroup(g) {
+    return '<div class="grp"><span class="dot"></span>' + g.eye + '</div>' +
+      g.items.map(function (it) {
+        var cur = it.id === here ? ' class="cur"' : '';
+        return '<a' + cur + ' href="' + it.href + '">' + it.label + '</a>';
+      }).join('');
   }
 
   // ---- styles --------------------------------------------------------------
@@ -68,7 +98,8 @@
     '.snav-drop{position:relative}' +
     '.snav-drop.open .snav-caret{transform:rotate(225deg) translateY(2px)}' +
     /* dropdown panel — INSTALL modal + music-card language */
-    '.snav-panel{position:absolute;top:calc(100% + 14px);right:0;min-width:250px;display:flex;align-items:stretch;border-radius:9px;' +
+    '.snav-panel.left{right:auto;left:0}' +
+    '.snav-panel{position:absolute;top:calc(100% + 14px);right:0;min-width:250px;max-width:330px;display:flex;align-items:stretch;border-radius:9px;' +
       'overflow:hidden;background:linear-gradient(135deg,rgba(10,15,24,.98),rgba(6,10,17,.97));' +
       'border:1px solid rgba(71,216,255,.38);box-shadow:0 16px 48px -12px rgba(0,0,0,.75),0 0 26px -10px rgba(71,216,255,.5);' +
       'opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .22s ease,transform .22s ease;z-index:80}' +
@@ -122,22 +153,7 @@
       '</a>' +
       '<div class="snav-right">' +
         '<nav class="snav-links" aria-label="Primary">' +
-          primary.map(linkHTML).join('') +
-          '<div class="snav-drop' + (exploreActive ? ' is-cur' : '') + '">' +
-            '<button class="snav-link snav-trigger' + (exploreActive ? ' cur' : '') + '" type="button" aria-haspopup="true" aria-expanded="false">' +
-              'Explore <span class="snav-caret" aria-hidden="true"></span>' +
-            '</button>' +
-            '<div class="snav-panel" role="menu">' +
-              '<span class="snav-panel-bar" aria-hidden="true"></span>' +
-              '<div class="snav-panel-body">' +
-                '<div class="snav-panel-eye"><span class="dot"></span>Explore</div>' +
-                explore.map(function (it) {
-                  var cur = it.id === here ? ' class="cur"' : '';
-                  return '<a' + cur + ' href="' + it.href + '" role="menuitem"><span class="t">' + it.label + '</span><span class="d">' + it.desc + '</span></a>';
-                }).join('') +
-              '</div>' +
-            '</div>' +
-          '</div>' +
+          nav.map(function (it) { return it.type === 'drop' ? dropHTML(it) : linkHTML(it); }).join('') +
         '</nav>' +
         '<button class="install-btn" data-install type="button" aria-label="Install Flynn as an app" title="Install Flynn — opens this site in its own window">' +
           '<span class="install-gem"><canvas class="install-fx" aria-hidden="true"></canvas></span>' +
@@ -149,30 +165,42 @@
       '</div>' +
     '</div>' +
     '<div class="snav-mobile" id="snav-mobile"><div class="snav-mobile-in">' +
-      primary.map(function (it) {
-        var cur = it.id === here ? ' class="cur"' : '';
-        return '<a' + cur + ' href="' + it.href + '">' + it.label + '</a>';
-      }).join('') +
-      '<div class="grp"><span class="dot"></span>Explore</div>' +
-      explore.map(function (it) {
+      nav.map(function (it) {
+        if (it.type === 'drop') return mobileGroup(it);
         var cur = it.id === here ? ' class="cur"' : '';
         return '<a' + cur + ' href="' + it.href + '">' + it.label + '</a>';
       }).join('') +
     '</div></div>';
 
   // ---- dropdown open/close (hover on desktop, click on touch) --------------
-  var drop = mount.querySelector('.snav-drop');
-  var trigger = mount.querySelector('.snav-trigger');
+  var drops = Array.prototype.slice.call(mount.querySelectorAll('.snav-drop'));
   var canHover = window.matchMedia && window.matchMedia('(hover:hover)').matches;
-  var closeTimer;
-  function setOpen(on) { drop.classList.toggle('open', on); trigger.setAttribute('aria-expanded', on ? 'true' : 'false'); }
-  trigger.addEventListener('click', function (e) { e.preventDefault(); clearTimeout(closeTimer); setOpen(!drop.classList.contains('open')); });
-  if (canHover) {
-    drop.addEventListener('pointerenter', function () { clearTimeout(closeTimer); setOpen(true); });
-    drop.addEventListener('pointerleave', function () { clearTimeout(closeTimer); closeTimer = setTimeout(function () { setOpen(false); }, 180); });
+  function closeAll(except) {
+    drops.forEach(function (d) {
+      if (d === except) return;
+      d.classList.remove('open');
+      var t = d.querySelector('.snav-trigger');
+      if (t) t.setAttribute('aria-expanded', 'false');
+    });
   }
-  document.addEventListener('click', function (e) { if (!drop.contains(e.target)) setOpen(false); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setOpen(false); });
+  drops.forEach(function (drop) {
+    var trigger = drop.querySelector('.snav-trigger');
+    var closeTimer;
+    function setOpen(on) {
+      drop.classList.toggle('open', on);
+      trigger.setAttribute('aria-expanded', on ? 'true' : 'false');
+      if (on) closeAll(drop);
+    }
+    trigger.addEventListener('click', function (e) { e.preventDefault(); clearTimeout(closeTimer); setOpen(!drop.classList.contains('open')); });
+    if (canHover) {
+      drop.addEventListener('pointerenter', function () { clearTimeout(closeTimer); setOpen(true); });
+      drop.addEventListener('pointerleave', function () { clearTimeout(closeTimer); closeTimer = setTimeout(function () { setOpen(false); }, 180); });
+    }
+  });
+  document.addEventListener('click', function (e) {
+    if (!drops.some(function (d) { return d.contains(e.target); })) closeAll(null);
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAll(null); });
 
   // ---- mobile hamburger menu ----------------------------------------------
   var burger = mount.querySelector('.snav-burger');

@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Flynn" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="theme-color" content="#05080e" />
+<title>Two Birds. One Stone. — Flynn</title>
+<meta name="description" content="A field note on the LINK spacecraft, the Neil Gehrels Swift Observatory, and what autonomous systems need to know about their own physical state." />
+<link rel="canonical" href="https://inlikeflynn.io/pages/two-birds-one-stone.html" />
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="../assets/img/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="../assets/img/apple-touch-icon.png" />
+<link rel="manifest" href="../site.webmanifest" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Flynn" />
+<meta property="og:title" content="Two Birds. One Stone. — Flynn" />
+<meta property="og:description" content="A field note on the LINK spacecraft, the Neil Gehrels Swift Observatory, and what autonomous systems need to know about their own physical state." />
+<meta property="og:url" content="https://inlikeflynn.io/pages/two-birds-one-stone.html" />
+<meta property="og:image" content="https://inlikeflynn.io/assets/img/og-flynn.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Flynn — embedded anomaly detection. Equipment talks. Flynn listens." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Two Birds. One Stone. — Flynn" />
+<meta name="twitter:description" content="A field note on the LINK spacecraft, the Neil Gehrels Swift Observatory, and what autonomous systems need to know about their own physical state." />
+<meta name="twitter:image" content="https://inlikeflynn.io/assets/img/og-flynn.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Orbitron:wght@400;500;600;700;800&family=Chakra+Petch:wght@400;500;600;700&family=Michroma&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/css/styles.css?v=20260822-0253" />
+<style>
+  .wp-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: clamp(40px, 6vw, 96px);
+    padding: clamp(48px, 7vw, 96px) 0 120px;
+    align-items: start;
+  }
+  @media (max-width: 980px) { .wp-layout { grid-template-columns: 1fr; } }
+
+  .toc {
+    position: sticky;
+    top: 88px;
+    align-self: start;
+  }
+  .toc-list {
+    position: relative;
+    padding-left: 18px;
+  }
+  .toc-list::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 6px; bottom: 6px;
+    width: 2px;
+    background: var(--hair);
+  }
+  .toc-progress {
+    position: absolute;
+    left: 0; top: 6px;
+    width: 2px;
+    height: 0;
+    background: var(--accent-2);
+    box-shadow: 0 0 9px color-mix(in oklab, var(--accent-2) 65%, transparent);
+    transition: height .4s cubic-bezier(.4,0,.2,1);
+    pointer-events: none;
+  }
+  .toc ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: t;
+  }
+  .toc li {
+    counter-increment: t;
+    padding: 9px 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+  }
+  .toc li::before {
+    content: counter(t, decimal-leading-zero);
+    color: var(--mid);
+    transition: color .25s;
+  }
+  .toc a { color: var(--ink-2); transition: color .25s; }
+  .toc a:hover { color: var(--accent-deep); }
+  .toc li.active::before { color: var(--accent-2); }
+  .toc li.active a { color: var(--accent-2); }
+  .toc h4 {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid);
+    font-weight: 500;
+    margin: 0 0 16px;
+  }
+
+  article.wp { max-width: 720px; }
+  article.wp .meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 20px;
+  }
+  article.wp h1.title {
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+    margin: 0 0 24px;
+  }
+  article.wp .deck {
+    font-size: 20px;
+    line-height: 1.45;
+    color: var(--ink-2);
+    margin: 0 0 56px;
+    letter-spacing: -0.01em;
+    max-width: 56ch;
+  }
+  article.wp h2 {
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin: 64px 0 18px;
+    padding-top: 32px;
+    border-top: 1px solid var(--hair);
+    scroll-margin-top: 96px;
+  }
+  article.wp h2:first-of-type { border-top: 0; padding-top: 0; }
+  article.wp h3 {
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: -0.012em;
+    margin: 36px 0 10px;
+  }
+  article.wp p {
+    margin: 0 0 18px;
+    color: var(--ink-2);
+    line-height: 1.65;
+  }
+  article.wp .pull {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.25;
+    color: var(--ink);
+    border-left: 2px solid var(--accent);
+    padding-left: 20px;
+    margin: 28px 0;
+  }
+  article.wp ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px;
+  }
+  article.wp ul li {
+    padding: 10px 0 10px 24px;
+    border-top: 1px solid var(--hair);
+    position: relative;
+    color: var(--ink-2);
+  }
+  article.wp ul li:last-child { border-bottom: 1px solid var(--hair); }
+  article.wp ul li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 18px;
+    width: 8px; height: 1px;
+    background: linear-gradient(180deg, rgba(12,18,30,0.82), rgba(6,10,18,0.86));
+  }
+  .wp-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 14px;
+  }
+  .wp-table th, .wp-table td {
+    text-align: left;
+    padding: 14px 12px;
+    border-top: 1px solid var(--hair);
+    vertical-align: top;
+  }
+  .wp-table tr:last-child td { border-bottom: 1px solid var(--hair); }
+  .wp-table th {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+  .wp-table td.spec { font-family: var(--font-mono); }
+
+  .wp-cta {
+    margin-top: 56px;
+    padding: 32px;
+    border: 1px solid var(--hair-strong);
+    border-radius: var(--r-lg);
+    background: linear-gradient(180deg, rgba(12,18,30,0.6), rgba(6,10,18,0.6));
+  }
+  .wp-cta h3 {
+    margin: 0 0 8px;
+    font-size: 22px;
+    letter-spacing: -0.012em;
+  }
+
+  article.wp figure.wp-fig { margin: 32px 0; }
+  article.wp figure.wp-fig img {
+    width: 100%; height: auto; display: block;
+    border: 1px solid var(--hair-strong);
+    border-radius: var(--r-md);
+  }
+  article.wp figure.wp-fig figcaption {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-top: 10px;
+  }
+  .wp-chain { list-style: none; padding: 0; margin: 24px 0; counter-reset: c; }
+  .wp-chain li {
+    counter-increment: c;
+    display: grid; grid-template-columns: 2.4em 1fr; gap: 12px;
+    align-items: baseline;
+    padding: 12px 0;
+    border-top: 1px solid var(--hair);
+    color: var(--ink-2);
+  }
+  .wp-chain li:last-child { border-bottom: 1px solid var(--hair); }
+  .wp-chain li::before {
+    content: counter(c, decimal-leading-zero);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+  }
+  article.wp blockquote.wp-quote {
+    margin: 28px 0;
+    padding-left: 20px;
+    border-left: 2px solid var(--accent-2);
+    font-size: 20px;
+    line-height: 1.4;
+    color: var(--ink);
+  }
+  article.wp blockquote.wp-quote cite {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid);
+    font-style: normal;
+    margin-top: 10px;
+  }
+
+  /* ---- mobile ---- */
+  @media (max-width: 980px) {
+    .toc { position: static; margin-bottom: 8px; }
+    .toc-list::before, .toc-progress { display: none; }
+    .toc-list { padding-left: 0; }
+  }
+  @media (max-width: 640px) {
+    /* stacked "cards" — the 3-col spec table is unreadable when squeezed to phone width */
+    .wp-table, .wp-table tbody, .wp-table tr, .wp-table td { display: block; width: 100%; }
+    .wp-table tr:first-child { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } /* hide header row */
+    .wp-table tr { border-top: 1px solid var(--hair); padding: 14px 0; }
+    .wp-table tr:last-child { border-bottom: 1px solid var(--hair); }
+    .wp-table td { border: 0 !important; padding: 3px 0 !important; }
+    .wp-table td[data-label]::before {
+      content: attr(data-label);
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 3px;
+    }
+    .wp-table td.spec { margin: 6px 0; font-size: 15px; }
+    .wp-table td[data-label="Notes"] { color: var(--mid); }
+  }
+</style>
+<link rel="stylesheet" href="../assets/css/tron.css?v=20260822-0253" />
+<link rel="stylesheet" href="../assets/css/install-button.css?v=20260822-0253" />
+<link rel="stylesheet" href="../assets/css/site-footer.css?v=20260822-0253" />
+<style>
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<canvas id="grid-void"></canvas>
+<div class="void-haze"></div>
+
+<header id="site-nav"></header>
+
+<div class="wrap crumb">
+  <a href="../index.html">Flynn</a> &nbsp;/&nbsp; <a href="whitepaper.html">Whitepapers</a> &nbsp;/&nbsp; Two Birds. One Stone.
+</div>
+
+<div class="wrap wp-layout" data-screen-label="01 Two Birds One Stone">
+
+  <aside class="toc">
+    <h4>Contents</h4>
+    <div class="toc-list">
+      <span class="toc-progress"></span>
+      <ol>
+        <li><a href="#mission">The mission</a></li>
+        <li><a href="#cascade">The cascade</a></li>
+        <li><a href="#autonomy">Blind autonomy</a></li>
+        <li><a href="#recovery">Recovery beyond the point of no return</a></li>
+        <li><a href="#pearl">The black pearl</a></li>
+      </ol>
+    </div>
+  </aside>
+
+  <article class="wp">
+    <div class="meta">Whitepaper · Field note · 5 sections</div>
+    <h1 class="title">Two Birds. One Stone.</h1>
+    <p class="deck">Tripp Josserand-Austin | EntroMorphic</p>
+
+    <p>On August 19, NASA confirmed that Katalyst Space Technologies' LINK spacecraft will not capture or boost the Neil Gehrels Swift Observatory as planned. Swift will reenter Earth's atmosphere later this year without intervention. In September 2025, NASA awarded a $30 million contract to Katalyst, a Flagstaff startup tasked with fielding the mission on an extraordinarily compressed timeline.</p>
+
+    <figure class="wp-fig">
+      <img src="../assets/img/link-spacecraft.jpeg" alt="Katalyst Space Technologies' LINK servicing spacecraft in low Earth orbit" />
+      <figcaption>Katalyst Space Technologies · LINK servicing spacecraft</figcaption>
+    </figure>
+
+    <h2 id="mission">The mission</h2>
+    <p>In under twelve months, the team designed, built, and tested LINK, ran thermal vacuum qualification at Goddard's Space Environment Simulator, integrated it into a Pegasus XL rocket, and air-launched it from a modified L-1011 over the South Pacific.</p>
+    <p>The objective was something no one has pulled off: commercial robotic capture of a government satellite in a decaying orbit that was never designed to be serviced or repositioned by an external system.</p>
+    <p>A failure cascade ultimately made the capture-and-boost mission untenable. And that cascade exposed a gap the on-orbit servicing industry will have to close. When the ground goes silent, does a spacecraft know enough about its own physical state to act safely on its own?</p>
+
+    <h2 id="cascade">The cascade</h2>
+    <p>During commissioning, LINK encountered attitude control problems resulting in a multi-axis spin. Communications with the ground became intermittent, then were lost. The initiating cause of the attitude upset has not been publicly established.</p>
+    <p>After 24 hours without contact, the spacecraft's autonomous recovery logic triggered a hard bus reset. According to public accounts, that reset caused a temperature spike in the reaction wheel control electronics, ultimately rendering two of LINK's three reaction-wheel control channels inoperable.</p>
+    <ol class="wp-chain">
+      <li><span>Initial anomaly</span></li>
+      <li><span>Attitude upset — multi-axis spin</span></li>
+      <li><span>Comms blackout</span></li>
+      <li><span>Autonomous recovery procedure, apparently unaware of the physical state of the systems it was about to power-cycle</span></li>
+    </ol>
+    <p>Each step was a reasonable response in isolation. Together, they ended the capture-and-boost objective.</p>
+    <p>LINK carries three reaction wheels; the minimum for three-axis reaction-wheel control, with no reaction-wheel redundancy. That was a defensible design decision given the constraints: a 425 kg launch mass, a $30 million contract, and a twelve-month sprint from award to launch. Swift carries six wheels and returned to science operations using five after a wheel failure in 2022. Swift also had 17 years of institutional engineering and a cost envelope more than 8x that of LINK. Comparing the two on redundancy alone misses the point.</p>
+
+    <figure class="wp-fig">
+      <img src="../assets/img/swift-observatory.jpg" alt="The Neil Gehrels Swift Observatory in orbit above Earth" />
+      <figcaption>Neil Gehrels Swift Observatory · reentry expected later this year</figcaption>
+    </figure>
+
+    <h2 id="autonomy">Blind autonomy</h2>
+    <p>The autonomous bus reset that reportedly disabled two of LINK's reaction-wheel control channels was clock-driven.</p>
+    <p class="pull">Upon loss of communications for 24 hours, reset.</p>
+    <p>Logic that lacked sufficient context about the electrical and thermal states of the systems it was about to cycle power.</p>
+    <p>This is a known challenge in autonomous spacecraft operations. Timer-based recovery is standard practice, and it works in the vast majority of cases. The problem surfaces when the physical state of the hardware has drifted into a condition where the standard recovery procedure causes harm.</p>
+
+    <h2 id="recovery">Recovery beyond the point of no return</h2>
+    <p>Flynn is a near-zero SWaP-C, embedded central nervous system that enrolls on nominal operations per mode, from the sensor to the satellite. In addition to equipment and process anomaly detection, Flynn continuously emits a real-time health signal for the equipment, component, system, or subsystem it is monitoring.</p>
+    <p>Factory acceptance testing is the enrollment window. During thermal vacuum qualification at Goddard, Flynn instances monitoring the electrical bus, the reaction wheel electronics, the thermal subsystem, and the cold gas thrusters would have learned the nominal envelope for each system under each operational mode. From that point forward, Flynn is on-device and watching.</p>
+    <p>In flight, Flynn detects when a monitored signal begins trending toward the upper or lower bounds of its enrolled mode-specific thresholds while the system is still within its learned operational envelope. Not after 24 hours. Not after a comms blackout. At the moment the trend begins, while the system is still within its operational envelope.</p>
+    <p>Specific to LINK, Flynn could have been continuously generating equipment-health intelligence leading up to and throughout the event. By the time autonomous recovery logic is called upon to act, LINK's flight systems would have real-time health signals describing the condition of the equipment at their command.</p>
+    <p>LINK was not equipped with Flynn. And no one can responsibly claim that any single technology would have saved the mission. The source of LINK's attitude upset remains unknown. But the subsequent failure sequence illustrates precisely the class of problem Flynn is designed to address for autonomous systems.</p>
+
+    <h2 id="pearl">The black pearl</h2>
+    <p>The on-orbit servicing sector is at an inflection point. LINK was meant to demonstrate that commercial robotic servicing works. The loss of its boost objective yields essential intel for every company building servicing vehicles.</p>
+    <p class="pull">Flynn closes the gap between what a spacecraft physically experiences and what its autonomous systems know when making decisions in-flight.</p>
+    <p>On hardware-constrained platforms where redundancy is a luxury, closing that gap with deterministic, edge-resident intelligence is mission-critical.</p>
+    <p>Swift will reenter the atmosphere later this year with no planned replacement. The gap it leaves in time-domain astrophysics is enormous. LINK's mission continues in a reduced capacity, with the opportunity to return valuable rendezvous and proximity-operations data.</p>
+    <blockquote class="wp-quote">"We took on this high-risk, high-reward challenge and are proud of the milestones we reached along the way."<cite>Katalyst CEO</cite></blockquote>
+    <p>Building and launching a novel servicing spacecraft in under a year is an epic achievement that the industry will build on.</p>
+    <p>The next generation of autonomous spacecraft demonstrably needs health and wellness data from the bare metal up.</p>
+    <p class="pull">Flynn is the force multiplier for future autonomous mission and safety-critical systems.</p>
+
+    <div class="wp-cta">
+      <h3>Let's connect</h3>
+      <p>If you're designing, building, or deploying systems with risk margins thinner than the upper atmosphere, let's connect.</p>
+      <p>I am the founder of EntroMorphic and the creator of Flynn. Deterministic, real-time anomaly detection and equipment health intelligence embedded at the edge of the world and beyond.</p>
+      <a class="btn" href="mailto:tripp@entromorphic.com" style="margin-top: 12px;">tripp@entromorphic.com <span class="arrow">→</span></a>
+    </div>
+
+  </article>
+</div>
+
+<footer class="footer" id="site-footer"><canvas id="grid-bg"></canvas></footer>
+
+<script src="../assets/js/site-footer.js?v=20260822-0253"></script>
+<script src="../assets/js/site-nav.js?v=20260822-0253"></script>
+<script src="../assets/js/tron-fx.js?v=20260822-0253"></script>
+
+<!-- Volumetric grid void (three.js) -->
+<script>window.FLYNN_GRID_CONFIG = { variant: 'whitepaper' };</script>
+<script src="../assets/js/three.min.js?v=20260822-0253" integrity="sha384-RRHfJ6w1mTlKUBMYT/hvnRiOzEB/vyRV3DrQOseb6oYfvaZSfdd0byS4bHps0k2R"></script>
+<script src="../assets/js/grid-void.js?v=20260822-0253"></script>
+<script src="../assets/js/install-button.js?v=20260822-0253"></script>
+<script src="../assets/js/sw-register.js?v=20260822-0253"></script>
+<script>
+  (function () {
+    var items = Array.prototype.slice.call(document.querySelectorAll('.toc li'));
+    if (!items.length) return;
+    var progress = document.querySelector('.toc-progress');
+    var sections = items.map(function (li) {
+      var a = li.querySelector('a');
+      var id = a && a.getAttribute('href').slice(1);
+      return id ? document.getElementById(id) : null;
+    });
+    var activeIndex = -1;
+    function setActive(i) {
+      if (i < 0 || i === activeIndex) return;
+      activeIndex = i;
+      items.forEach(function (li, idx) { li.classList.toggle('active', idx === i); });
+      var li = items[i];
+      if (li && progress) { progress.style.height = (li.offsetTop + li.offsetHeight - 6) + 'px'; }
+    }
+    var ticking = false;
+    function update() {
+      ticking = false;
+      var marker = 140;            // px below the viewport top
+      var best = 0;
+      for (var i = 0; i < sections.length; i++) {
+        var s = sections[i];
+        if (s && s.getBoundingClientRect().top <= marker) best = i;
+      }
+      setActive(best);
+    }
+    function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
+  })();
+</script>
+</body>
+</html>
