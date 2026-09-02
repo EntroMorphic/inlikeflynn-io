@@ -15,7 +15,7 @@
   var mount = document.getElementById('site-footer');
   if (!mount) return;
 
-  var V = '20260902-0252';
+  var V = '20260902-0325';
   var root = /\/pages\//.test(location.pathname) ? '../' : '';
 
   function li(href, label) { return '<li><a href="' + href + '">' + label + '</a></li>'; }

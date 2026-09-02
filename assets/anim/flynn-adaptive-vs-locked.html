@@ -82,13 +82,13 @@ function pill(x,y,color,label,blink){
 function frame(t){
   var right=2.4+t*SPEED;
   var ampFn=animate(0,1.7,T.departStart,T.departEnd,easeInCubic);
-  var N=150,i,fx,s,ts,aHi=[],aLo=[];
+  var N=80,i,fx,s,ts,aHi=[],aLo=[];
   for(i=0;i<=N;i++){
     fx=i/N; var xx=PX0+fx*PW; s=right-WIN*(1-fx); ts=(s-2.4)/SPEED;
     var HTa=Math.max(HT,SIGAMP*(1+ampFn(ts))*1.16);
     aHi.push({x:xx,y:YA-HTa}); aLo.push({x:xx,y:YA+HTa});
   }
-  var BAR_STEP=5,BAR_W=2,aBars=[],bBars=[],maxAbove=0,x;
+  var BAR_STEP=7,BAR_W=2.8,aBars=[],bBars=[],maxAbove=0,x;
   for(x=PX0+BAR_STEP/2;x<=PX1;x+=BAR_STEP){
     fx=(x-PX0)/PW; s=right-WIN*(1-fx); ts=(s-2.4)/SPEED;
     var h=Math.max(1.4,SIGAMP*Math.abs(sig(s))*(1+ampFn(ts)));
@@ -197,11 +197,25 @@ if(qs!==undefined){SAFE(parseFloat(qs));fadeEl.setAttribute('opacity','0');}
 else if(reduce){SAFE(11.2);fadeEl.setAttribute('opacity','0');}
 else{
   SAFE(0.62);
-  var t0=(window.performance&&performance.now?performance.now():Date.now());
   var now=function(){return window.performance&&performance.now?performance.now():Date.now()};
-  var draw=function(){SAFE(((now()-t0)/1000)%T.end)};
-  setInterval(draw,33);
-  if(window.requestAnimationFrame)requestAnimationFrame(function loop(){draw();requestAnimationFrame(loop)});
+  var suspended=false,acc=0,last=now(),FRAME=1000/24,nextAt=0,ticked=false;
+  window.addEventListener('message',function(e){
+    var d=e&&e.data;
+    if(d&&d.flynnAnim==='suspend')suspended=true;
+    else if(d&&d.flynnAnim==='resume'){suspended=false;last=now();}
+  });
+  function draw(){
+    var n=now();
+    if(suspended){last=n;return}
+    acc+=n-last;last=n;
+    if(n<nextAt)return;            // cap the redraw rate — one innerHTML rebuild is costly
+    nextAt=n+FRAME;
+    SAFE((acc/1000)%T.end);
+  }
+  if(window.requestAnimationFrame){
+    requestAnimationFrame(function loop(){ticked=true;draw();requestAnimationFrame(loop)});
+    setTimeout(function(){if(!ticked)setInterval(draw,FRAME)},500);   // only if rAF never fires
+  } else setInterval(draw,FRAME);
 }
 })();
 </script>

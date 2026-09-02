@@ -339,8 +339,9 @@ body.ah-playing, body.ah-playing * {
 .bb-word {
   writing-mode: vertical-rl; text-orientation: upright;
   font-family: var(--font-display); font-weight: 700;
-  font-size: 13px; letter-spacing: 0.02em; line-height: 0.92;
+  font-size: 12px; letter-spacing: 0; line-height: 1;
   color: #fff; text-align: center;
+  flex: 0 0 auto; width: 18px; overflow: visible;
   display: flex; align-items: center; justify-content: center;
   text-shadow: 0 0 9px color-mix(in oklab, var(--glow-cyan) 50%, transparent);
 }
@@ -1140,7 +1141,7 @@ hr.rule {
 
   /* Death Blossom tap button — hazard panel, a touch smaller, thumb-reachable */
   .ah-blossom-btn { width: 66px; height: 130px; right: 11px; bottom: 11px; padding: 6px; }
-  .bb-word { font-size: 11px; letter-spacing: 0.1em; }
+  .bb-word { font-size: 10px; width: 15px; letter-spacing: 0; }
 
   /* reticle — a bit smaller so it doesn't dominate */
   .ah-reticle { width: 48px; height: 48px; }

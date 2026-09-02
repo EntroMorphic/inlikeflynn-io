@@ -80,7 +80,7 @@ var dyn=document.getElementById('dyn'),fadeEl=document.getElementById('fade');
 function frame(t){
   var center=CY-(2.5*Math.sin(t*0.8)+1.5*vnoise(t*0.5+40));
   var ampScale=1+ampFn(t);
-  var right=2.2+t*SPEED,BAR_STEP=8,BAR_W=3.4;
+  var right=2.2+t*SPEED,BAR_STEP=11,BAR_W=4.4;
   var bars=[],maxAbove=0,x;
   for(x=PX0+BAR_STEP/2;x<=PX1;x+=BAR_STEP){
     var fx=(x-PX0)/PW,s=right-WIN*(1-fx);
@@ -174,11 +174,25 @@ var SAFE=function(t){try{frame(t)}catch(e){window.__e=e.message+' @ '+(e.stack||
 SAFE(reduce?11.5:0.62);
 if(reduce){fadeEl.setAttribute('opacity','0');}
 else{
-  var t0=(window.performance&&performance.now?performance.now():Date.now());
   var now=function(){return window.performance&&performance.now?performance.now():Date.now()};
-  var draw=function(){SAFE(((now()-t0)/1000)%T.end)};
-  setInterval(draw,33);
-  if(window.requestAnimationFrame)requestAnimationFrame(function loop(){draw();requestAnimationFrame(loop)});
+  var suspended=false,acc=0,last=now(),FRAME=1000/24,nextAt=0,ticked=false;
+  window.addEventListener('message',function(e){
+    var d=e&&e.data;
+    if(d&&d.flynnAnim==='suspend')suspended=true;
+    else if(d&&d.flynnAnim==='resume'){suspended=false;last=now();}
+  });
+  function draw(){
+    var n=now();
+    if(suspended){last=n;return}
+    acc+=n-last;last=n;
+    if(n<nextAt)return;            // cap the redraw rate — one innerHTML rebuild is costly
+    nextAt=n+FRAME;
+    SAFE((acc/1000)%T.end);
+  }
+  if(window.requestAnimationFrame){
+    requestAnimationFrame(function loop(){ticked=true;draw();requestAnimationFrame(loop)});
+    setTimeout(function(){if(!ticked)setInterval(draw,FRAME)},500);   // only if rAF never fires
+  } else setInterval(draw,FRAME);
 }
 })();
 </script>
