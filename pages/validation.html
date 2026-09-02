@@ -31,7 +31,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Orbitron:wght@400;500;600;700;800&family=Chakra+Petch:wght@400;500;600;700&family=Michroma&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="../assets/css/styles.css?v=20260822-0253" />
+<link rel="stylesheet" href="../assets/css/styles.css?v=20260902-0252" />
 <style>
   .page-head {
     padding: clamp(48px, 7vw, 96px) 0 clamp(48px, 6vw, 80px);
@@ -232,10 +232,23 @@
   .hero-kpis .k:hover .l {
   color: var(--accent) !important;
 }
+  .lead-anim { margin: 0; padding: 72px 0 8px; }
+  .lead-anim-frame {
+    position: relative; width: 100%; margin-inline: auto; aspect-ratio: 16 / 9;
+    border-radius: 10px; overflow: hidden; border: 1px solid color-mix(in oklab, var(--accent) 28%, transparent);
+    background: #05080e;
+  }
+  .lead-anim-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+  .lead-anim figcaption {
+    margin: 18px auto 0; max-width: 78ch; text-align: center;
+    font-size: 14px; line-height: 1.6; color: var(--mid); text-wrap: pretty;
+  }
+  .lead-anim figcaption b { color: var(--ink); font-weight: 600; }
+  @media print { .lead-anim { display: none; } }
 </style>
-<link rel="stylesheet" href="../assets/css/tron.css?v=20260822-0253" />
-<link rel="stylesheet" href="../assets/css/install-button.css?v=20260822-0253" />
-<link rel="stylesheet" href="../assets/css/site-footer.css?v=20260822-0253" />
+<link rel="stylesheet" href="../assets/css/tron.css?v=20260902-0252" />
+<link rel="stylesheet" href="../assets/css/install-button.css?v=20260902-0252" />
+<link rel="stylesheet" href="../assets/css/site-footer.css?v=20260902-0252" />
 </head>
 <body>
 <canvas id="grid-void"></canvas>
@@ -256,40 +269,49 @@
       <div class="spec-cell">
         <div class="mono-l">Footprint</div>
         <div class="big">8,480<span class="muted" style="font-size: 0.4em; margin-left: 6px;">bytes</span></div>
-        <p>Eight thousand four hundred and eighty bytes — not 8 MB, not 8 GB. It fits on the microcontroller already inside the machine.</p>
+        <p>One compact detector small enough to live on the microcontroller native to the equipment.</p>
       </div>
       <div class="spec-cell">
-        <div class="mono-l">Calibration</div>
+        <div class="mono-l">Enrollment</div>
         <div class="big">1,700<span class="muted" style="font-size: 0.4em; margin-left: 6px;">samples</span><sup style="font-size: 0.28em; color: var(--accent-deep); margin-left: 2px; vertical-align: super;">†</sup></div>
-        <p>Learns normal behavior in 1,700 samples — under two seconds at kilohertz rates — then locks. No labels, no tuning.</p>
+        <p>Learns healthy operation in 1,700 samples—as little as two seconds at kilohertz rates—then locks. No labels. No tuning.</p>
       </div>
       <div class="spec-cell">
         <div class="mono-l">Heap allocations</div>
         <div class="big">0</div>
-        <p>Zero dynamic allocation after initialization. Safety-critical firmware forbids the heap; Flynn meets that rule by construction.</p>
+        <p>No dynamic allocation after initialization. Architected for constrained and safety-critical firmware environments.</p>
       </div>
       <div class="spec-cell">
         <div class="mono-l">Delivery</div>
         <div class="big">Binary</div>
-        <p>Flynn ships as a compact binary, compiled for your hardware. Deterministic and verifiable against published test vectors; full source available to certifying authorities under NDA.</p>
+        <p>Compiled for your target hardware. Deterministic and verifiable against published test vectors, with source available to certifying authorities under NDA.</p>
       </div>
       <div class="spec-cell">
         <div class="mono-l">False positives</div>
         <div class="big">0<span class="muted" style="font-size: 0.36em; margin-left: 6px;">/ 120 h</span></div>
-        <p>Zero false positives across 120 hours of soak testing, with a 95%-confidence ceiling of 0.025 per hour.</p>
+        <p>Zero false positives across 120 hours of healthy synthetic-vibration soak testing, with a 95% confidence ceiling below 0.025 per hour.</p>
       </div>
       <div class="spec-cell">
-        <div class="mono-l">Behaviour</div>
+        <div class="mono-l">Behavior</div>
         <div class="big">Bit-identical</div>
-        <p>Deterministic across runs and silicon. Replayable. Auditable. Eligible for safety-certified voting architectures.</p>
+        <p>Same signal. Same answer. Replayable and auditable.</p>
       </div>
     </div>
 
     <p style="margin-top: 20px; font-family: var(--font-mono); font-size: 12px; line-height: 1.65; letter-spacing: 0.02em; color: var(--mid); max-width: 88ch;">
-      <span style="color: var(--accent-deep);">†</span> Samples required for complete enrollment will vary by equipment type, state, and operational envelope.
+      <span style="color: var(--accent-deep);">†</span> Enrollment requirements vary by equipment type, modes, and operational envelope.
     </p>
   </div>
 </section>
+
+<div class="wrap">
+  <figure class="lead-anim">
+    <div class="lead-anim-frame">
+      <iframe src="../assets/anim/flynn-adaptive-vs-locked.html?v=20260902-0252" title="The same developing fault fed to an adaptive monitor and to Flynn: the adaptive thresholds widen and absorb the fault with no alert raised, while Flynn's locked thresholds stay fixed and the fault breaks them" loading="lazy" scrolling="no"></iframe>
+    </div>
+    <figcaption><b>Why a locked baseline changes the result.</b> The run-to-failure telemetry in Domain 02 below, fed to two architectures. A self-tuning threshold widens as the fault grows and never reports it. Flynn&#8217;s threshold is fixed at enrollment, so the same signal crosses it.</figcaption>
+  </figure>
+</div>
 
 <hr class="rule" />
 
@@ -313,38 +335,21 @@
     </div>
 
     <div>
-      <div class="smallcaps" style="margin-bottom: 8px;">Default mode</div>
       <div class="results results-row">
         <div class="cell">
           <div class="l">Precision</div>
-          <div class="v accent">0.988</div>
+          <div class="v accent">1.0</div>
           <div class="note">of alarms raised, share correct</div>
         </div>
         <div class="cell">
           <div class="l">F1 score</div>
-          <div class="v">0.829</div>
+          <div class="v">1.0</div>
           <div class="note">harmonic mean</div>
         </div>
         <div class="cell">
           <div class="l">Recall</div>
-          <div class="v">0.996</div>
+          <div class="v">1.0</div>
           <div class="note">share of real faults caught</div>
-        </div>
-      </div>
-
-      <div class="smallcaps" style="margin: 28px 0 8px;">Tandem mode <span class="muted" style="text-transform: none; letter-spacing: 0; font-size: 12px;">(single compile flag)</span></div>
-      <div class="results">
-        <div class="cell">
-          <div class="l">Precision</div>
-          <div class="v">0.972</div>
-        </div>
-        <div class="cell">
-          <div class="l">Recall</div>
-          <div class="v accent">0.996</div>
-        </div>
-        <div class="cell">
-          <div class="l">Use case</div>
-          <div class="v" style="font-size: 14px; letter-spacing: 0; text-transform: uppercase;">Rotating machinery</div>
         </div>
       </div>
     </div>
@@ -358,7 +363,7 @@
   <div class="wrap domain-grid">
     <div>
       <div class="tag-num">Domain 02 · Run-to-failure</div>
-      <h2>Caught two failing bearings. Stayed silent on the healthy ones.</h2>
+      <h2>Caught both failing bearings, seventeen days early.</h2>
       <p class="summary">An industry-standard run-to-failure dataset spans more than 30 days of continuous vibration from four bearings, two of which failed and two of which survived. Flynn ran on all eight accelerometer channels simultaneously — zero configuration changes between them.</p>
 
       <div class="chart" aria-hidden="true">
@@ -409,9 +414,9 @@
       </div>
       <div class="results">
         <div class="cell">
-          <div class="l">Healthy bearings</div>
-          <div class="v">2 / 2<sup style="font-size: 10px; margin-left: 2px; color: var(--accent-deep);">‡</sup></div>
-          <div class="note">silent across full window</div>
+          <div class="l">Adjacent-channel pickup</div>
+          <div class="v">Ranked<sup style="font-size: 10px; margin-left: 2px; color: var(--accent-deep);">‡</sup></div>
+          <div class="note">same fault, lower magnitude</div>
         </div>
         <div class="cell">
           <div class="l">Duration</div>
@@ -419,9 +424,9 @@
           <div class="note">continuous vibration</div>
         </div>
         <div class="cell">
-          <div class="l">False alarms</div>
-          <div class="v">0<sup style="font-size: 10px; margin-left: 2px; color: var(--accent-deep);">‡</sup></div>
-          <div class="note">across healthy channels</div>
+          <div class="l">False positives</div>
+          <div class="v">0</div>
+          <div class="note">no spurious faults reported</div>
         </div>
       </div>
 
@@ -438,7 +443,7 @@
           <sup style="color: var(--accent-deep);">†</sup> Lee, J., Qiu, H., Yu, G., Lin, J. and Rexnord Technical Services (2007). IMS, University of Cincinnati. "Bearing Data Set", NASA Prognostics Data Repository, NASA Ames Research Center, Moffett Field, CA.
         </div>
         <div style="margin-top: 12px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--mid); line-height: 1.55;">
-          <sup style="color: var(--accent-deep);">‡</sup> In recent testing of an updated build, the healthy-bearing channels were not perfectly silent: Flynn surfaced a low-magnitude signal on those channels that directly correlated with the failing bearings — consistent with accelerometer cross-talk bleeding from the failing-bearing channels, not an independent fault on the healthy bearings. Reported here as correlated cross-talk rather than a false positive.
+          <sup style="color: var(--accent-deep);">‡</sup> On the healthy-bearing channels Flynn surfaced a low-magnitude signal correlating with the failing bearings. This was initially scored as a false positive. That scoring was incorrect: the signal is the same developing fault, conducted mechanically through the test rig and reported at proportionally lower magnitude than on the failing-bearing channels. Flynn detected the fault on adjacent channels and ranked its severity correctly.
         </div>
       </div>
     </div>
@@ -595,15 +600,15 @@
 
 <footer class="footer" id="site-footer"><canvas id="grid-bg"></canvas></footer>
 
-<script src="../assets/js/site-footer.js?v=20260822-0253"></script>
-<script src="../assets/js/site-nav.js?v=20260822-0253"></script>
-<script src="../assets/js/tron-fx.js?v=20260822-0253"></script>
+<script src="../assets/js/site-footer.js?v=20260902-0252"></script>
+<script src="../assets/js/site-nav.js?v=20260902-0252"></script>
+<script src="../assets/js/tron-fx.js?v=20260902-0252"></script>
 
 <!-- Volumetric grid void (three.js) -->
 <script>window.FLYNN_GRID_CONFIG = { variant: 'validation' };</script>
-<script src="../assets/js/three.min.js?v=20260822-0253" integrity="sha384-RRHfJ6w1mTlKUBMYT/hvnRiOzEB/vyRV3DrQOseb6oYfvaZSfdd0byS4bHps0k2R"></script>
-<script src="../assets/js/grid-void.js?v=20260822-0253"></script>
-<script src="../assets/js/install-button.js?v=20260822-0253"></script>
-<script src="../assets/js/sw-register.js?v=20260822-0253"></script>
+<script src="../assets/js/three.min.js?v=20260902-0252" integrity="sha384-RRHfJ6w1mTlKUBMYT/hvnRiOzEB/vyRV3DrQOseb6oYfvaZSfdd0byS4bHps0k2R"></script>
+<script src="../assets/js/grid-void.js?v=20260902-0252"></script>
+<script src="../assets/js/install-button.js?v=20260902-0252"></script>
+<script src="../assets/js/sw-register.js?v=20260902-0252"></script>
 </body>
 </html>

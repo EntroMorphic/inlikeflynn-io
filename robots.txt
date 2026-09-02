@@ -4,10 +4,7 @@ Allow: /
 # Print-only variant — canonical lives at /pages/industries.html
 Disallow: /pages/industries-print.html
 
-# Archived snapshots — preserved for rollback, never served as live pages
-Disallow: /backups/
-
-# Dev scratch / design explorations — tracked for reference, not for indexing
-Disallow: /explorations/
+# Repo-only material, not part of the site
+Disallow: /legacy_files/
 
 Sitemap: https://inlikeflynn.io/sitemap.xml

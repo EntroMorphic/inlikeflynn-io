@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Flynn — Locked Baseline</title>
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&display=swap" />
+<style>
+html,body{margin:0;height:100%;background:#05080e;overflow:hidden}
+svg{display:block;width:100%;height:100%}
+text{font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace}
+</style>
+</head>
+<body>
+<svg id="s" viewBox="0 0 1080 1080" preserveAspectRatio="xMidYMid meet" aria-label="Flynn enrolls a healthy baseline, locks it at plus or minus three sigma, then detects a developing fault as vibration amplitude grows">
+<defs>
+<linearGradient id="waveGrad" gradientUnits="userSpaceOnUse" x1="0" y1="321" x2="0" y2="791">
+<stop offset="0" stop-color="#ff7e29"/><stop offset="0.1809" stop-color="#ff7e29"/>
+<stop offset="0.2979" stop-color="#2fe6f0"/><stop offset="0.7021" stop-color="#2fe6f0"/>
+<stop offset="0.8191" stop-color="#ff7e29"/><stop offset="1" stop-color="#ff7e29"/>
+</linearGradient>
+<linearGradient id="warnUp" gradientUnits="userSpaceOnUse" x1="0" y1="406" x2="0" y2="461">
+<stop offset="0" stop-color="#ff7e29" stop-opacity="0.18"/><stop offset="1" stop-color="#ff7e29" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="warnDn" gradientUnits="userSpaceOnUse" x1="0" y1="706" x2="0" y2="651">
+<stop offset="0" stop-color="#ff7e29" stop-opacity="0.18"/><stop offset="1" stop-color="#ff7e29" stop-opacity="0"/>
+</linearGradient>
+<radialGradient id="vig" cx="0.5" cy="0.5" r="0.5">
+<stop offset="0.62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.3"/>
+</radialGradient>
+</defs>
+<g id="grid"></g>
+<g id="dyn"></g>
+<rect x="0" y="0" width="1080" height="1080" fill="url(#vig)" pointer-events="none"/>
+<rect id="fade" x="0" y="0" width="1080" height="1080" fill="#05080e" opacity="1" pointer-events="none"/>
+</svg>
+<script>
+(function(){
+var W=1080,H=1080,PX0=150,PX1=930,PW=PX1-PX0,CY=556,SIGPX=50;
+var THI=CY-150,TLO=CY+150,WARN_PX=95,SIGAMP=82,SPEED=0.6,WIN=3.4;
+var NAVY='#05080e',CYAN='#2fe6f0',AMBER='#ff7e29',AMBER_SOFT='rgba(255,126,41,0.62)',INK='#c7ecf1',MUTE='#5d818a';
+var T={fadeIn:0.6,enrollEnd:3.5,lock:3.6,departStart:6.9,departEnd:10.3,fadeOut:15.4,end:16.0};
+
+function clamp(v,a,b){return v<a?a:v>b?b:v}
+function easeOutCubic(p){return 1-Math.pow(1-p,3)}
+function easeInCubic(p){return p*p*p}
+function animate(from,to,start,end,ease){return function(t){if(t<=start)return from;if(t>=end)return to;var p=(t-start)/(end-start);return from+(to-from)*(ease?ease(p):p)}}
+function interpolate(stops,vals,ease){return function(t){
+  if(t<=stops[0])return vals[0];
+  var n=stops.length;
+  if(t>=stops[n-1])return vals[n-1];
+  for(var i=0;i<n-1;i++){if(t>=stops[i]&&t<=stops[i+1]){var p=(t-stops[i])/(stops[i+1]-stops[i]);if(ease)p=ease(p);return vals[i]+(vals[i+1]-vals[i])*p}}
+  return vals[n-1]}}
+
+function hash(n){var s=Math.sin(n*127.1+311.7)*43758.5453;return s-Math.floor(s)}
+function vnoise(x){var i=Math.floor(x),f=x-i,u=f*f*(3-2*f);return (hash(i)*(1-u)+hash(i+1)*u)*2-1}
+function sig(s){return 0.54*Math.sin(s*6.28318)+0.20*Math.sin(s*6.28318*2.37+1.3)+0.11*Math.sin(s*6.28318*3.91+0.7)+0.10*vnoise(s*5.5)+0.05*vnoise(s*17.0)}
+
+var NS='http://www.w3.org/2000/svg';
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function adv(fs,ls){return fs*0.6+fs*ls}
+function tw(str,fs,ls){return str.length*adv(fs,ls)}
+
+/* static graticule */
+(function(){
+  var p='',x,y;
+  for(x=0;x<=W;x+=48){var maj=x%240===0;p+='<line x1="'+x+'" y1="0" x2="'+x+'" y2="'+H+'" stroke="'+CYAN+'" stroke-width="'+(maj?1:0.6)+'" opacity="'+(maj?0.11:0.06)+'"/>'}
+  for(y=0;y<=H;y+=48){var mj=y%240===0;p+='<line x1="0" y1="'+y+'" x2="'+W+'" y2="'+y+'" stroke="'+CYAN+'" stroke-width="'+(mj?1:0.6)+'" opacity="'+(mj?0.11:0.06)+'"/>'}
+  p+='<line x1="'+PX0+'" y1="'+CY+'" x2="'+PX1+'" y2="'+CY+'" stroke="'+CYAN+'" stroke-width="1" opacity="0.16" stroke-dasharray="2 7"/>';
+  document.getElementById('grid').innerHTML=p;
+})();
+
+var envFn=interpolate([0.6,1.6,2.6,3.5],[30,110,146,150],easeOutCubic);
+var bandFn=interpolate([T.lock,T.lock+0.5],[0.09,0.035]);
+var ampFn=animate(0,1.95,T.departStart,T.departEnd,easeInCubic);
+var dyn=document.getElementById('dyn'),fadeEl=document.getElementById('fade');
+
+function frame(t){
+  var center=CY-(2.5*Math.sin(t*0.8)+1.5*vnoise(t*0.5+40));
+  var ampScale=1+ampFn(t);
+  var right=2.2+t*SPEED,BAR_STEP=8,BAR_W=3.4;
+  var bars=[],maxAbove=0,x;
+  for(x=PX0+BAR_STEP/2;x<=PX1;x+=BAR_STEP){
+    var fx=(x-PX0)/PW,s=right-WIN*(1-fx);
+    var h=Math.max(2.2,SIGAMP*Math.abs(sig(s))*ampScale);
+    var top=center-h,bot=center+h;
+    bars.push({x:x,top:top,bot:bot});
+    if(t>T.lock+0.25){if(top<THI)maxAbove=Math.max(maxAbove,THI-top);if(bot>TLO)maxAbove=Math.max(maxAbove,bot-TLO)}
+  }
+  var breached=maxAbove>2,peakDist=0,dev=0,i,b;
+  for(i=0;i<bars.length;i++){b=bars[i];peakDist=Math.max(peakDist,center-b.top,b.bot-center);dev=Math.max(dev,(CY-b.top)/SIGPX)}
+  var inTrend=t>T.lock&&!breached&&peakDist>WARN_PX;
+  var state=t<T.lock?'enroll':(breached?'depart':(inTrend?'trend':'lock'));
+
+  var envHalf=envFn(t)+(t<T.lock?4*Math.sin(t*3.0)*clamp((3.5-t)/2.2,0,1):0);
+  var hiEdge=t<T.lock?CY-envHalf:THI,loEdge=t<T.lock?CY+envHalf:TLO;
+  var lineOp=clamp((t-(T.lock-0.08))/0.22,0,1);
+  var bandOp=t<T.lock?0.09:bandFn(t);
+  var snap=clamp(1-Math.abs(t-T.lock)/0.3,0,1);
+  var glow=breached?Math.max(0,1-(maxAbove/60)):0;
+  var pulse=0.5+0.5*Math.sin(t*7);
+  var warning=state==='trend'||state==='depart';
+  var col=warning?AMBER:CYAN;
+  var label=state==='enroll'?'ENROLLING':state==='lock'?'LOCKED':state==='trend'?'TREND':'DEPARTURE';
+  var caption=state==='enroll'?'LEARNING NORMAL':state==='lock'?'BASELINE LOCKED \u00B7 WON\u2019T ADAPT':state==='trend'?'TREND DETECTED \u00B7 APPROACHING \u00B13\u03C3':'LOCK HOLDS \u00B7 SIGNAL DEPARTS';
+  var dot=(state==='enroll'||state==='trend')?(0.4+0.6*(0.5+0.5*Math.sin(t*6))):1;
+
+  var o='';
+  o+='<rect x="'+PX0+'" y="'+hiEdge.toFixed(1)+'" width="'+PW+'" height="'+(loEdge-hiEdge).toFixed(1)+'" fill="'+CYAN+'" opacity="'+bandOp.toFixed(3)+'"/>';
+  if(t<T.lock)o+='<rect x="'+PX0+'" y="'+hiEdge.toFixed(1)+'" width="'+PW+'" height="'+(loEdge-hiEdge).toFixed(1)+'" fill="none" stroke="'+CYAN+'" stroke-width="1.4" stroke-dasharray="3 6" opacity="'+(0.4*(1-lineOp)).toFixed(3)+'"/>';
+  o+='<rect x="'+PX0+'" y="'+THI+'" width="'+PW+'" height="'+(CY-WARN_PX-THI)+'" fill="url(#warnUp)" opacity="'+lineOp.toFixed(3)+'"/>';
+  o+='<rect x="'+PX0+'" y="'+(CY+WARN_PX)+'" width="'+PW+'" height="'+(TLO-(CY+WARN_PX))+'" fill="url(#warnDn)" opacity="'+lineOp.toFixed(3)+'"/>';
+  [CY-WARN_PX,CY+WARN_PX].forEach(function(ly){o+='<line x1="'+PX0+'" y1="'+ly+'" x2="'+PX1+'" y2="'+ly+'" stroke="'+AMBER+'" stroke-width="1" stroke-dasharray="1 9" opacity="'+(0.22*lineOp).toFixed(3)+'"/>'});
+  [hiEdge,loEdge].forEach(function(ly){
+    var y=ly.toFixed(1);
+    o+='<g opacity="'+lineOp.toFixed(3)+'"><line x1="'+PX0+'" y1="'+y+'" x2="'+PX1+'" y2="'+y+'" stroke="'+AMBER+'" stroke-width="6" opacity="0.16"/><line x1="'+PX0+'" y1="'+y+'" x2="'+PX1+'" y2="'+y+'" stroke="'+AMBER+'" stroke-width="2"/><line x1="'+PX0+'" y1="'+(ly-9).toFixed(1)+'" x2="'+PX0+'" y2="'+(ly+9).toFixed(1)+'" stroke="'+AMBER+'" stroke-width="2"/><line x1="'+PX1+'" y1="'+(ly-9).toFixed(1)+'" x2="'+PX1+'" y2="'+(ly+9).toFixed(1)+'" stroke="'+AMBER+'" stroke-width="2"/></g>';
+  });
+  if(breached){
+    o+='<line x1="'+PX0+'" y1="'+THI+'" x2="'+PX1+'" y2="'+THI+'" stroke="'+AMBER+'" stroke-width="3" opacity="'+(0.5*glow).toFixed(3)+'"/>';
+    o+='<line x1="'+PX0+'" y1="'+TLO+'" x2="'+PX1+'" y2="'+TLO+'" stroke="'+AMBER+'" stroke-width="3" opacity="'+(0.5*glow).toFixed(3)+'"/>';
+  }
+  o+='<g stroke-linecap="round">';
+  var last=null;
+  for(i=0;i<bars.length;i++){b=bars[i];
+    var bx=b.x.toFixed(1),bt=b.top.toFixed(1),bb=b.bot.toFixed(1);
+    o+='<line x1="'+bx+'" y1="'+bb+'" x2="'+bx+'" y2="'+bt+'" stroke="url(#waveGrad)" stroke-width="'+(BAR_W+5)+'" opacity="0.13"/><line x1="'+bx+'" y1="'+bb+'" x2="'+bx+'" y2="'+bt+'" stroke="url(#waveGrad)" stroke-width="'+BAR_W+'"/>';
+    if(t>T.lock&&(b.top<THI||b.bot>TLO))last=b;
+  }
+  o+='</g>';
+  if(last){var ry=(last.top<THI?last.top:last.bot).toFixed(1);
+    o+='<circle cx="'+last.x.toFixed(1)+'" cy="'+ry+'" r="'+(11+9*pulse).toFixed(1)+'" fill="none" stroke="'+AMBER+'" stroke-width="1.6" opacity="'+(0.5*(1-pulse*0.7)).toFixed(3)+'"/><circle cx="'+last.x.toFixed(1)+'" cy="'+ry+'" r="5" fill="'+AMBER+'"/>';}
+  if(snap>0.01)[THI,TLO].forEach(function(ly){o+='<line x1="'+PX0+'" y1="'+ly+'" x2="'+PX1+'" y2="'+ly+'" stroke="#e9feff" stroke-width="'+(2+8*snap).toFixed(1)+'" opacity="'+(snap*0.85).toFixed(3)+'"/>'});
+  var cur=bars[bars.length-1];
+  o+='<line x1="'+cur.x.toFixed(1)+'" y1="'+(CY-235)+'" x2="'+cur.x.toFixed(1)+'" y2="'+(CY+235)+'" stroke="'+CYAN+'" stroke-width="1" opacity="0.18"/>';
+
+  /* HUD — brand */
+  o+='<rect x="70" y="60" width="16" height="16" fill="'+CYAN+'"/>';
+  o+='<text x="100" y="84" font-size="30" font-weight="700" letter-spacing="'+(30*0.18).toFixed(2)+'" fill="'+INK+'">FLYNN</text>';
+  o+='<text x="100" y="104" font-size="12.5" font-weight="500" letter-spacing="'+(12.5*0.28).toFixed(2)+'" fill="'+MUTE+'">EMBEDDED ANOMALY DETECTION</text>';
+
+  /* status chip */
+  var chipR=1010,lw=tw(label,18,0.22),chipW=18+9+12+lw+18,chipX=chipR-chipW;
+  o+='<rect x="'+chipX.toFixed(1)+'" y="64" width="'+chipW.toFixed(1)+'" height="42" fill="rgba(5,8,14,0.4)" stroke="'+col+'" stroke-width="1"/>';
+  o+='<circle cx="'+(chipX+18+4.5).toFixed(1)+'" cy="85" r="4.5" fill="'+col+'" opacity="'+dot.toFixed(3)+'"/>';
+  o+='<text x="'+(chipX+18+9+12).toFixed(1)+'" y="92" font-size="18" font-weight="700" letter-spacing="'+(18*0.22).toFixed(2)+'" fill="'+col+'">'+label+'</text>';
+
+  /* sigma labels */
+  o+='<text x="946" y="'+THI+'" dominant-baseline="middle" font-size="14" font-weight="600" letter-spacing="1.12" fill="'+AMBER_SOFT+'">+3.0\u03C3</text>';
+  o+='<text x="946" y="'+TLO+'" dominant-baseline="middle" font-size="14" font-weight="600" letter-spacing="1.12" fill="'+AMBER_SOFT+'">\u22123.0\u03C3</text>';
+
+  /* trend / breach tag */
+  if(warning)o+='<text x="'+(PX0+8)+'" y="'+(THI-65)+'" font-size="16" font-weight="700" letter-spacing="'+(16*0.16).toFixed(2)+'" fill="'+AMBER+'">'+(state==='depart'?'\u25B2 VIBRATION EXCEEDS \u00B13.0\u03C3':'\u25B3 TREND TOWARD \u00B13\u03C3 LIMIT')+'</text>';
+
+  /* bottom readout */
+  var fields=[['BASELINE',state==='enroll'?'ENROLLING':'LOCKED',CYAN],['AMPLITUDE',dev.toFixed(1)+'\u03C3',dev>=1.9?AMBER:INK],['MODEL','8 480 B \u00B7 INT-ONLY',MUTE]];
+  var fx2=70;
+  for(i=0;i<fields.length;i++){var f=fields[i];
+    o+='<text x="'+fx2.toFixed(1)+'" y="922" font-size="12" font-weight="500" letter-spacing="'+(12*0.22).toFixed(2)+'" fill="'+MUTE+'">'+f[0]+'</text>';
+    o+='<text x="'+fx2.toFixed(1)+'" y="950" font-size="19" font-weight="700" letter-spacing="'+(19*0.06).toFixed(2)+'" fill="'+f[2]+'">'+esc(f[1])+'</text>';
+    fx2+=Math.max(tw(f[0],12,0.22),tw(f[1],19,0.06))+56;
+  }
+
+  /* caption */
+  o+='<text x="540" y="1006" text-anchor="middle" font-size="19" font-weight="600" letter-spacing="'+(19*0.16).toFixed(2)+'" fill="'+(state==='depart'?AMBER:(state==='lock'?CYAN:MUTE))+'">'+caption+'</text>';
+
+  try{dyn.innerHTML=o;}catch(e){window.__e='innerHTML: '+e.message;}
+  fadeEl.setAttribute('opacity',Math.max(1-clamp(t/T.fadeIn,0,1),clamp((t-T.fadeOut)/(T.end-T.fadeOut),0,1)).toFixed(3));
+}
+
+var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var SAFE=function(t){try{frame(t)}catch(e){window.__e=e.message+' @ '+(e.stack||'').split('\n')[1];}};
+SAFE(reduce?11.5:0.62);
+if(reduce){fadeEl.setAttribute('opacity','0');}
+else{
+  var t0=(window.performance&&performance.now?performance.now():Date.now());
+  var now=function(){return window.performance&&performance.now?performance.now():Date.now()};
+  var draw=function(){SAFE(((now()-t0)/1000)%T.end)};
+  setInterval(draw,33);
+  if(window.requestAnimationFrame)requestAnimationFrame(function loop(){draw();requestAnimationFrame(loop)});
+}
+})();
+</script>
+</body>
+</html>

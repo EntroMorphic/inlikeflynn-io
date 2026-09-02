@@ -21,6 +21,7 @@ import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+// The site is served from the repo root; legacy_files/ is excluded below.
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 function stamp() {
@@ -40,7 +41,7 @@ function htmlFiles(dir) {
     const p = join(dir, name);
     const st = statSync(p);
     if (st.isDirectory()) {
-      if (['assets', 'node_modules', '.git', 'scripts', 'docs', 'uploads', 'screenshots', 'backups', 'explorations', 'ziptest', 'dist'].includes(name)) continue;
+      if (['assets', 'node_modules', '.git', 'scripts', 'docs', 'uploads', 'screenshots', 'backups', 'explorations', 'ziptest', 'dist', 'legacy_files'].includes(name)) continue;
       out.push(...htmlFiles(p));
     } else if (name.endsWith('.html')) {
       out.push(p);

@@ -12,6 +12,9 @@ desktop.ini
 screenshots/
 *.log
 
+# ---- consolidated non-served archive drawer (docs, backups, explorations, snapshots) ----
+legacy_files/
+
 # ---- build / packaging artifacts ----
 *.zip
 zip/

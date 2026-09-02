@@ -20,19 +20,19 @@ jobs:
           args: >-
             --no-progress
             --root-dir "${{ github.workspace }}"
-            --exclude 'inlikeflynn\.io'
-            --exclude-path 'backups'
-            --exclude-path 'explorations'
-            './**/*.html'
+            --exclude 'https?://inlikeflynn\.io'
+            --exclude-path './legacy_files'
+            './*.html'
+            './pages/**/*.html'
           fail: true
 
       - name: Cache-version consistency
         shell: bash
         run: |
           set -euo pipefail
-          # Scope to the DEPLOYED surface — backups/ are frozen rollback snapshots
-          # (their own historical ?v= tags) and explorations/ are dev scratch; neither ships.
-          tags=$(grep -rhoE '\?v=[0-9]{8}-[0-9]{4}' --include='*.html' --exclude-dir=backups --exclude-dir=explorations . | sort -u || true)
+          # The deployed surface is the repo root; legacy_files/ is not served
+          # and keeps its own tags.
+          tags=$(grep -rhoE '\?v=[0-9]{8}-[0-9]{4}' --include='*.html' --exclude-dir=legacy_files . | sort -u || true)
           count=$(printf '%s\n' "$tags" | grep -c . || true)
           echo "Found cache tags:"; printf '%s\n' "$tags"
           if [ "$count" -ne 1 ]; then
@@ -44,7 +44,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if grep -rnE 'href="#"' --include='*.html' --exclude-dir=backups --exclude-dir=explorations .; then
+          if grep -rnE 'href="#"' --include='*.html' --exclude-dir=legacy_files .; then
             echo "::error::Found dead href=\"#\" links."
             exit 1
           fi

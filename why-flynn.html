@@ -23,9 +23,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/site-footer.css?v=20260822-0253" />
-<link rel="stylesheet" href="assets/css/install-button.css?v=20260822-0253" />
-<link rel="stylesheet" href="assets/css/infographic.css?v=20260822-0253" />
+<link rel="stylesheet" href="assets/css/site-footer.css?v=20260902-0252" />
+<link rel="stylesheet" href="assets/css/install-button.css?v=20260902-0252" />
+<link rel="stylesheet" href="assets/css/infographic.css?v=20260902-0252" />
 <style>
 :root {
     --ink: #06090f;
@@ -474,6 +474,16 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
 /* ============ 06 — PROOF ============ */
   .scope { margin: 0 0 22px; }
 
+.scope-anim {
+    position: relative; width: 100%; max-width: 620px; margin-inline: auto; aspect-ratio: 1 / 1;
+    border-radius: 9px; overflow: hidden; border: 1px solid rgba(71,216,255,0.28);
+    background: #05080e;
+  }
+.scope-anim iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+@media print {
+    .scope-anim { aspect-ratio: auto; border: 0; }
+    .scope-anim iframe { display: none; }
+  }
 .scope img {
     display: block; width: 100%; height: auto; border-radius: 9px;
     border: 1px solid rgba(71,216,255,0.28);
@@ -482,6 +492,39 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
 
 .scope-cap {
     margin-top: 12px; font-size: 13.5px; line-height: 1.5; color: var(--muted); max-width: 80ch;
+  }
+.compare-fig { margin: 26px 0 0; }
+.compare-frame {
+    position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 9px; overflow: hidden;
+    border: 1px solid rgba(71,216,255,0.28); background: #05080e;
+  }
+.compare-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+.compare-cap {
+    margin-top: 12px; font-size: 13.5px; line-height: 1.5; color: var(--muted); max-width: 80ch;
+  }
+.compare-cap b { color: var(--text); font-weight: 600; }
+@media print { .compare-fig { display: none; } }
+.scope img.scope-fallback {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: contain; border: 0; border-radius: 0; z-index: 0;
+  }
+.scope-anim iframe { z-index: 1; }
+@media print {
+    .compare-fig { margin: 26px 0 0; }
+.compare-frame {
+    position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 9px; overflow: hidden;
+    border: 1px solid rgba(71,216,255,0.28); background: #05080e;
+  }
+.compare-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+.compare-cap {
+    margin-top: 12px; font-size: 13.5px; line-height: 1.5; color: var(--muted); max-width: 80ch;
+  }
+.compare-cap b { color: var(--text); font-weight: 600; }
+@media print { .compare-fig { display: none; } }
+.scope img.scope-fallback {
+      position: static; display: block; width: 100%; height: auto;
+      border-radius: 9px; border: 1px solid rgba(71,216,255,0.28);
+    }
   }
 
 .scope-cap b { color: var(--text); font-weight: 600; }
@@ -680,7 +723,7 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
     <div class="mast-top">
       <div class="mast-brand">
         <a href="index.html" style="display:inline-flex;align-items:center;gap:14px;text-decoration:none;color:inherit;">
-          <img src="assets/img/flynn-logo.png?v=20260822-0253" alt="Flynn" onerror="this.style.display='none'" />
+          <img src="assets/img/flynn-logo.png?v=20260902-0252" alt="Flynn" onerror="this.style.display='none'" />
           <div class="pw"><b>EntroMorphic</b><br />Why Flynn</div>
         </a>
       </div>
@@ -764,6 +807,13 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
         <p>On NASA IMS run-to-failure data, Flynn flagged the developing fault <strong>17 days before failure</strong>. An adaptive system following that same drift would have flagged nothing.</p>
       </div>
     </div>
+
+    <figure class="compare-fig">
+      <div class="compare-frame">
+        <iframe src="assets/anim/flynn-adaptive-vs-locked.html?v=20260902-0252" title="The same developing fault fed to an adaptive monitor and to Flynn: the adaptive thresholds widen and absorb the fault with no alert raised, while Flynn's locked thresholds stay fixed and the fault breaks them" loading="lazy" scrolling="no"></iframe>
+      </div>
+      <figcaption class="compare-cap"><b>The same fault, two architectures.</b> Both monitors enroll on the same healthy signal. As the fault develops, the adaptive thresholds widen to accommodate the louder wave and the monitor still reports nominal. Flynn's thresholds do not move, so the same swell breaks them.</figcaption>
+    </figure>
 
     <div class="costdelta">
       <div class="cd-cell before">
@@ -1012,7 +1062,10 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
     <h2 class="stitle">Tested. Measured. <span class="accent">Published.</span></h2>
 
     <figure class="scope">
-      <img src="assets/img/flynn-scope.webp?v=20260822-0253" alt="Flynn detection scope: a sensor stream is learned during calibration, the threshold is locked, and a developing fault crosses it — Flynn raises an alert." />
+      <div class="scope-anim">
+        <iframe src="assets/anim/flynn-locked-baseline.html?v=20260902-0252" title="Flynn enrolls a healthy baseline, locks it, then detects a developing fault" loading="lazy" scrolling="no"></iframe>
+        <img class="scope-fallback" src="assets/img/flynn-scope.webp?v=20260902-0252" alt="Flynn detection scope: a sensor stream is learned during calibration, the threshold is locked, and a developing fault crosses it — Flynn raises an alert." />
+      </div>
       <figcaption class="scope-cap"><b>Enroll, lock, detect.</b> Flynn enrolls on the healthy signal, locks the baseline, then scores every reading against it. When a developing fault crosses the locked band — alert.</figcaption>
     </figure>
 
@@ -1179,13 +1232,13 @@ section.block { padding-top: 46px; padding-bottom: 46px; border-top: 1px solid v
 
 <!-- Volumetric grid void backdrop + install gem (three.js) -->
 <script>window.FLYNN_GRID_CONFIG = { variant: 'home', noGame: true };</script>
-<script src="assets/js/three.min.js?v=20260822-0253" integrity="sha384-RRHfJ6w1mTlKUBMYT/hvnRiOzEB/vyRV3DrQOseb6oYfvaZSfdd0byS4bHps0k2R"></script>
-<script src="assets/js/grid-void.js?v=20260822-0253"></script>
-<script src="assets/js/site-footer.js?v=20260822-0253"></script>
-<script src="assets/js/site-nav.js?v=20260822-0253"></script>
-<script src="assets/js/tron-fx.js?v=20260822-0253"></script>
-<script src="assets/js/install-button.js?v=20260822-0253"></script>
-<script src="assets/js/sw-register.js?v=20260822-0253"></script>
+<script src="assets/js/three.min.js?v=20260902-0252" integrity="sha384-RRHfJ6w1mTlKUBMYT/hvnRiOzEB/vyRV3DrQOseb6oYfvaZSfdd0byS4bHps0k2R"></script>
+<script src="assets/js/grid-void.js?v=20260902-0252"></script>
+<script src="assets/js/site-footer.js?v=20260902-0252"></script>
+<script src="assets/js/site-nav.js?v=20260902-0252"></script>
+<script src="assets/js/tron-fx.js?v=20260902-0252"></script>
+<script src="assets/js/install-button.js?v=20260902-0252"></script>
+<script src="assets/js/sw-register.js?v=20260902-0252"></script>
 
 <script>
   /* Floating CONTENTS locator — scroll-spy + progress line. */

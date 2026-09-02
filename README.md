@@ -21,7 +21,7 @@ fully playable arcade game hidden inside it.
   to load React + in-browser Babel (for an optional **Tweaks** panel); that authoring
   harness has been **removed from production** — the panel's settings are now baked in
   statically (see [Production notes](#production-notes)). The old `*.jsx` Tweaks modules and
-  the `index_v1.html` rollback snapshot now live under `backups/`, out of the served tree.
+  the `index_v1.html` rollback snapshot now live under `legacy_files/`, out of the served tree.
 - **Google Fonts** — Geist / Geist Mono (body), Orbitron / Chakra Petch / Michroma
   (display), Share Tech Mono (UI/mono).
 
@@ -53,7 +53,7 @@ assets/
   audio/
     music/              In-game soundtrack (synthwave)
     sfx/                In-game sound effects
-docs/                   Audit notes & architecture
+legacy_files/           Docs, backups, explorations, screenshots — not served, git-ignored
 .github/                CI workflow, issue/PR templates, CODEOWNERS
 uploads/                Source material (PDFs, logos, raw audio) — local only, git-ignored
 ```
@@ -146,8 +146,8 @@ defaults (Orbitron headline, glow 1.2, motion on, scope speed 22) are now **bake
 statically** — a `<style>` block plus `window.FLYNN_WAVE_SPEED` in `index.html` — so
 the page looks identical with no React, no Babel, and a clean console. The
 `tweaks-panel.jsx` / `tron-tweaks.jsx` modules and the `index_v1.html` rollback
-snapshot have since been moved out of the served tree into `backups/` (disallowed in
-`robots.txt`, `noindex`), so production no longer carries any React, Babel, or JSX at all.
+snapshot have since been moved out of the served tree into `legacy_files/` (kept local,
+git-ignored), so production no longer carries any React, Babel, or JSX at all.
 
 ---
 

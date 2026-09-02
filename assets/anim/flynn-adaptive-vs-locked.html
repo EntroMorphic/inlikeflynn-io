@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Flynn — Adaptive vs Locked</title>
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&display=swap" />
+<style>
+html,body{margin:0;height:100%;background:#05080e;overflow:hidden}
+svg{display:block;width:100%;height:100%}
+text{font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace}
+</style>
+</head>
+<body>
+<svg id="s" viewBox="0 0 960 540" preserveAspectRatio="xMidYMid meet" aria-label="The same developing bearing fault fed to two monitors. The adaptive monitor widens its thresholds and absorbs the fault with no alert. Flynn's locked thresholds stay fixed and the fault breaks them, giving 17 days advance warning.">
+<defs>
+<linearGradient id="waveGradC" gradientUnits="userSpaceOnUse" x1="0" y1="301" x2="0" y2="471">
+<stop offset="0" stop-color="#ff7e29"/><stop offset="0.1706" stop-color="#ff7e29"/>
+<stop offset="0.2914" stop-color="#2fe6f0"/><stop offset="0.7086" stop-color="#2fe6f0"/>
+<stop offset="0.8294" stop-color="#ff7e29"/><stop offset="1" stop-color="#ff7e29"/>
+</linearGradient>
+<linearGradient id="warnUpC" gradientUnits="userSpaceOnUse" x1="0" y1="330" x2="0" y2="350.5">
+<stop offset="0" stop-color="#ff7e29" stop-opacity="0.18"/><stop offset="1" stop-color="#ff7e29" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="warnDnC" gradientUnits="userSpaceOnUse" x1="0" y1="442" x2="0" y2="421.5">
+<stop offset="0" stop-color="#ff7e29" stop-opacity="0.18"/><stop offset="1" stop-color="#ff7e29" stop-opacity="0"/>
+</linearGradient>
+<radialGradient id="vigC" cx="0.5" cy="0.5" r="0.5">
+<stop offset="0.66" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.3"/>
+</radialGradient>
+</defs>
+<g id="grid"></g>
+<g id="dyn"></g>
+<rect x="0" y="0" width="960" height="540" fill="url(#vigC)" pointer-events="none"/>
+<rect id="fade" x="0" y="0" width="960" height="540" fill="#05080e" opacity="1" pointer-events="none"/>
+</svg>
+<script>
+(function(){
+var W=960,H=540,PX0=270,PX1=832,PW=PX1-PX0;
+var YA=176,YB=386,HT=56,SIGPX=HT/3,WARN_PX=HT*1.9/3,SIGAMP=33,SPEED=0.6,WIN=3.6;
+var NAVY='#05080e',CYAN='#2fe6f0',AMBER='#ff7e29',STEEL='#84a0ad',STEEL_SOFT='rgba(132,160,173,0.62)';
+var INK='#c7ecf1',MUTE='#7d9aa3',GRAY='#8a9ea8';
+var T={fadeIn:0.6,enrollEnd:3.5,lock:3.6,departStart:6.9,departEnd:10.3,catchBeat:9.6,missBeat:10.5,fadeOut:15.4,end:16.0};
+
+function clamp(v,a,b){return v<a?a:v>b?b:v}
+function easeOutCubic(p){return 1-Math.pow(1-p,3)}
+function easeInCubic(p){return p*p*p}
+function animate(from,to,start,end,ease){return function(t){if(t<=start)return from;if(t>=end)return to;var p=(t-start)/(end-start);return from+(to-from)*(ease?ease(p):p)}}
+function interpolate(stops,vals,ease){return function(t){
+  var n=stops.length;
+  if(t<=stops[0])return vals[0];
+  if(t>=stops[n-1])return vals[n-1];
+  for(var i=0;i<n-1;i++){if(t>=stops[i]&&t<=stops[i+1]){var p=(t-stops[i])/(stops[i+1]-stops[i]);if(ease)p=ease(p);return vals[i]+(vals[i+1]-vals[i])*p}}
+  return vals[n-1]}}
+function hash(n){var s=Math.sin(n*127.1+311.7)*43758.5453;return s-Math.floor(s)}
+function vnoise(x){var i=Math.floor(x),f=x-i,u=f*f*(3-2*f);return (hash(i)*(1-u)+hash(i+1)*u)*2-1}
+function sig(s){return 0.54*Math.sin(s*6.28318)+0.20*Math.sin(s*6.28318*2.37+1.3)+0.11*Math.sin(s*6.28318*3.91+0.7)+0.10*vnoise(s*5.5)+0.05*vnoise(s*17.0)}
+function tw(str,fs,ls){return str.length*(fs*0.6+fs*ls)}
+
+(function(){
+  var p='',x,y;
+  for(x=0;x<=W;x+=24){var maj=x%120===0;p+='<line x1="'+x+'" y1="0" x2="'+x+'" y2="'+H+'" stroke="'+CYAN+'" stroke-width="'+(maj?0.7:0.4)+'" opacity="'+(maj?0.1:0.055)+'"/>'}
+  for(y=0;y<=H;y+=24){var mj=y%120===0;p+='<line x1="0" y1="'+y+'" x2="'+W+'" y2="'+y+'" stroke="'+CYAN+'" stroke-width="'+(mj?0.7:0.4)+'" opacity="'+(mj?0.1:0.055)+'"/>'}
+  p+='<line x1="35" y1="281" x2="'+(W-35)+'" y2="281" stroke="'+CYAN+'" stroke-width="0.8" opacity="0.14"/>';
+  document.getElementById('grid').innerHTML=p;
+})();
+
+var envFn=interpolate([0.6,1.6,2.6,3.5],[13,HT-13,HT-2,HT],easeOutCubic);
+var bandFn=interpolate([T.lock,T.lock+0.5],[0.08,0.03]);
+var dyn=document.getElementById('dyn'),fadeEl=document.getElementById('fade');
+var origHi=YA-HT,origLo=YA+HT;
+
+function pill(x,y,color,label,blink){
+  var w=34+tw(label,16,0.16),h=27,cy=y+h/2;
+  return '<rect x="'+x+'" y="'+y+'" width="'+w.toFixed(1)+'" height="'+h+'" fill="rgba(5,8,14,0.45)" stroke="'+color+'" stroke-width="1"/>'
+    +'<circle cx="'+(x+14)+'" cy="'+cy+'" r="3.6" fill="'+color+'" opacity="'+blink.toFixed(3)+'"/>'
+    +'<text x="'+(x+25)+'" y="'+cy+'" dominant-baseline="middle" font-size="16" font-weight="700" letter-spacing="'+(16*0.16).toFixed(2)+'" fill="'+color+'">'+label+'</text>';
+}
+
+function frame(t){
+  var right=2.4+t*SPEED;
+  var ampFn=animate(0,1.7,T.departStart,T.departEnd,easeInCubic);
+  var N=150,i,fx,s,ts,aHi=[],aLo=[];
+  for(i=0;i<=N;i++){
+    fx=i/N; var xx=PX0+fx*PW; s=right-WIN*(1-fx); ts=(s-2.4)/SPEED;
+    var HTa=Math.max(HT,SIGAMP*(1+ampFn(ts))*1.16);
+    aHi.push({x:xx,y:YA-HTa}); aLo.push({x:xx,y:YA+HTa});
+  }
+  var BAR_STEP=5,BAR_W=2,aBars=[],bBars=[],maxAbove=0,x;
+  for(x=PX0+BAR_STEP/2;x<=PX1;x+=BAR_STEP){
+    fx=(x-PX0)/PW; s=right-WIN*(1-fx); ts=(s-2.4)/SPEED;
+    var h=Math.max(1.4,SIGAMP*Math.abs(sig(s))*(1+ampFn(ts)));
+    aBars.push({x:x,top:YA-h,bot:YA+h});
+    bBars.push({x:x,top:YB-h,bot:YB+h});
+    if(t>T.lock+0.25&&h>HT)maxAbove=Math.max(maxAbove,h-HT);
+  }
+  var breached=maxAbove>1;
+  var envHalf=envFn(t)+(t<T.lock?2*Math.sin(t*3.0)*clamp((3.5-t)/2.2,0,1):0);
+  var bHiEdge=t<T.lock?YB-envHalf:YB-HT,bLoEdge=t<T.lock?YB+envHalf:YB+HT;
+  var lineOp=clamp((t-(T.lock-0.08))/0.22,0,1);
+  var bandOp=t<T.lock?0.08:bandFn(t);
+  var snap=clamp(1-Math.abs(t-T.lock)/0.3,0,1);
+  var refOp=clamp((t-T.departStart)/0.8,0,1);
+  var pulse=0.5+0.5*Math.sin(t*7);
+  var lastB=null,b;
+  for(i=0;i<bBars.length;i++){b=bBars[i];if(t>T.lock&&(b.top<YB-HT||b.bot>YB+HT))lastB=b}
+  var peakDistB=0;
+  for(i=0;i<bBars.length;i++){b=bBars[i];peakDistB=Math.max(peakDistB,YB-b.top,b.bot-YB)}
+  var inTrendB=t>T.lock&&!breached&&peakDistB>WARN_PX;
+  var fState=t<T.lock?'enroll':(breached?'depart':(inTrendB?'trend':'lock'));
+  var fLabel=fState==='enroll'?'ENROLLING':fState==='lock'?'LOCKED':fState==='trend'?'TREND':'DEPARTURE';
+  var fColor=(fState==='depart'||fState==='trend')?AMBER:CYAN;
+  var showCatch=fState==='trend'||fState==='depart';
+  var showMiss=t>=T.missBeat;
+  var caption=t<T.lock?'BOTH MODELS LEARN THE SAME SIGNAL':t<T.departStart?'FLYNN LOCKS \u00B7 ADAPTIVE KEEPS TUNING':t<T.catchBeat?'A FAULT BEGINS TO DEVELOP':'ADAPTIVE ABSORBS IT \u00B7 FLYNN CATCHES IT';
+  var capColor=t<T.departStart?MUTE:(t<T.catchBeat?STEEL:AMBER);
+  var adArrowOp=clamp((t-T.departStart)/0.8,0,1);
+
+  function pathD(pts){var d='',k;for(k=0;k<pts.length;k++)d+=(k?'L':'M')+pts[k].x.toFixed(1)+' '+pts[k].y.toFixed(1)+' ';return d}
+
+  var o='';
+  o+='<line x1="'+PX0+'" y1="'+origHi+'" x2="'+PX1+'" y2="'+origHi+'" stroke="'+AMBER+'" stroke-width="1" stroke-dasharray="2 6" opacity="'+(0.34*refOp).toFixed(3)+'"/>';
+  o+='<line x1="'+PX0+'" y1="'+origLo+'" x2="'+PX1+'" y2="'+origLo+'" stroke="'+AMBER+'" stroke-width="1" stroke-dasharray="2 6" opacity="'+(0.34*refOp).toFixed(3)+'"/>';
+  var aLoRev=aLo.slice().reverse();
+  o+='<path d="'+pathD(aHi)+' L '+PX1+' '+aLo[aLo.length-1].y.toFixed(1)+' '+pathD(aLoRev).slice(1)+' Z" fill="'+STEEL+'" opacity="'+(0.07*lineOp).toFixed(3)+'"/>';
+  o+='<path d="'+pathD(aHi)+'" fill="none" stroke="'+STEEL+'" stroke-width="1.5" stroke-dasharray="6 5" opacity="'+(0.95*lineOp).toFixed(3)+'"/>';
+  o+='<path d="'+pathD(aLo)+'" fill="none" stroke="'+STEEL+'" stroke-width="1.5" stroke-dasharray="6 5" opacity="'+(0.95*lineOp).toFixed(3)+'"/>';
+  o+='<g stroke-linecap="round">';
+  for(i=0;i<aBars.length;i++){b=aBars[i];
+    var ft=t>T.departStart&&b.top<origHi, fb=t>T.departStart&&b.bot>origLo;
+    var cyTop=(ft?origHi:b.top).toFixed(1), cyBot=(fb?origLo:b.bot).toFixed(1);
+    var bx=b.x.toFixed(1);
+    o+='<line x1="'+bx+'" y1="'+b.bot.toFixed(1)+'" x2="'+bx+'" y2="'+b.top.toFixed(1)+'" stroke="'+CYAN+'" stroke-width="'+(BAR_W+2.5)+'" opacity="0.08"/>';
+    o+='<line x1="'+bx+'" y1="'+cyBot+'" x2="'+bx+'" y2="'+cyTop+'" stroke="'+CYAN+'" stroke-width="'+BAR_W+'"/>';
+    if(ft)o+='<line x1="'+bx+'" y1="'+origHi+'" x2="'+bx+'" y2="'+b.top.toFixed(1)+'" stroke="'+AMBER+'" stroke-width="'+BAR_W+'" opacity="0.45"/>';
+    if(fb)o+='<line x1="'+bx+'" y1="'+origLo+'" x2="'+bx+'" y2="'+b.bot.toFixed(1)+'" stroke="'+AMBER+'" stroke-width="'+BAR_W+'" opacity="0.45"/>';
+  }
+  o+='</g>';
+
+  o+='<rect x="'+PX0+'" y="'+bHiEdge.toFixed(1)+'" width="'+PW+'" height="'+(bLoEdge-bHiEdge).toFixed(1)+'" fill="'+CYAN+'" opacity="'+bandOp.toFixed(3)+'"/>';
+  if(t<T.lock)o+='<rect x="'+PX0+'" y="'+bHiEdge.toFixed(1)+'" width="'+PW+'" height="'+(bLoEdge-bHiEdge).toFixed(1)+'" fill="none" stroke="'+CYAN+'" stroke-width="1" stroke-dasharray="3 5" opacity="'+(0.45*(1-lineOp)).toFixed(3)+'"/>';
+  o+='<rect x="'+PX0+'" y="'+(YB-HT)+'" width="'+PW+'" height="'+(HT-WARN_PX).toFixed(1)+'" fill="url(#warnUpC)" opacity="'+lineOp.toFixed(3)+'"/>';
+  o+='<rect x="'+PX0+'" y="'+(YB+WARN_PX).toFixed(1)+'" width="'+PW+'" height="'+(HT-WARN_PX).toFixed(1)+'" fill="url(#warnDnC)" opacity="'+lineOp.toFixed(3)+'"/>';
+  [YB-WARN_PX,YB+WARN_PX].forEach(function(ly){o+='<line x1="'+PX0+'" y1="'+ly.toFixed(1)+'" x2="'+PX1+'" y2="'+ly.toFixed(1)+'" stroke="'+AMBER+'" stroke-width="0.8" stroke-dasharray="1 7" opacity="'+(0.24*lineOp).toFixed(3)+'"/>'});
+  [YB-HT,YB+HT].forEach(function(ly){
+    o+='<g opacity="'+lineOp.toFixed(3)+'"><line x1="'+PX0+'" y1="'+ly+'" x2="'+PX1+'" y2="'+ly+'" stroke="'+AMBER+'" stroke-width="4" opacity="0.16"/><line x1="'+PX0+'" y1="'+ly+'" x2="'+PX1+'" y2="'+ly+'" stroke="'+AMBER+'" stroke-width="1.6"/><line x1="'+PX0+'" y1="'+(ly-6)+'" x2="'+PX0+'" y2="'+(ly+6)+'" stroke="'+AMBER+'" stroke-width="1.6"/><line x1="'+PX1+'" y1="'+(ly-6)+'" x2="'+PX1+'" y2="'+(ly+6)+'" stroke="'+AMBER+'" stroke-width="1.6"/></g>';
+  });
+  o+='<g stroke-linecap="round">';
+  for(i=0;i<bBars.length;i++){b=bBars[i];var bx2=b.x.toFixed(1),bt=b.top.toFixed(1),bb=b.bot.toFixed(1);
+    o+='<line x1="'+bx2+'" y1="'+bb+'" x2="'+bx2+'" y2="'+bt+'" stroke="url(#waveGradC)" stroke-width="'+(BAR_W+3)+'" opacity="0.12"/><line x1="'+bx2+'" y1="'+bb+'" x2="'+bx2+'" y2="'+bt+'" stroke="url(#waveGradC)" stroke-width="'+BAR_W+'"/>';
+  }
+  o+='</g>';
+  if(lastB){var ry=(lastB.top<YB-HT?lastB.top:lastB.bot).toFixed(1),rx=lastB.x.toFixed(1);
+    o+='<circle cx="'+rx+'" cy="'+ry+'" r="'+(6+5*pulse).toFixed(1)+'" fill="none" stroke="'+AMBER+'" stroke-width="1.3" opacity="'+(0.5*(1-pulse*0.7)).toFixed(3)+'"/><circle cx="'+rx+'" cy="'+ry+'" r="3.2" fill="'+AMBER+'"/>';}
+  if(snap>0.01)[YB-HT,YB+HT].forEach(function(ly){o+='<line x1="'+PX0+'" y1="'+ly+'" x2="'+PX1+'" y2="'+ly+'" stroke="#e9feff" stroke-width="'+(1.5+5*snap).toFixed(1)+'" opacity="'+(snap*0.85).toFixed(3)+'"/>'});
+
+  /* HUD */
+  o+='<text x="48" y="40" font-size="20" font-weight="700" letter-spacing="'+(20*0.14).toFixed(2)+'" fill="'+INK+'">SAME SIGNAL \u00B7 TWO ARCHITECTURES</text>';
+  o+='<text x="48" y="64" font-size="15" font-weight="500" letter-spacing="'+(15*0.1).toFixed(2)+'" fill="'+MUTE+'">NASA IMS BEARING TELEMETRY</text>';
+
+  o+='<rect x="48" y="120" width="10" height="10" fill="'+STEEL+'"/>';
+  o+='<text x="66" y="129" font-size="14" font-weight="500" letter-spacing="'+(14*0.16).toFixed(2)+'" fill="'+MUTE+'">MONITOR \u00B7 01</text>';
+  o+='<text x="48" y="152" font-size="26" font-weight="700" letter-spacing="'+(26*0.14).toFixed(2)+'" fill="'+STEEL+'">ADAPTIVE</text>';
+  o+='<text x="48" y="172" font-size="14" font-weight="500" letter-spacing="'+(14*0.12).toFixed(2)+'" fill="'+MUTE+'">SELF-TUNING BASELINE</text>';
+  o+=pill(48,184,STEEL,'NOMINAL',0.55+0.45*(0.5+0.5*Math.sin(t*3)));
+  if(showMiss){
+    o+='<text x="48" y="244" font-size="17" font-weight="700" letter-spacing="1.4" fill="'+GRAY+'">FAULT ABSORBED</text>';
+    o+='<text x="48" y="266" font-size="14" font-weight="500" letter-spacing="1.4" fill="'+GRAY+'">NO ALERT RAISED</text>';
+  }
+
+  o+='<rect x="48" y="330" width="10" height="10" fill="'+CYAN+'"/>';
+  o+='<text x="66" y="339" font-size="14" font-weight="500" letter-spacing="'+(14*0.16).toFixed(2)+'" fill="'+MUTE+'">MONITOR \u00B7 02</text>';
+  o+='<text x="48" y="362" font-size="26" font-weight="700" letter-spacing="'+(26*0.14).toFixed(2)+'" fill="'+INK+'">FLYNN</text>';
+  o+='<text x="48" y="382" font-size="14" font-weight="500" letter-spacing="'+(14*0.12).toFixed(2)+'" fill="'+MUTE+'">LOCKED BASELINE</text>';
+  o+=pill(48,394,fColor,fLabel,fState==='enroll'?0.5+0.5*(0.5+0.5*Math.sin(t*6)):1);
+  if(showCatch){
+    o+='<text x="48" y="454" font-size="17" font-weight="700" letter-spacing="1.4" fill="'+AMBER+'">\u25B2 CAUGHT</text>';
+    o+='<text x="48" y="476" font-size="14" font-weight="500" letter-spacing="1.4" fill="'+AMBER+'">+17 DAYS EARLY</text>';
+  }
+
+  o+='<text x="844" y="'+aHi[aHi.length-1].y.toFixed(1)+'" dominant-baseline="middle" font-size="14" font-weight="600" letter-spacing="1" fill="'+STEEL_SOFT+'" opacity="'+adArrowOp.toFixed(3)+'">WIDENS \u2195</text>';
+  o+='<text x="844" y="'+origHi+'" dominant-baseline="middle" font-size="14" font-weight="500" letter-spacing="1" fill="rgba(255,177,46,0.62)" opacity="'+(0.55*refOp).toFixed(3)+'">WAS \u00B13\u03C3</text>';
+  o+='<text x="844" y="'+(YB-HT)+'" dominant-baseline="middle" font-size="14" font-weight="600" letter-spacing="1" fill="rgba(255,126,41,0.8)" opacity="'+lineOp.toFixed(3)+'">\u00B13\u03C3 FIXED</text>';
+
+  o+='<text x="480" y="516" text-anchor="middle" font-size="18" font-weight="600" letter-spacing="'+(18*0.14).toFixed(2)+'" fill="'+capColor+'">'+caption+'</text>';
+
+  dyn.innerHTML=o;
+  fadeEl.setAttribute('opacity',Math.max(1-clamp(t/T.fadeIn,0,1),clamp((t-T.fadeOut)/(T.end-T.fadeOut),0,1)).toFixed(3));
+}
+
+var SAFE=function(t){try{frame(t)}catch(e){window.__e=e.message+' @ '+(e.stack||'').split('\n')[1];}};
+var qs=(location.search.match(/[?&]frame=([\d.]+)/)||[])[1];
+var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(qs!==undefined){SAFE(parseFloat(qs));fadeEl.setAttribute('opacity','0');}
+else if(reduce){SAFE(11.2);fadeEl.setAttribute('opacity','0');}
+else{
+  SAFE(0.62);
+  var t0=(window.performance&&performance.now?performance.now():Date.now());
+  var now=function(){return window.performance&&performance.now?performance.now():Date.now()};
+  var draw=function(){SAFE(((now()-t0)/1000)%T.end)};
+  setInterval(draw,33);
+  if(window.requestAnimationFrame)requestAnimationFrame(function loop(){draw();requestAnimationFrame(loop)});
+}
+})();
+</script>
+</body>
+</html>

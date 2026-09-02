@@ -20,12 +20,12 @@
   // density, speed, camera height/tilt, fog depth and a floor/tunnel toggle.
   const VARIANTS = {
     home:       { color: 0x47d8ff, cell: 4.0, half: 44, camY: 7.0,  look: -46, speed: 7.5,  opacity: 0.55, ceiling: true,  ceilH: 26, fog: [26, 188], parallax: 9 },
-    whitepaper: { color: 0x3fb9e6, cell: 2.6, half: 52, camY: 5.0,  look: -54, speed: 3.0,  opacity: 0.34, ceiling: false, ceilH: 0,  fog: [20, 150], parallax: 5 },
-    validation: { color: 0x4fe2ff, cell: 3.4, half: 46, camY: 6.0,  look: -48, speed: 6.0,  opacity: 0.5,  ceiling: false, ceilH: 0,  fog: [24, 172], parallax: 8 },
+    whitepaper: { color: 0x3fb9e6, cell: 2.6, half: 52, camY: 5.0,  look: -54, speed: 3.0,  opacity: 0.34, ceiling: true,  ceilH: 22, fog: [20, 150], parallax: 5 },
+    validation: { color: 0x4fe2ff, cell: 3.4, half: 46, camY: 6.0,  look: -48, speed: 6.0,  opacity: 0.5,  ceiling: true,  ceilH: 24, fog: [24, 172], parallax: 8 },
     roadmap:    { color: 0x52e6ff, cell: 4.4, half: 40, camY: 8.5,  look: -40, speed: 9.5,  opacity: 0.58, ceiling: true,  ceilH: 30, fog: [30, 200], parallax: 11 },
-    tiers:      { color: 0x44d2f5, cell: 4.0, half: 44, camY: 6.4,  look: -50, speed: 5.0,  opacity: 0.48, ceiling: false, ceilH: 0,  fog: [26, 180], parallax: 7 },
+    tiers:      { color: 0x44d2f5, cell: 4.0, half: 44, camY: 6.4,  look: -50, speed: 5.0,  opacity: 0.48, ceiling: true,  ceilH: 24, fog: [26, 180], parallax: 7 },
     // industries: wide, calm, expansive
-    industries: { color: 0x46cfee, cell: 5.4, half: 38, camY: 9.5,  look: -38, speed: 4.0,  opacity: 0.46, ceiling: false, ceilH: 0,  fog: [30, 210], parallax: 8 }
+    industries: { color: 0x46cfee, cell: 5.4, half: 38, camY: 9.5,  look: -38, speed: 4.0,  opacity: 0.46, ceiling: true,  ceilH: 32, fog: [30, 210], parallax: 8 }
   };
 
   const want = (window.FLYNN_GRID_CONFIG && window.FLYNN_GRID_CONFIG.variant) || 'home';
