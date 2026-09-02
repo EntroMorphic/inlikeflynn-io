@@ -1,93 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Canonical URLs only. The /text/* edition is deliberately absent: every text
+  page rel=canonicals to its rich counterpart, so listing it here would send a
+  sitemap freshness signal that contradicts its own canonical tag. Crawlers
+  still reach it via <link rel="alternate"> on each rich page.
+  Keep <lastmod> in step with the deploy — see scripts/bump-cache.mjs.
+-->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://inlikeflynn.io/</loc>
-    <lastmod>2026-06-18</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://inlikeflynn.io/why-flynn.html</loc>
-    <lastmod>2026-06-18</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://inlikeflynn.io/pages/whitepaper.html</loc>
-    <lastmod>2026-06-18</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://inlikeflynn.io/pages/two-birds-one-stone.html</loc>
-    <lastmod>2026-08-21</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://inlikeflynn.io/pages/validation.html</loc>
-    <lastmod>2026-06-18</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://inlikeflynn.io/pages/industries.html</loc>
-    <lastmod>2026-06-18</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://inlikeflynn.io/pages/roadmap.html</loc>
-    <lastmod>2026-06-18</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://inlikeflynn.io/pages/tiers.html</loc>
-    <lastmod>2026-06-04</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://inlikeflynn.io/pages/team.html</loc>
-    <lastmod>2026-06-20</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://inlikeflynn.io/text/</loc>
-    <lastmod>2026-09-02</lastmod>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://inlikeflynn.io/text/why-flynn.html</loc>
-    <lastmod>2026-09-02</lastmod>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://inlikeflynn.io/text/whitepaper.html</loc>
-    <lastmod>2026-09-02</lastmod>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://inlikeflynn.io/text/two-birds-one-stone.html</loc>
-    <lastmod>2026-09-02</lastmod>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://inlikeflynn.io/text/validation.html</loc>
-    <lastmod>2026-09-02</lastmod>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://inlikeflynn.io/text/industries.html</loc>
-    <lastmod>2026-09-02</lastmod>
-    <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://inlikeflynn.io/text/roadmap.html</loc>
-    <lastmod>2026-09-02</lastmod>
-    <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://inlikeflynn.io/text/tiers.html</loc>
-    <lastmod>2026-09-02</lastmod>
-    <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://inlikeflynn.io/text/team.html</loc>
-    <lastmod>2026-09-02</lastmod>
-    <priority>0.3</priority>
   </url>
 </urlset>
