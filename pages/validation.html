@@ -31,7 +31,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Orbitron:wght@400;500;600;700;800&family=Chakra+Petch:wght@400;500;600;700&family=Michroma&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="../assets/css/styles.css?v=20260902-0325" />
+<link rel="stylesheet" href="../assets/css/styles.css?v=20260902-1354" />
 <style>
   .page-head {
     padding: clamp(48px, 7vw, 96px) 0 clamp(48px, 6vw, 80px);
@@ -247,11 +247,14 @@
   @media print { .lead-anim { display: none; } }
   body.ah-playing .lead-anim { visibility: hidden; pointer-events: none; }
 </style>
-<link rel="stylesheet" href="../assets/css/tron.css?v=20260902-0325" />
-<link rel="stylesheet" href="../assets/css/install-button.css?v=20260902-0325" />
-<link rel="stylesheet" href="../assets/css/site-footer.css?v=20260902-0325" />
+<link rel="stylesheet" href="../assets/css/tron.css?v=20260902-1354" />
+<link rel="stylesheet" href="../assets/css/install-button.css?v=20260902-1354" />
+<link rel="stylesheet" href="../assets/css/site-footer.css?v=20260902-1354" />
+<link rel="alternate" type="text/html" href="/text/validation.html" title="Text-only edition" />
+<noscript id="om-text-redirect"><meta http-equiv="refresh" content="0;url=/text/validation.html"/></noscript>
 </head>
 <body>
+<p id="om-text-edition" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden">Text-only edition of this page: <a href="/text/validation.html">/text/validation.html</a></p>
 <canvas id="grid-void"></canvas>
 <div class="void-haze"></div>
 
@@ -308,7 +311,7 @@
 <div class="wrap">
   <figure class="lead-anim">
     <div class="lead-anim-frame">
-      <iframe src="../assets/anim/flynn-adaptive-vs-locked.html?v=20260902-0325" title="The same developing fault fed to an adaptive monitor and to Flynn: the adaptive thresholds widen and absorb the fault with no alert raised, while Flynn's locked thresholds stay fixed and the fault breaks them" loading="lazy" scrolling="no"></iframe>
+      <iframe src="../assets/anim/flynn-adaptive-vs-locked.html?v=20260902-1354" title="The same developing fault fed to an adaptive monitor and to Flynn: the adaptive thresholds widen and absorb the fault with no alert raised, while Flynn's locked thresholds stay fixed and the fault breaks them" loading="lazy" scrolling="no"></iframe>
     </div>
     <figcaption><b>Why a locked baseline changes the result.</b> The run-to-failure telemetry in Domain 02 below, fed to two architectures. A self-tuning threshold widens as the fault grows and never reports it. Flynn&#8217;s threshold is fixed at enrollment, so the same signal crosses it.</figcaption>
   </figure>
@@ -584,7 +587,7 @@
       <div style="display: grid; gap: 18px;">
         <div style="padding: 14px 0; border-top: 1px solid color-mix(in oklab, var(--ink) 15%, transparent);">
           <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: color-mix(in oklab, var(--ink) 55%, transparent); text-transform: uppercase; margin-bottom: 4px;">Email</div>
-          <div>tripp@entromorphic.com</div>
+          <div>tripp@inlikeflynn.io</div>
         </div>
         <div style="padding: 14px 0; border-top: 1px solid color-mix(in oklab, var(--ink) 15%, transparent);">
           <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: color-mix(in oklab, var(--ink) 55%, transparent); text-transform: uppercase; margin-bottom: 4px;">Available</div>
@@ -601,16 +604,16 @@
 
 <footer class="footer" id="site-footer"><canvas id="grid-bg"></canvas></footer>
 
-<script src="../assets/js/site-footer.js?v=20260902-0325"></script>
-<script src="../assets/js/site-nav.js?v=20260902-0325"></script>
-<script src="../assets/js/tron-fx.js?v=20260902-0325"></script>
+<script src="../assets/js/site-footer.js?v=20260902-1354"></script>
+<script src="../assets/js/site-nav.js?v=20260902-1354"></script>
+<script src="../assets/js/tron-fx.js?v=20260902-1354"></script>
 
 <!-- Volumetric grid void (three.js) -->
 <script>window.FLYNN_GRID_CONFIG = { variant: 'validation' };</script>
-<script src="../assets/js/three.min.js?v=20260902-0325" integrity="sha384-RRHfJ6w1mTlKUBMYT/hvnRiOzEB/vyRV3DrQOseb6oYfvaZSfdd0byS4bHps0k2R"></script>
-<script src="../assets/js/grid-void.js?v=20260902-0325"></script>
-<script src="../assets/js/anim-suspend.js?v=20260902-0325" defer></script>
-<script src="../assets/js/install-button.js?v=20260902-0325"></script>
-<script src="../assets/js/sw-register.js?v=20260902-0325"></script>
+<script src="../assets/js/three.min.js?v=20260902-1354" integrity="sha384-RRHfJ6w1mTlKUBMYT/hvnRiOzEB/vyRV3DrQOseb6oYfvaZSfdd0byS4bHps0k2R"></script>
+<script src="../assets/js/grid-void.js?v=20260902-1354"></script>
+<script src="../assets/js/anim-suspend.js?v=20260902-1354" defer></script>
+<script src="../assets/js/install-button.js?v=20260902-1354"></script>
+<script src="../assets/js/sw-register.js?v=20260902-1354"></script>
 </body>
 </html>

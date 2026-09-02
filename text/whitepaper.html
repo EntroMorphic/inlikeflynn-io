@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<title>Whitepaper &mdash; Flynn (text edition)</title>
+<meta name="description" content="Equipment talks. Flynn listens. A whitepaper on deterministic, embedded anomaly detection in telemetry, at the edge of the world."/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="canonical" href="https://inlikeflynn.io/pages/whitepaper.html"/>
+<link rel="stylesheet" href="text.css"/>
+</head><body>
+<p class="skip"><a href="#main">Skip to content</a></p>
+<header>
+<p><strong>FLYNN</strong> &mdash; EntroMorphic &mdash; embedded anomaly detection &mdash; <em>text edition</em></p>
+<nav aria-label="Flynn text edition"><p><a href="index.html">Home</a> &middot; <a href="why-flynn.html">Why Flynn</a> &middot; <a href="validation.html">Validation</a> &middot; <strong>Whitepaper</strong> &middot; <a href="tiers.html">Tiers</a> &middot; <a href="industries.html">Industries</a> &middot; <a href="roadmap.html">Roadmap</a> &middot; <a href="team.html">Team</a> &middot; <a href="two-birds-one-stone.html">Two Birds. One Stone.</a></p></nav></header>
+<hr/>
+<main id="main">
+<h1>Equipment talks. Flynn listens.</h1>
+<p>Whitepaper &middot; Q2 2026 &middot; 11 sections</p>
+<p>A whitepaper on deterministic, embedded anomaly detection &mdash; in telemetry, at the edge of the world.</p>
+<h4>Contents</h4>
+<ul><li><a href="#summary">Executive summary</a></li><li><a href="#era">The telemetry era</a></li><li><a href="#gaps">The four gaps</a></li><li><a href="#different">Why Flynn is different</a></li><li><a href="#works">How Flynn works</a></li><li><a href="#trust">Architecture of trust</a></li><li><a href="#validated">Validated across domains</a></li><li><a href="#runs">Where Flynn runs</a></li><li><a href="#roadmap">The Flynn roadmap</a></li><li><a href="#tiers">Tiers and engagement</a></li><li><a href="#about">About Flynn</a></li></ul>
+<h2 id="summary">Executive summary</h2>
+<p>Industrial equipment fails for reasons that show up in the signal long before they show up in the world. A bearing wears. A pump cavitates. A motor drifts out of phase. The data is there. The listener is not.</p>
+<p>This whitepaper introduces <strong>Flynn</strong>, an embedded anomaly detector that turns equipment telemetry into local intelligence. Flynn runs bare-metal on the microcontroller already inside the machine, in <strong>8,480 bytes of deterministic C</strong>. It calibrates itself from normal operation in 1,700 samples &dagger; &mdash; under two seconds at kilohertz sampling rates &mdash; with no labels, no cloud, and no per-deployment tuning.</p>
+<p>Flynn monitors equipment telemetry at the source.</p>
+<h2 id="era">The telemetry era</h2>
+<h3>The signal is everywhere</h3>
+<p>From sub-sea to deep space, telemetry talks. Vibration. Current. Temperature. Pressure. Flow. Timing. Every rotating asset, every fluid system, every electrical bus, every thermal envelope emits signal continuously. A modern industrial site instruments ten thousand sensor channels, each emitting hundreds to thousands of samples per second.</p>
+<h3>The listener is missing</h3>
+<p>The infrastructure that turns telemetry into action is overwhelmingly centralized: a sensor reads, transmits, and accumulates in a historian or cloud data lake, to be analyzed later by people or models far from where the signal began. A large and growing class of applications cannot accept this, for structural reasons:</p>
+<ul>
+<li><strong>Connectivity is unreliable.</strong> The most consequential equipment runs where backhaul is intermittent, slow, expensive, or absent.</li>
+<li><strong>Decision latency matters.</strong> A dry-running pump destroys itself in seconds; the decision cannot wait for a round trip to the cloud.</li>
+<li><strong>Trust cannot be outsourced.</strong> Decisions affecting safety, compliance, or product integrity must be auditable and reproducible.</li>
+<li><strong>Cost-per-decision matters at fleet scale.</strong> Sending every sensor reading to a cloud collapses economically at ten thousand assets.</li>
+</ul>
+<figure>
+<pre>
+  THE CLOUD MODEL
+      [ sensor ] --&gt; [ gateway ] --&gt; ~~ network ~~ --&gt; [ model ]
+                                                           |
+      [ operator ] &lt;-- [ dashboard ] &lt;-- ~~ network ~~ &lt;---+
+
+      round trip: minutes to hours
+      breaks wherever connectivity, latency, power, or
+      radiation break the chain
+
+  FLYNN
+      +--------------------------------------------------+
+      |  THE EQUIPMENT                                   |
+      |                                                  |
+      |  [ sensor ] --&gt; [ MCU :: Flynn, 8,480 B ] --+    |
+      |                                             |    |
+      |                          [ local alert ] &lt;--+    |
+      +--------------------------------------------------+
+
+      round trip: none
+      microseconds, offline, deterministic, hardware under $10
+</pre>
+<figcaption>Centralized detection versus detection at the source.</figcaption>
+</figure>
+<h2 id="gaps">The four gaps</h2>
+<p>Conventional anomaly detection leaves four gaps. Each one keeps a class of equipment uninstrumented today.</p>
+<h3>High decision latency</h3>
+<p>The signal travels to a distant server and the verdict travels back. For a pump that can wreck itself in seconds, the round trip is the failure.</p>
+<h3>No labeled training data</h3>
+<p>Supervised models demand labeled failures. Industrial equipment runs for years between them, and when it fails the event is rare, costly, and often catastrophic. The labels never accumulate.</p>
+<h3>Equipment lacks connectivity</h3>
+<p>Cloud-first systems assume connectivity; the most consequential equipment runs without it. The cloud is slow, or gone exactly when it is needed.</p>
+<h3>Monitoring tools exceed firmware constraints</h3>
+<p>Detection tools built for dashboards are too large for firmware. In embedded systems, determinism and a small footprint are entry conditions.</p>
+<p>Flynn closes that gap in 8,480 bytes &mdash; self-calibrating, embedded, bare-metal anomaly detection that turns telemetry into deterministic, auditable intelligence.</p>
+<h2 id="different">Why Flynn is different</h2>
+<h3>8,480 bytes</h3>
+<p>Flynn&rsquo;s runtime footprint is 8,480 bytes &mdash; eight thousand four hundred and eighty, not eight kilobytes. The figure decides the silicon it runs on, the equipment it embeds inside, and the cost per node across a fleet.</p>
+<h3>Self-calibrating</h3>
+<p>Flynn learns the statistical signature of normal operation from the signal&rsquo;s first sampling period &mdash; the only input it requires. The integrator&rsquo;s workflow: install, power on, walk away.</p>
+<h3>Deterministic</h3>
+<p>Flynn produces bit-identical output for bit-identical input, across runs and across silicon. This determinism is the structural property that allows Flynn to participate in safety-certified voting architectures, to be replayed forensically after an incident, and to be verified against published test vectors.</p>
+<h3>Auditable</h3>
+<p>Flynn is auditable by construction. Because it is deterministic, its behavior is fully reproducible and independently verifiable against published test vectors, and it ships with certification-ready artifacts for safety review. For certifying authorities, the full source is available under NDA or in escrow.</p>
+<h3>Bare-metal</h3>
+<p>Flynn runs on bare metal. Its only dependency is a basic math library &mdash; no operating system, no network stack, no filesystem, no scheduler.</p>
+<h2 id="works">How Flynn works</h2>
+<p>Flynn&rsquo;s operating model is two phases. Learning. Detection. The transition between them is automatic and one-way.</p>
+<figure>
+<pre>
+ peak amp
+
+      |
+      |
+      |                                           ####      &lt;-- ALERT
+      |                                           ####
+      |                                     ####  ####
+      |- - - - - - - - - - - - - - - - - - -#### -#### -    &lt;-- locked band
+      |                               ####  ####  ####
+      |                         ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####  ####
+      +------------------------------------------------
+         s1    s2    s3    s4    s5    s6    s7    s8
+       |&lt;--- ENROLL ---&gt;|&lt;--------- DETECT ----------&gt;|
+                       LOCK
+</pre>
+<figcaption>Learning, then detection. The threshold is committed once at the end of enrollment and does not move.</figcaption>
+</figure>
+<h3>Learning</h3>
+<p>For its first 1,700 samples &dagger;, Flynn watches in silence and builds a statistical model of the signal&rsquo;s normal behavior. At the end of enrollment it commits one detection threshold and locks it. The threshold does not move, adapt, or drift.</p>
+<h3>Detection</h3>
+<p>After enrollment, every sample passes through the detection pipeline. A score below the threshold is normal; a score at or above it is anomalous. The magnitude of the score measures the severity of the deviation.</p>
+<p>The locked threshold is a deliberate design choice. Adaptive thresholds carry a well-documented failure mode: a slow-developing fault gradually drifts the baseline upward, the threshold follows, and the fault dissolves into a new &ldquo;normal.&rdquo; Flynn refuses that by construction.</p>
+<p>&dagger; Samples required for complete enrollment will vary by equipment type, state, and operational envelope.</p>
+<h2 id="trust">The architecture of trust</h2>
+<h3>Evidence outranks the prior</h3>
+<p>Every learning system must hold two things at once: the accumulated experience that sharpens its judgment, and the direct measurement that reveals when something has changed. The common failure is that experience overrides the measurement.</p>
+<h3>Flynn separates them by locking</h3>
+<p>Flynn&rsquo;s locked-threshold design enforces that separation. After deployment, no feedback path runs from accumulated experience back into the classifier; the judge of each new sample stays isolated from any later influence.</p>
+<p>Once the equipment&rsquo;s nominal signal envelope is learned through enrollment, it&rsquo;s locked in permanently. When the equipment telemetry trends towards a threshold it does not change the enrollment data.</p>
+<h2 id="validated">Validated across domains</h2>
+<p>Flynn has been validated across five distinct industrial signal domains, with zero configuration changes between them.</p>
+<dl>
+<dt>Bearing vibration &mdash; CWRU benchmark</dt><dd><strong>Precision 1.0 &middot; Recall 1.0 &middot; F1 1.0</strong><br/>27 fault pairs (inner race, ball, outer race &times; 3 severities), default operating point.</dd>
+<dt>Run-to-failure &mdash; NASA IMS bearing dataset</dt><dd><strong>Lead time ~17 days &middot; failing bearings 2 / 2</strong><br/>30+ days, 4 bearings, 8 channels. Adjacent healthy-bearing channels registered the same developing fault at proportionally lower magnitude &mdash; cross-channel sensitivity with correct severity ranking, not a false positive.</dd>
+<dt>Ambient &amp; diurnal</dt><dd><strong>0.074&ndash;0.080 false positives per hour</strong><br/>336 hours of environmental and process-control signals. Fewer than two alerts per day &mdash; compatible with normal shift-cycle review.</dd>
+<dt>Electrical grid stability</dt><dd><strong>F1 0.532</strong><br/>10,000 instances, 12 features. Same source, same flags, no per-domain configuration.</dd>
+<dt>Soak &mdash; synthetic vibration</dt><dd><strong>0 false positives</strong><br/>120 hours, 5 seeds &times; 24 hours. 95% CI ceiling &lt; 0.025/h.</dd>
+</dl>
+<p>Zero false positives on bearing data. Operationally low on diurnal. <a href="validation.html">Full protocols and metrics</a>.</p>
+<h2 id="runs">Where Flynn runs</h2>
+<h3>Any compliant microcontroller</h3>
+<p>Flynn is delivered as a compact binary, compiled for your target from a single C99 codebase. It builds with any C99-compliant toolchain. It has been hardware-validated on commodity 32-bit MCU architectures including both proprietary and open instruction sets.</p>
+<h3>Bare-metal C</h3>
+<p>Flynn runs on bare metal: no operating system, no network stack, no filesystem, no scheduler, and no memory allocation after initialization.</p>
+<h3>Zero heap</h3>
+<p>Flynn fixes its entire working set at compile time and allocates nothing afterward &mdash; the hard requirement of safety-critical firmware, where certification forbids dynamic allocation.</p>
+<h3>From sub-sea to deep space</h3>
+<p>The same detector compiles to commodity industrial silicon, radiation-tolerant microcontrollers, and power-constrained sensor nodes.</p>
+<figure>
+<pre>
+      [ ORBIT ]  [ DRONE ]  [ VALVE ]  [ SUBSEA ]  [ IMPLANT ]
+          |          |          |           |           |
+          +----------+----------+-----------+-----------+
+                                 |
+                 (  F L Y N N  ::  8,480 bytes  )
+                            one binary
+                     no domain-specific model
+                     no per-domain retraining
+</pre>
+<figcaption>One binary, five worlds. No domain-specific model, no per-domain retraining.</figcaption>
+</figure>
+<h2 id="roadmap">The Flynn roadmap</h2>
+<figure>
+<pre>
+  STAGE 01  ::  THE NEURON                 today, shipping
+      [ signal ] -->  (  Flynn  )  --> [ score ]
+      one detector, one signal, one decision
+
+  STAGE 02  ::  THE DETECTOR FABRIC        2026, pilots engaging
+      (  Flynn  ) --+
+      (  Flynn  ) --+--> [ coordination ] --> [ asset state ]
+      (  Flynn  ) --+       regime memory
+      3-10 detectors, one asset. Detectors stay authoritative.
+
+  STAGE 03  ::  THE NERVOUS SYSTEM         multi-year
+      [ CORTEX ]       site-wide decision-making
+           ^
+      [ CEREBELLUM ]   operational-regime memory
+           ^
+      [ REFLEX ]       sub-millisecond, at the equipment
+</pre>
+<figcaption>From the atomic detector to facility-wide distributed cognition.</figcaption>
+</figure>
+<h3>Today &middot; the neuron</h3>
+<p>The Flynn detector is the foundational unit: one signal in, one score out. It ships today as embedded firmware, validated across five domains.</p>
+<h3>In development &middot; the deterministic, auditable, neural network</h3>
+<p>A coordination layer that composes multiple Flynn detectors on one asset &mdash; three to ten, covering different sensors, with a fabric node that remembers operational regimes. Pilot deployments begin in 2026.</p>
+<h3>Beyond &middot; the nervous system</h3>
+<p>A facility-wide distributed cognition. Reflex-class response to sub-millisecond events. Cerebellar memory of operational regimes. Cortical decision-making across the whole site. Long-term memory with forensic replay back to any moment in the equipment&rsquo;s history.</p>
+<h2 id="tiers">Tiers and engagement</h2>
+<p>Flynn supports several engagement models, scaled to the user. Whatever you need, let&rsquo;s talk.</p>
+<ul>
+<li><strong>Evaluation access</strong> &mdash; no-cost, bounded scope, NDA required.</li>
+<li><strong>OEM licensing</strong> &mdash; per-unit royalty, integration support, long-term source stability.</li>
+<li><strong>Enterprise deployment</strong> &mdash; direct support, custom integration, compliance reporting, multi-year maintenance.</li>
+</ul>
+<p><a href="tiers.html">Full tier comparison</a></p>
+<h2 id="about">About Flynn</h2>
+<p>Flynn is built by <strong>EntroMorphic</strong>, an embedded-systems and machine-intelligence company founded on one conviction: the most consequential equipment in the world should stay safe without the cloud. Its engineering leadership brings deep experience in high-performance computing, embedded firmware, and applied machine-intelligence architecture.</p>
+<p>Flynn proves a principle: small, deterministic, auditable, structurally-separated detectors serve industrial equipment better than the centralized analytics that have dominated the past decade.</p>
+<h3>Next steps</h3>
+<p>For evaluation access, OEM licensing, or enterprise deployment conversations: <a href="mailto:tripp@inlikeflynn.io">tripp@inlikeflynn.io</a></p>
+</main>
+<hr/>
+<footer>
+<p>Text-only edition, built for terminal browsers, screen readers, and offline reading. No scripts, no images, no stylesheet dependency.<br/>
+Graphical version of this page (needs JavaScript): <a href="https://inlikeflynn.io/pages/whitepaper.html">inlikeflynn.io/pages/whitepaper.html</a></p>
+<p>EntroMorphic &middot; <a href="mailto:tripp@inlikeflynn.io">tripp@inlikeflynn.io</a></p>
+<nav aria-label="Flynn text edition"><p><a href="index.html">Home</a> &middot; <a href="why-flynn.html">Why Flynn</a> &middot; <a href="validation.html">Validation</a> &middot; <strong>Whitepaper</strong> &middot; <a href="tiers.html">Tiers</a> &middot; <a href="industries.html">Industries</a> &middot; <a href="roadmap.html">Roadmap</a> &middot; <a href="team.html">Team</a> &middot; <a href="two-birds-one-stone.html">Two Birds. One Stone.</a></p></nav></footer>
+</body></html>

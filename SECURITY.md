@@ -6,7 +6,7 @@ If you discover a security issue in the inlikeflynn.io website — exposed
 credentials, a content-injection vector, a dependency advisory, or anything that
 could compromise visitors — please report it privately.
 
-**Email:** tripp@entromorphic.com
+**Email:** tripp@inlikeflynn.io
 **Subject:** `SECURITY — inlikeflynn.io`
 
 Please include:

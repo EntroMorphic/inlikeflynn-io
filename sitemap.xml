@@ -45,4 +45,49 @@
     <lastmod>2026-06-20</lastmod>
     <priority>0.6</priority>
   </url>
+  <url>
+    <loc>https://inlikeflynn.io/text/</loc>
+    <lastmod>2026-09-02</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://inlikeflynn.io/text/why-flynn.html</loc>
+    <lastmod>2026-09-02</lastmod>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://inlikeflynn.io/text/whitepaper.html</loc>
+    <lastmod>2026-09-02</lastmod>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://inlikeflynn.io/text/two-birds-one-stone.html</loc>
+    <lastmod>2026-09-02</lastmod>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://inlikeflynn.io/text/validation.html</loc>
+    <lastmod>2026-09-02</lastmod>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://inlikeflynn.io/text/industries.html</loc>
+    <lastmod>2026-09-02</lastmod>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://inlikeflynn.io/text/roadmap.html</loc>
+    <lastmod>2026-09-02</lastmod>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://inlikeflynn.io/text/tiers.html</loc>
+    <lastmod>2026-09-02</lastmod>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://inlikeflynn.io/text/team.html</loc>
+    <lastmod>2026-09-02</lastmod>
+    <priority>0.3</priority>
+  </url>
 </urlset>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<title>Two Birds. One Stone. &mdash; Flynn (text edition)</title>
+<meta name="description" content="A field note on the LINK spacecraft failure cascade and the gap between what a spacecraft experiences and what its autonomous systems know."/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="canonical" href="https://inlikeflynn.io/pages/two-birds-one-stone.html"/>
+<link rel="stylesheet" href="text.css"/>
+</head><body>
+<p class="skip"><a href="#main">Skip to content</a></p>
+<header>
+<p><strong>FLYNN</strong> &mdash; EntroMorphic &mdash; embedded anomaly detection &mdash; <em>text edition</em></p>
+<nav aria-label="Flynn text edition"><p><a href="index.html">Home</a> &middot; <a href="why-flynn.html">Why Flynn</a> &middot; <a href="validation.html">Validation</a> &middot; <a href="whitepaper.html">Whitepaper</a> &middot; <a href="tiers.html">Tiers</a> &middot; <a href="industries.html">Industries</a> &middot; <a href="roadmap.html">Roadmap</a> &middot; <a href="team.html">Team</a> &middot; <strong>Two Birds. One Stone.</strong></p></nav></header>
+<hr/>
+<main id="main">
+<h1>Two Birds. One Stone.</h1>
+<p>Whitepaper &middot; Field note &middot; 5 sections</p>
+<p>Tripp Josserand-Austin | EntroMorphic</p>
+<p>On August 19, NASA confirmed that Katalyst Space Technologies&rsquo; LINK spacecraft will not capture or boost the Neil Gehrels Swift Observatory as planned. Swift will reenter Earth&rsquo;s atmosphere later this year without intervention. In September 2025, NASA awarded a $30 million contract to Katalyst, a Flagstaff startup tasked with fielding the mission on an extraordinarily compressed timeline.</p>
+<h4>Contents</h4>
+<ul><li><a href="#mission">The mission</a></li><li><a href="#cascade">The cascade</a></li><li><a href="#blind">Blind autonomy</a></li><li><a href="#recovery">Recovery beyond the point of no return</a></li><li><a href="#pearl">The black pearl</a></li></ul>
+<h2 id="mission">The mission</h2>
+<p>In under twelve months, the team designed, built, and tested LINK, ran thermal vacuum qualification at Goddard&rsquo;s Space Environment Simulator, integrated it into a Pegasus XL rocket, and air-launched it from a modified L-1011 over the South Pacific.</p>
+<p>The objective was something no one has pulled off: commercial robotic capture of a government satellite in a decaying orbit that was never designed to be serviced or repositioned by an external system.</p>
+<p>A failure cascade ultimately made the capture-and-boost mission untenable. And that cascade exposed a gap the on-orbit servicing industry will have to close. When the ground goes silent, does a spacecraft know enough about its own physical state to act safely on its own?</p>
+<h2 id="cascade">The cascade</h2>
+<p>During commissioning, LINK encountered attitude control problems resulting in a multi-axis spin. Communications with the ground became intermittent, then were lost. The initiating cause of the attitude upset has not been publicly established.</p>
+<p>After 24 hours without contact, the spacecraft&rsquo;s autonomous recovery logic triggered a hard bus reset. According to public accounts, that reset caused a temperature spike in the reaction wheel control electronics, ultimately rendering two of LINK&rsquo;s three reaction-wheel control channels inoperable.</p>
+<ol>
+<li>Initial anomaly</li>
+<li>Attitude upset &mdash; multi-axis spin</li>
+<li>Comms blackout</li>
+<li>Autonomous recovery procedure, apparently unaware of the physical state of the systems it was about to power-cycle</li>
+</ol>
+<p>Each step was a reasonable response in isolation. Together, they ended the capture-and-boost objective.</p>
+<p>LINK carries three reaction wheels; the minimum for three-axis reaction-wheel control, with no reaction-wheel redundancy. That was a defensible design decision given the constraints: a 425 kg launch mass, a $30 million contract, and a twelve-month sprint from award to launch. Swift carries six wheels and returned to science operations using five after a wheel failure in 2022. Swift also had 17 years of institutional engineering and a cost envelope more than 8x that of LINK. Comparing the two on redundancy alone misses the point.</p>
+<h2 id="blind">Blind autonomy</h2>
+<p>The autonomous bus reset that reportedly disabled two of LINK&rsquo;s reaction-wheel control channels was clock-driven.</p>
+<p>Upon loss of communications for 24 hours, reset.</p>
+<p>Logic that lacked sufficient context about the electrical and thermal states of the systems it was about to cycle power.</p>
+<p>This is a known challenge in autonomous spacecraft operations. Timer-based recovery is standard practice, and it works in the vast majority of cases. The problem surfaces when the physical state of the hardware has drifted into a condition where the standard recovery procedure causes harm.</p>
+<h2 id="recovery">Recovery beyond the point of no return</h2>
+<p>Flynn is a near-zero SWaP-C, embedded central nervous system that enrolls on nominal operations per mode, from the sensor to the satellite. In addition to equipment and process anomaly detection, Flynn continuously emits a real-time health signal for the equipment, component, system, or subsystem it is monitoring.</p>
+<p>Factory acceptance testing is the enrollment window. During thermal vacuum qualification at Goddard, Flynn instances monitoring the electrical bus, the reaction wheel electronics, the thermal subsystem, and the cold gas thrusters would have learned the nominal envelope for each system under each operational mode. From that point forward, Flynn is on-device and watching.</p>
+<p>In flight, Flynn detects when a monitored signal begins trending toward the upper or lower bounds of its enrolled mode-specific thresholds while the system is still within its learned operational envelope. Not after 24 hours. Not after a comms blackout. At the moment the trend begins, while the system is still within its operational envelope.</p>
+<p>Specific to LINK, Flynn could have been continuously generating equipment-health intelligence leading up to and throughout the event. By the time autonomous recovery logic is called upon to act, LINK&rsquo;s flight systems would have real-time health signals describing the condition of the equipment at their command.</p>
+<p>LINK was not equipped with Flynn. And no one can responsibly claim that any single technology would have saved the mission. The source of LINK&rsquo;s attitude upset remains unknown. But the subsequent failure sequence illustrates precisely the class of problem Flynn is designed to address for autonomous systems.</p>
+<h2 id="pearl">The black pearl</h2>
+<p>The on-orbit servicing sector is at an inflection point. LINK was meant to demonstrate that commercial robotic servicing works. The loss of its boost objective yields essential intel for every company building servicing vehicles.</p>
+<p>Flynn closes the gap between what a spacecraft physically experiences and what its autonomous systems know when making decisions in-flight.</p>
+<p>On hardware-constrained platforms where redundancy is a luxury, closing that gap with deterministic, edge-resident intelligence is mission-critical.</p>
+<p>Swift will reenter the atmosphere later this year with no planned replacement. The gap it leaves in time-domain astrophysics is enormous. LINK&rsquo;s mission continues in a reduced capacity, with the opportunity to return valuable rendezvous and proximity-operations data.</p>
+<blockquote><p>&ldquo;We took on this high-risk, high-reward challenge and are proud of the milestones we reached along the way.&rdquo;</p><p>&mdash; Katalyst CEO</p></blockquote>
+<p><a href="whitepaper.html">Read the Flynn whitepaper</a> &middot; <a href="mailto:tripp@inlikeflynn.io">tripp@inlikeflynn.io</a></p>
+</main>
+<hr/>
+<footer>
+<p>Text-only edition, built for terminal browsers, screen readers, and offline reading. No scripts, no images, no stylesheet dependency.<br/>
+Graphical version of this page (needs JavaScript): <a href="https://inlikeflynn.io/pages/two-birds-one-stone.html">inlikeflynn.io/pages/two-birds-one-stone.html</a></p>
+<p>EntroMorphic &middot; <a href="mailto:tripp@inlikeflynn.io">tripp@inlikeflynn.io</a></p>
+<nav aria-label="Flynn text edition"><p><a href="index.html">Home</a> &middot; <a href="why-flynn.html">Why Flynn</a> &middot; <a href="validation.html">Validation</a> &middot; <a href="whitepaper.html">Whitepaper</a> &middot; <a href="tiers.html">Tiers</a> &middot; <a href="industries.html">Industries</a> &middot; <a href="roadmap.html">Roadmap</a> &middot; <a href="team.html">Team</a> &middot; <strong>Two Birds. One Stone.</strong></p></nav></footer>
+</body></html>

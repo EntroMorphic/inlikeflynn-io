@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<title>Validation &mdash; Flynn (text edition)</title>
+<meta name="description" content="Flynn validated across five industrial signal domains with zero configuration changes. Protocols, metrics, and reproduction."/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="canonical" href="https://inlikeflynn.io/pages/validation.html"/>
+<link rel="stylesheet" href="text.css"/>
+</head><body>
+<p class="skip"><a href="#main">Skip to content</a></p>
+<header>
+<p><strong>FLYNN</strong> &mdash; EntroMorphic &mdash; embedded anomaly detection &mdash; <em>text edition</em></p>
+<nav aria-label="Flynn text edition"><p><a href="index.html">Home</a> &middot; <a href="why-flynn.html">Why Flynn</a> &middot; <strong>Validation</strong> &middot; <a href="whitepaper.html">Whitepaper</a> &middot; <a href="tiers.html">Tiers</a> &middot; <a href="industries.html">Industries</a> &middot; <a href="roadmap.html">Roadmap</a> &middot; <a href="team.html">Team</a> &middot; <a href="two-birds-one-stone.html">Two Birds. One Stone.</a></p></nav></header>
+<hr/>
+<main id="main">
+<h1>One binary. Infinite telemetry.</h1>
+<p>Validated across five domains &middot; Same source &middot; Same flags</p>
+<h2 id="spec">The specification</h2>
+<dl>
+<dt>Footprint &mdash; 8,480 bytes</dt><dd>One compact detector small enough to live on the microcontroller native to the equipment.</dd>
+<dt>Enrollment &mdash; 1,700 samples &dagger;</dt><dd>Learns healthy operation in 1,700 samples&mdash;as little as two seconds at kilohertz rates&mdash;then locks. No labels. No tuning.</dd>
+<dt>Heap allocations &mdash; 0</dt><dd>No dynamic allocation after initialization. Architected for constrained and safety-critical firmware environments.</dd>
+<dt>Delivery &mdash; binary</dt><dd>Compiled for your target hardware. Deterministic and verifiable against published test vectors, with source available to certifying authorities under NDA.</dd>
+<dt>False positives &mdash; 0 / 120 h</dt><dd>Zero false positives across 120 hours of healthy synthetic-vibration soak testing, with a 95% confidence ceiling below 0.025 per hour.</dd>
+<dt>Behavior &mdash; bit-identical</dt><dd>Same signal. Same answer. Replayable and auditable.</dd>
+</dl>
+<p>&dagger; Enrollment requirements vary by equipment type, modes, and operational envelope.</p>
+<figure>
+<pre>
+ ADAPTIVE BASELINE  --  the band moves with the fault
+  peak amp
+
+      |                                    - - -      &lt;-- band rose with it
+      |
+      |                              - - -  ####
+      |                                     ####
+      |                        - - -  ####  ####
+      |- - - - - - - - - - - -        ####  ####
+      |                         ####  ####  ####
+      |             ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####
+      +------------------------------------------
+         w1    w2    w3    w4    w5    w6    w7
+
+  REPORTS: NOMINAL  --  the fault became the new normal
+
+ LOCKED BASELINE (FLYNN)  --  the band is fixed at enrollment
+  peak amp
+
+      |
+      |
+      |                                     ####      &lt;-- BREACH
+      |                                     ####
+      |                               ####  ####
+      |- - - - - - - - - - - - - - - -#### -#### -    &lt;-- locked band
+      |                         ####  ####  ####
+      |             ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####
+      +------------------------------------------
+         w1    w2    w3    w4    w5    w6    w7
+
+  REPORTS: ANOMALY at w6  --  the same swell breaks the band
+</pre>
+<figcaption>Why a locked baseline changes the result. The run-to-failure telemetry in Domain 02 below, fed to two architectures. A self-tuning threshold widens as the fault grows and never reports it. Flynn&rsquo;s threshold is fixed at enrollment, so the same signal crosses it.</figcaption>
+</figure>
+<h2 id="d01">Domain 01 &middot; Bearing vibration: the industry-standard bearing benchmark</h2>
+<p>The CWRU bearing dataset spans 27 fault pairs across inner-race, ball, and outer-race faults at three severity levels. The recommended operating point produces the deployed numbers below, with no oracle threshold and no per-fault tuning.</p>
+<h4>Protocol</h4>
+<dl>
+<dt>Dataset</dt><dd>Case Western Reserve University bearing data</dd>
+<dt>Fault pairs</dt><dd>27 (inner race &middot; ball &middot; outer race &times; 3 severities)</dd>
+<dt>Threshold</dt><dd>Self-calibrated &middot; locked at deployment</dd>
+<dt>Configuration</dt><dd>Default operating point</dd>
+</dl>
+<h4>Result</h4>
+<table>
+<tbody>
+<tr><th scope="row">Precision</th><td>1.0</td><td>of alarms raised, share correct</td></tr>
+<tr><th scope="row">Recall</th><td>1.0</td><td>share of real faults caught</td></tr>
+<tr><th scope="row">F1 score</th><td>1.0</td><td>harmonic mean</td></tr>
+</tbody>
+</table>
+<h2 id="d02">Domain 02 &middot; Run-to-failure: caught both failing bearings, seventeen days early</h2>
+<p>An industry-standard run-to-failure dataset spans more than 30 days of continuous vibration from four bearings, two of which failed and two of which survived. Flynn ran on all eight accelerometer channels simultaneously &mdash; zero configuration changes between them.</p>
+<h4>Result</h4>
+<table>
+<tbody>
+<tr><th scope="row">Channels</th><td>8</td><td>simultaneous &middot; zero config</td></tr>
+<tr><th scope="row">Failing bearings detected</th><td>2 / 2</td><td>both before documented failure</td></tr>
+<tr><th scope="row">Lead time</th><td>~17 d</td><td>ahead of failure date</td></tr>
+<tr><th scope="row">Adjacent-channel pickup</th><td>Ranked &ddagger;</td><td>same fault, lower magnitude</td></tr>
+<tr><th scope="row">Duration</th><td>30+ days</td><td>continuous vibration</td></tr>
+<tr><th scope="row">False positives</th><td>0</td><td>no spurious faults reported</td></tr>
+</tbody>
+</table>
+<h4>Protocol</h4>
+<dl>
+<dt>Dataset</dt><dd>NASA IMS Bearing dataset &dagger;</dd>
+<dt>Setup</dt><dd>4 bearings &middot; 8 accelerometer channels</dd>
+<dt>Outcome</dt><dd>2 failed &middot; 2 survived</dd>
+<dt>Sampling</dt><dd>Continuous, multi-day</dd>
+<dt>Configuration</dt><dd>Same source, same flags across channels</dd>
+</dl>
+<p>&dagger; Lee, J., Qiu, H., Yu, G., Lin, J. and Rexnord Technical Services (2007). IMS, University of Cincinnati. &ldquo;Bearing Data Set&rdquo;, NASA Prognostics Data Repository, NASA Ames Research Center, Moffett Field, CA.</p>
+<p>&ddagger; On the healthy-bearing channels Flynn surfaced a low-magnitude signal correlating with the failing bearings. This was initially scored as a false positive. That scoring was incorrect: the signal is the same developing fault, conducted mechanically through the test rig and reported at proportionally lower magnitude than on the failing-bearing channels. Flynn detected the fault on adjacent channels and ranked its severity correctly.</p>
+<h2 id="d03">Domain 03 &middot; Ambient &amp; diurnal: operationally compatible with shift-cycle review</h2>
+<p>336 hours of ambient time-series covering temperature, environmental, and process-control signals &mdash; slow-changing data with strong day-night cycles. Flynn maintains a false-positive rate that fits the cadence of normal operator review.</p>
+<h4>Protocol</h4>
+<dl>
+<dt>Duration</dt><dd>336 hours</dd>
+<dt>Signal types</dt><dd>Temperature &middot; environmental &middot; process-control</dd>
+<dt>Review cadence</dt><dd>Shift-cycle compatible</dd>
+</dl>
+<h4>Result</h4>
+<table>
+<tbody>
+<tr><th scope="row">FP / hour</th><td>0.074 &ndash; 0.080</td><td>across 336 hours</td></tr>
+<tr><th scope="row">Alerts / day</th><td>~1.8 &ndash; 1.9</td><td>reviewable in normal rhythm</td></tr>
+<tr><th scope="row">Tuning</th><td>None</td><td>same source as bearing</td></tr>
+</tbody>
+</table>
+<h2 id="d04">Domain 04 &middot; Electrical grid stability: electrical-bus stability with no domain assumptions</h2>
+<p>10,000 instances across 12 features of electrical-grid stability data &mdash; a signal domain that shares nothing with rotating-machinery vibration. Same source, same flags, no per-domain configuration.</p>
+<table>
+<tbody>
+<tr><th scope="row">F1 score</th><td>0.532</td><td>no per-domain config</td></tr>
+<tr><th scope="row">Instances</th><td>10,000</td><td></td></tr>
+<tr><th scope="row">Features</th><td>12</td><td></td></tr>
+</tbody>
+</table>
+<h2 id="d05">Domain 05 &middot; Soak testing: the number operators ask for first</h2>
+<p>The false-alarm rate is the first thing operators ask about. Across 120 simulated hours of synthetic vibration &mdash; 5 random seeds &times; 24 hours each &mdash; Flynn produced zero false positives, with a 95%-confidence ceiling of 0.025 per hour. On bearing normal-operation traces, zero across 1.2 million samples.</p>
+<h4>Protocol</h4>
+<dl>
+<dt>Synthetic soak</dt><dd>120 hours &middot; 5 seeds &times; 24 hours</dd>
+<dt>Bearing soak</dt><dd>1.2 million normal-operation samples</dd>
+<dt>Confidence</dt><dd>95% CI bound on FP rate</dd>
+</dl>
+<h4>Result</h4>
+<table>
+<tbody>
+<tr><th scope="row">FP &middot; synthetic</th><td>0</td><td>120 hours</td></tr>
+<tr><th scope="row">FP &middot; bearing</th><td>0</td><td>1.2 M samples</td></tr>
+<tr><th scope="row">95% CI bound</th><td>&lt; 0.025/h</td><td>false-positive rate</td></tr>
+</tbody>
+</table>
+<p>Zero false positives on bearing data. Operationally low on diurnal. The numbers operators actually care about.</p>
+<h2 id="reproduce">Reproduce these numbers: benchmarks, source, reproduction</h2>
+<p>Flynn&rsquo;s empirical claims are reproducible from committed benchmarks and committed source code. Artifacts and reproduction instructions are available to evaluation licensees.</p>
+<dl>
+<dt>Email</dt><dd><a href="mailto:tripp@inlikeflynn.io">tripp@inlikeflynn.io</a></dd>
+<dt>Available</dt><dd>Source code &middot; benchmarks &middot; scripts &middot; datasets manifest</dd>
+<dt>Under</dt><dd>Evaluation license &middot; NDA required</dd>
+</dl>
+<p><a href="whitepaper.html">Read the whitepaper</a></p>
+</main>
+<hr/>
+<footer>
+<p>Text-only edition, built for terminal browsers, screen readers, and offline reading. No scripts, no images, no stylesheet dependency.<br/>
+Graphical version of this page (needs JavaScript): <a href="https://inlikeflynn.io/pages/validation.html">inlikeflynn.io/pages/validation.html</a></p>
+<p>EntroMorphic &middot; <a href="mailto:tripp@inlikeflynn.io">tripp@inlikeflynn.io</a></p>
+<nav aria-label="Flynn text edition"><p><a href="index.html">Home</a> &middot; <a href="why-flynn.html">Why Flynn</a> &middot; <strong>Validation</strong> &middot; <a href="whitepaper.html">Whitepaper</a> &middot; <a href="tiers.html">Tiers</a> &middot; <a href="industries.html">Industries</a> &middot; <a href="roadmap.html">Roadmap</a> &middot; <a href="team.html">Team</a> &middot; <a href="two-birds-one-stone.html">Two Birds. One Stone.</a></p></nav></footer>
+</body></html>

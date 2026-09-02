@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<title>Equipment talks. Flynn listens. &mdash; Flynn (text edition)</title>
+<meta name="description" content="Flynn is real-time equipment health intelligence that runs on the microcontroller already inside your equipment. 8,480 bytes, bare-metal, deterministic."/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="canonical" href="https://inlikeflynn.io/"/>
+<link rel="stylesheet" href="text.css"/>
+</head><body>
+<p class="skip"><a href="#main">Skip to content</a></p>
+<header>
+<p><strong>FLYNN</strong> &mdash; EntroMorphic &mdash; embedded anomaly detection &mdash; <em>text edition</em></p>
+<nav aria-label="Flynn text edition"><p><strong>Home</strong> &middot; <a href="why-flynn.html">Why Flynn</a> &middot; <a href="validation.html">Validation</a> &middot; <a href="whitepaper.html">Whitepaper</a> &middot; <a href="tiers.html">Tiers</a> &middot; <a href="industries.html">Industries</a> &middot; <a href="roadmap.html">Roadmap</a> &middot; <a href="team.html">Team</a> &middot; <a href="two-birds-one-stone.html">Two Birds. One Stone.</a></p></nav></header>
+<hr/>
+<main id="main">
+<h1>Equipment talks. Flynn listens.</h1>
+<p>Flynn is real-time equipment health intelligence that runs on the microcontroller already inside your equipment. It learns healthy operation, locks the baseline, and detects developing anomalies at the source&mdash;before they cascade into failure.</p>
+<p><strong>8,480 bytes. Bare-metal. Deterministic. Near-zero SWaP-C.</strong></p>
+<p><a href="whitepaper.html">Read the whitepaper</a> &middot; <a href="mailto:tripp@inlikeflynn.io">tripp@inlikeflynn.io</a></p>
+<h2 id="problem">The problem: tools were adopted, downtime increased</h2>
+<p>Equipment failure costs the Fortune 500 $1.4 trillion a year&mdash;up 62% since 2019. Predictive tools are more common than ever. Unplanned downtime is more prevalent than ever.</p>
+<h3>01. Alert fatigue</h3>
+<p>False alarms teach operators not to listen.</p>
+<p>Flynn raises zero false positives.</p>
+<h3>02. Adaptive drift</h3>
+<p>An adaptive baseline can redefine a slow-developing fault as the new normal.</p>
+<p>Flynn enrolls on healthy operation, then locks the baseline. Drift remains detectable.</p>
+<figure>
+<pre>
+ ADAPTIVE BASELINE  --  the band moves with the fault
+  peak amp
+
+      |                                    - - -      &lt;-- band rose with it
+      |
+      |                              - - -  ####
+      |                                     ####
+      |                        - - -  ####  ####
+      |- - - - - - - - - - - -        ####  ####
+      |                         ####  ####  ####
+      |             ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####
+      +------------------------------------------
+         w1    w2    w3    w4    w5    w6    w7
+
+  REPORTS: NOMINAL  --  the fault became the new normal
+
+ LOCKED BASELINE (FLYNN)  --  the band is fixed at enrollment
+  peak amp
+
+      |
+      |
+      |                                     ####      &lt;-- BREACH
+      |                                     ####
+      |                               ####  ####
+      |- - - - - - - - - - - - - - - -#### -#### -    &lt;-- locked band
+      |                         ####  ####  ####
+      |             ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####
+      +------------------------------------------
+         w1    w2    w3    w4    w5    w6    w7
+
+  REPORTS: ANOMALY at w6  --  the same swell breaks the band
+</pre>
+<figcaption>The same fault, two architectures. Both monitors enroll on the same healthy signal. As the fault develops, the adaptive thresholds widen to accommodate the louder wave and the monitor still reports nominal. Flynn&rsquo;s thresholds do not move, so the same swell breaks them.</figcaption>
+</figure>
+<h3>03. Implementation barrier</h3>
+<p>Conventional predictive-maintenance programs can require months of historical data, labeling, new infrastructure, and specialist support.</p>
+<p>Flynn learns directly from healthy equipment. No labeled fault history. No pretraining. No cloud dependency.</p>
+<h3>04. The interval gap</h3>
+<p>Inspections are snapshots.</p>
+<p>Flynn observes equipment signals in real time, providing certifiable health and wellness telemetry.</p>
+<h2 id="differential">Flynn&rsquo;s differential: intelligence at the equipment layer</h2>
+<h3>Near-zero SWaP-C</h3>
+<p>Size, Weight, Power, and Cost&mdash;for embedded systems from the factory floor to deep space.</p>
+<pre>
+  S ize    8,480 B     fits inside existing MCU flash
+  W eight  zero        software on the chip already there
+  P ower   bare-metal  integer-only, zero heap after init
+  C ost    <$10        runs on silicon you already ship
+</pre>
+<h3>The specification</h3>
+<dl>
+<dt>Footprint &mdash; 8,480 bytes</dt><dd>One compact detector small enough to live on the microcontroller native to the equipment.</dd>
+<dt>Enrollment &mdash; 1,700 samples &dagger;</dt><dd>Learns healthy operation in 1,700 samples&mdash;as little as two seconds at kilohertz rates&mdash;then locks. No labels. No tuning.</dd>
+<dt>Heap allocations &mdash; 0</dt><dd>No dynamic allocation after initialization. Architected for constrained and safety-critical firmware environments.</dd>
+<dt>Delivery &mdash; binary</dt><dd>Compiled for your target hardware. Deterministic and verifiable against published test vectors, with source available to certifying authorities under NDA.</dd>
+<dt>False positives &mdash; 0 / 120 h</dt><dd>Zero false positives across 120 hours of healthy synthetic-vibration soak testing, with a 95% confidence ceiling below 0.025 per hour.</dd>
+<dt>Behavior &mdash; bit-identical</dt><dd>Same signal. Same answer. Replayable and auditable.</dd>
+</dl>
+<p>&dagger; Enrollment requirements vary by equipment type, modes, and operational envelope.</p>
+<h2 id="how">How Flynn works: enroll, lock, listen</h2>
+<p>Flynn learns the operating envelope from healthy equipment, locks it, and watches every sample that follows.</p>
+<p>No retraining loop. No continuously moving definition of normal.</p>
+<figure>
+<pre>
+ peak amp
+
+      |
+      |
+      |                                           ####      &lt;-- ALERT
+      |                                           ####
+      |                                     ####  ####
+      |- - - - - - - - - - - - - - - - - - -#### -#### -    &lt;-- locked band
+      |                               ####  ####  ####
+      |                         ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####  ####
+      +------------------------------------------------
+         s1    s2    s3    s4    s5    s6    s7    s8
+       |&lt;--- ENROLL ---&gt;|&lt;--------- DETECT ----------&gt;|
+                       LOCK
+</pre>
+<figcaption>Enroll, lock, detect. Flynn enrolls on the healthy signal, locks the baseline, then scores every reading against it. When a developing fault crosses the locked band &mdash; alert.</figcaption>
+</figure>
+<h3>Phase 01 &middot; Enrollment. Observe healthy operation. Lock the envelope.</h3>
+<p>Flynn enrolls on healthy sensor data by observing the sensor stream in real time, on device, per mode of operation.</p>
+<p>Once enrollment is complete, the baseline is locked.</p>
+<h3>Phase 02 &middot; Detection. Detect the departure as it develops.</h3>
+<p>Flynn evaluates equipment telemetry against the enrolled operating envelope in real time.</p>
+<p>It can signal as behavior begins trending toward the bounds of its enrolled thresholds&mdash;before those bounds have been crossed&mdash;and signal again when a threshold breach occurs.</p>
+<p>The result is certifiable health and wellness reporting and early warning signals before equipment failure.</p>
+<h2 id="validated">Validated across domains: one binary, all domains</h2>
+<p>Equipment degrades. Signals change. Flynn remains.</p>
+<p>The same core has been validated across five signal domains with no domain-specific model and no per-domain retraining.</p>
+<p>Where there is telemetry, Flynn turns deviation into actionable equipment intelligence.</p>
+<dl>
+<dt>Bearing vibration &mdash; CWRU benchmark</dt><dd><strong>Precision 1.0 &middot; Recall 1.0 &middot; F1 1.0</strong><br/>27 fault pairs (inner race, ball, outer race &times; 3 severities), default operating point.</dd>
+<dt>Run-to-failure &mdash; NASA IMS bearing dataset</dt><dd><strong>Lead time ~17 days &middot; failing bearings 2 / 2</strong><br/>30+ days, 4 bearings, 8 channels. Adjacent healthy-bearing channels registered the same developing fault at proportionally lower magnitude &mdash; cross-channel sensitivity with correct severity ranking, not a false positive.</dd>
+<dt>Ambient &amp; diurnal</dt><dd><strong>0.074&ndash;0.080 false positives per hour</strong><br/>336 hours of environmental and process-control signals. Fewer than two alerts per day &mdash; compatible with normal shift-cycle review.</dd>
+<dt>Electrical grid stability</dt><dd><strong>F1 0.532</strong><br/>10,000 instances, 12 features. Same source, same flags, no per-domain configuration.</dd>
+<dt>Soak &mdash; synthetic vibration</dt><dd><strong>0 false positives</strong><br/>120 hours, 5 seeds &times; 24 hours. 95% CI ceiling &lt; 0.025/h.</dd>
+</dl>
+<p><a href="validation.html">See the full validation set</a></p>
+<h2 id="roadmap">The Flynn roadmap: from neuron to nervous system</h2>
+<p>One Flynn instance is useful on its own.</p>
+<p>Multiple instances can compose into something larger. Equipment intelligence at the signal, asset, facility, and organizational level.</p>
+<figure>
+<pre>
+  STAGE 01  ::  THE NEURON                 today, shipping
+      [ signal ] -->  (  Flynn  )  --> [ score ]
+      one detector, one signal, one decision
+
+  STAGE 02  ::  THE DETECTOR FABRIC        2026, pilots engaging
+      (  Flynn  ) --+
+      (  Flynn  ) --+--> [ coordination ] --> [ asset state ]
+      (  Flynn  ) --+       regime memory
+      3-10 detectors, one asset. Detectors stay authoritative.
+
+  STAGE 03  ::  THE NERVOUS SYSTEM         multi-year
+      [ CORTEX ]       site-wide decision-making
+           ^
+      [ CEREBELLUM ]   operational-regime memory
+           ^
+      [ REFLEX ]       sub-millisecond, at the equipment
+</pre>
+<figcaption>Three stages of composition. Each stage is built from the primitives of the one before it.</figcaption>
+</figure>
+<h3>Stage 01 &middot; The neuron. Signal in. Intelligence out. <em>Today, shipping.</em></h3>
+<p>Flynn is the atomic unit: one compact, deterministic detector operating directly on equipment telemetry.</p>
+<p>Deployable today for production evaluations and pilot programs.</p>
+<h3>Stage 02 &middot; The detector fabric. Local authority. Shared context. <em>2026, pilots engaging.</em></h3>
+<p>Compose multiple Flynn instances across sensors and assets.</p>
+<p>Each detector remains authoritative over what it observes. A coordination layer adds operational context without rewriting the underlying detector&rsquo;s decision.</p>
+<p>The result: multi-sensor, regime-aware equipment intelligence that remains deterministic at its foundation.</p>
+<h3>Stage 03 &middot; The nervous system. Facility-wide distributed cognition. <em>Multi-year.</em></h3>
+<p>Reflex-class response. Operational-regime memory. System-level coordination. Forensic replay back to any moment.</p>
+<p>From individual signals to a facility that can understand its own condition.</p>
+<h2 id="engagement">Engagement: three paths, one conversation</h2>
+<p>From one sensor on an engineer&rsquo;s bench to a thousand-asset fleet behind an air gap, Flynn scales to meet the demand.</p>
+<h3>Pilot program &mdash; priced per engagement</h3>
+<p>A 30&ndash;90 day engagement for business units proving Flynn in the lab, on the shop floor, or in the field.</p>
+<ul><li>Bounded scope</li><li>30d - 90d Consulting engagement</li><li>NDA as required</li><li>Direct engineering contact</li></ul>
+<h3>OEM licensing &mdash; per-unit royalty</h3>
+<p>For manufacturers embedding Flynn directly into commercial equipment at production scale.</p>
+<ul><li>Precompiled binary or source</li><li>Integration support</li><li>Long-term source stability</li><li>Terms scaled to deployment volume</li></ul>
+<h3>Enterprise &mdash; deployment-scale</h3>
+<p>For operators deploying Flynn across fleets, retrofit programs, new builds, or air-gapped environments.</p>
+<ul><li>Source access and certification support</li><li>Integration with existing systems</li><li>Compliance documentation</li><li>Multi-year engineering support</li></ul>
+<p><a href="tiers.html">Full tier comparison</a></p>
+<h2 id="next">Next steps: get in like Flynn</h2>
+<p>Pilot program, OEM licensing, or enterprise deployment&mdash;every engagement begins the same way:</p>
+<p>Tell us what you want Flynn to listen to.</p>
+<p>We support what we ship for as long as you run it.</p>
+<p><a href="mailto:tripp@inlikeflynn.io">tripp@inlikeflynn.io</a> &middot; <a href="whitepaper.html">Read the whitepaper</a></p>
+</main>
+<hr/>
+<footer>
+<p>Text-only edition, built for terminal browsers, screen readers, and offline reading. No scripts, no images, no stylesheet dependency.<br/>
+Graphical version of this page (needs JavaScript): <a href="https://inlikeflynn.io/">inlikeflynn.io/</a></p>
+<p>EntroMorphic &middot; <a href="mailto:tripp@inlikeflynn.io">tripp@inlikeflynn.io</a></p>
+<nav aria-label="Flynn text edition"><p><strong>Home</strong> &middot; <a href="why-flynn.html">Why Flynn</a> &middot; <a href="validation.html">Validation</a> &middot; <a href="whitepaper.html">Whitepaper</a> &middot; <a href="tiers.html">Tiers</a> &middot; <a href="industries.html">Industries</a> &middot; <a href="roadmap.html">Roadmap</a> &middot; <a href="team.html">Team</a> &middot; <a href="two-birds-one-stone.html">Two Birds. One Stone.</a></p></nav></footer>
+</body></html>

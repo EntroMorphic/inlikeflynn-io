@@ -1,0 +1,23 @@
+/* Text edition. Terminal browsers ignore this file entirely. */
+:root{color-scheme:dark light}
+html{background:#0b0e0d;color:#d7dedb}
+body{font:15px/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;max-width:82ch;margin:0 auto;padding:2rem 1.25rem 4rem}
+a{color:#7fe3c0}a:hover{color:#b9f4de;background:#123027}
+h1,h2,h3,h4{line-height:1.25;font-weight:700}
+h1{font-size:1.5rem;margin:1.5rem 0 .75rem}
+h2{font-size:1.15rem;margin:2.5rem 0 .5rem;color:#7fe3c0}
+h3{font-size:1rem;margin:1.75rem 0 .35rem}
+h4{font-size:.9rem;margin:1.25rem 0 .35rem;text-transform:uppercase;letter-spacing:.08em;color:#8d9c97}
+hr{border:0;border-top:1px solid #22302b;margin:1.5rem 0}
+pre{overflow-x:auto;border:1px solid #22302b;padding:1rem;font-size:12.5px;line-height:1.35;background:#0f1412;color:#9fd8c4}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:1rem 0}
+th,td{border:1px solid #22302b;padding:.4rem .6rem;text-align:left;vertical-align:top}
+th{color:#7fe3c0}
+dt{font-weight:700;margin-top:.5rem}dd{margin:0 0 0 2ch;color:#a9b8b3}
+blockquote{border-left:2px solid #22302b;margin:1rem 0;padding-left:1.5ch;color:#a9b8b3}
+header p,footer p{font-size:13px;color:#8d9c97}
+nav p{font-size:13px}
+.skip{position:absolute;left:-9999px}.skip a:focus{position:static}
+ul{padding-left:2.5ch}
+figcaption{font-size:13px;color:#8d9c97;margin-top:.5rem}
+figure{margin:1.5rem 0}

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<title>Industries &mdash; Flynn (text edition)</title>
+<meta name="description" content="One detector, every vertical. Flynn across automotive, consumer electronics, sea/air/space, healthcare, and industrial robotics."/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="canonical" href="https://inlikeflynn.io/pages/industries.html"/>
+<link rel="stylesheet" href="text.css"/>
+</head><body>
+<p class="skip"><a href="#main">Skip to content</a></p>
+<header>
+<p><strong>FLYNN</strong> &mdash; EntroMorphic &mdash; embedded anomaly detection &mdash; <em>text edition</em></p>
+<nav aria-label="Flynn text edition"><p><a href="index.html">Home</a> &middot; <a href="why-flynn.html">Why Flynn</a> &middot; <a href="validation.html">Validation</a> &middot; <a href="whitepaper.html">Whitepaper</a> &middot; <a href="tiers.html">Tiers</a> &middot; <strong>Industries</strong> &middot; <a href="roadmap.html">Roadmap</a> &middot; <a href="team.html">Team</a> &middot; <a href="two-birds-one-stone.html">Two Birds. One Stone.</a></p></nav></header>
+<hr/>
+<main id="main">
+<h1>One detector. Every vertical.</h1>
+<p>The same 8,480-byte detector compiles for every equipment class &mdash; automotive ECUs, consumer device firmware, satellite and shipboard payloads, embedded medical systems, factory-floor PLCs and drives. Self-calibrating, deterministic, audit-ready. The detector you license is the detector that runs anywhere you point a signal.</p>
+<ul><li><a href="#v01">01 &middot; Automotive</a></li><li><a href="#v02">02 &middot; Consumer Electronics</a></li><li><a href="#v03">03 &middot; Sea, Air &amp; Space</a></li><li><a href="#v04">04 &middot; Healthcare &amp; Life Sciences</a></li><li><a href="#v05">05 &middot; Industrial Robotics</a></li></ul>
+<h2 id="v01">01 &middot; Automotive</h2>
+<h3>The software-defined vehicle, listened to from inside.</h3>
+<p>A modern vehicle is a fleet of microcontrollers &mdash; powertrain, ADAS, body, infotainment, gateway. Each one already emits telemetry the OEM cannot afford to ignore once it leaves the line.</p>
+<h4>The challenge</h4>
+<ul><li>Hundreds of resource-constrained ECUs designed before continuous monitoring was an option.</li><li>Safety-critical control loops where decisions cannot wait for a cloud round-trip.</li><li>Long lifecycle (10&ndash;15 years on the road) with no path for re-validation of changing models.</li><li>Behaviour anomalies &mdash; sensor drift, control-loop deviation, bus contention &mdash; manifest in the signal long before they manifest on the road.</li></ul>
+<p><em>MCU-class &middot; AUTOSAR-friendly &middot; Bare-metal</em></p>
+<h4>Use cases</h4>
+<dl><dt>ECU health monitoring</dt><dd>Continuous baseline on every computational node from powertrain to body electronics &mdash; without changing the silicon.</dd>
+<dt>ADAS sensor integrity</dt><dd>Detect drift, dropout, and out-of-envelope behaviour in camera, radar, lidar, and IMU feeds before they reach the planner.</dd>
+<dt>V2X anomaly detection</dt><dd>Flag departures from normal vehicle-to-vehicle and vehicle-to-infrastructure communication patterns at the gateway.</dd>
+<dt>IVI behaviour monitoring</dt><dd>Isolate infotainment-domain anomalies before they propagate into safety-critical domains across the gateway.</dd></dl>
+<h2 id="v02">02 &middot; Consumer Electronics</h2>
+<h3>On-device detection. No cloud round-trip, no battery tax.</h3>
+<p>On-device detection works offline, runs inside the existing power envelope, and sends no sample beyond the chip.</p>
+<h4>The challenge</h4>
+<ul><li>Cloud-based detection introduces latency, connectivity dependency, and battery cost on power-constrained devices.</li><li>Hundreds of millions of units shipped per product line &mdash; per-device licensing must scale economically.</li><li>On-device AI/ML accelerators need lightweight watchdogs that don&rsquo;t compete for compute.</li><li>Privacy posture means many users will never opt into telemetry leaving the device at all.</li></ul>
+<p><em>8,480 bytes &middot; Zero heap &middot; Offline by default</em></p>
+<h4>Use cases</h4>
+<dl><dt>Smartphone subsystem health</dt><dd>Local anomaly detection on power-rail, thermal, and modem telemetry &mdash; without phoning home.</dd>
+<dt>AI PCs &amp; tablets</dt><dd>Watch on-device LLM and multimodal inference for runaway behaviour, throttling drift, or memory-bandwidth anomalies.</dd>
+<dt>Wearables</dt><dd>Continuous low-power baseline on biometric streams; flag departures without burning the budget.</dd>
+<dt>Gaming consoles</dt><dd>Detect hardware-class anomalies (thermal, voltage, controller-bus) without instrumenting customer behaviour.</dd></dl>
+<h2 id="v03">03 &middot; Sea, Air &amp; Space</h2>
+<h3>Operational beyond the point of no return.</h3>
+<p>Most consequential equipment operates in environments where backhaul is impossible by physics, update cycles are measured in years, and the asset under measurement cannot be reached for maintenance. Flynn was designed for it &mdash; and for the SWaP-C budgets these platforms live by: zero added size, weight, power, or cost beyond the silicon already on board.</p>
+<h4>The challenge</h4>
+<ul><li>Connectivity is intermittent, expensive, or absent &mdash; offshore platforms, deep-mine ventilation, remote energy, orbital assets.</li><li>Decision latency must be sub-millisecond; round-trips to a ground station or shore-side data centre are not an option.</li><li>Equipment lifecycles are decades. The detector that ships today must still be valid &mdash; and identical &mdash; in 2036.</li><li>Defense, aerospace, and maritime regulators demand deterministic, replayable, and auditable behaviour.</li></ul>
+<p><em>Near-zero SWaP-C &middot; Air-gapped &middot; Rad-tolerant compatible &middot; Decade lifecycle</em></p>
+<h4>Use cases</h4>
+<dl><dt>Satellite payload telemetry</dt><dd>Component-level baselines with autonomous flagging &mdash; no ground intervention required, no model drift on orbit.</dd>
+<dt>Avionics &amp; UAV</dt><dd>Sub-millisecond anomaly response on flight-control, propulsion, and IMU streams; deterministic for certification.</dd>
+<dt>Shipboard OT &amp; ECDIS</dt><dd>Low-footprint defence-in-depth for engineering plant and navigation systems on contested or disconnected vessels.</dd>
+<dt>Communications integrity</dt><dd>Anomaly detection on real-time data links across contested environments &mdash; no external trust anchor required.</dd></dl>
+<h2 id="v04">04 &middot; Healthcare &amp; Life Sciences</h2>
+<h3>Auditable integrity for the equipment patients depend on.</h3>
+<p>SaMD, HIPAA, and clinical workflows demand transparent, deterministic, and replayable detection. Flynn&rsquo;s single-binary, locked-threshold architecture is designed for the documentation packages regulators ask for.</p>
+<h4>The challenge</h4>
+<ul><li>Regulatory mandates for transparency, auditability, and reproducible behaviour over the life of the deployment.</li><li>Network drops in clinical settings cannot interrupt monitoring of life-critical equipment.</li><li>Large, opaque AI models stall approval; certification demands detection logic that can be verified, not a black box.</li><li>PHI protection means many architectures cannot send raw signal anywhere &mdash; the listener has to live on the device.</li></ul>
+<p><em>SaMD-ready &middot; Audit-ready &middot; No PHI leaves the device</em></p>
+<h4>Use cases</h4>
+<dl><dt>Remote patient monitoring</dt><dd>Real-time anomaly detection on home medical devices &mdash; bare-metal, no cloud, no data egress required.</dd>
+<dt>Clinical decision support</dt><dd>Sub-10ms anomaly feedback on surgical robotics and diagnostic instruments, with replayable forensic trace.</dd>
+<dt>Pharma manufacturing</dt><dd>Line-integrity monitoring for fill-finish, fermentation, and packaging &mdash; flagging departures from validated normal.</dd>
+<dt>Imaging &amp; diagnostics</dt><dd>Detect calibration drift and sensor anomalies in CT, MRI, and ultrasound front-ends before they reach the radiologist.</dd></dl>
+<h2 id="v05">05 &middot; Industrial Robotics</h2>
+<h3>Industry 4.0 at the speed of the actuator.</h3>
+<p>Sub-millisecond control loops, 24/7 duty cycles, and cascading-failure topologies are not compatible with cloud-centric detection. Flynn sits on the drive, the PLC, the cell controller &mdash; where the decisions actually need to be made.</p>
+<h4>The challenge</h4>
+<ul><li>Cloud-dependent AI introduces operational fragility at the edge &mdash; exactly where reliability matters most.</li><li>Siloed IT/OT data prevents scalable factory automation; the detector has to live on both sides of the wall.</li><li>Sub-millisecond control loops are structurally incompatible with off-asset detection.</li><li>One compromised robotic cell cascades &mdash; bearing, drive, conveyor, line &mdash; within seconds.</li></ul>
+<p><em>PLC / drive-resident &middot; Sub-ms response &middot; IT/OT bridge</em></p>
+<h4>Use cases</h4>
+<dl><dt>Micro-deviation detection</dt><dd>Catch axis-level torque, current, and vibration deviations before they propagate to fault or line stop.</dd>
+<dt>Drive &amp; motor health</dt><dd>Embed Flynn on the drive&rsquo;s MCU &mdash; bearing vibration and phase telemetry monitored on the silicon that already reads them.</dd>
+<dt>IT / OT integration</dt><dd>Deterministic intelligence at the cell controller, with bit-identical replay across IT-side audit and OT-side response.</dd>
+<dt>Autonomous isolation</dt><dd>Cell-level anomaly flags drive deterministic cell-isolation logic, containing the cascade at the equipment layer.</dd></dl>
+<h2 id="foundation">Universal foundation: the same 8,480 bytes, across every vertical</h2>
+<p>From a microcontroller in a wearable to a payload on a satellite, Flynn is the same binary core with the same locked threshold. Validated once, replayable forever, audit-ready every line.</p>
+<figure>
+<pre>
+      [ ORBIT ]  [ DRONE ]  [ VALVE ]  [ SUBSEA ]  [ IMPLANT ]
+          |          |          |           |           |
+          +----------+----------+-----------+-----------+
+                                 |
+                 (  F L Y N N  ::  8,480 bytes  )
+                            one binary
+                     no domain-specific model
+                     no per-domain retraining
+</pre>
+<figcaption>One binary, five worlds. No domain-specific model, no per-domain retraining.</figcaption>
+</figure>
+<dl>
+<dt>Footprint</dt><dd>8,480 bytes</dd>
+<dt>SWaP-C</dt><dd>Near-zero</dd>
+<dt>Calibration</dt><dd>1,700 samples &dagger;</dd>
+<dt>Heap</dt><dd>Zero</dd>
+<dt>Delivery</dt><dd>Binary</dd>
+<dt>Behaviour</dt><dd>Bit-identical</dd>
+</dl>
+<p>&dagger; Samples required for complete enrollment will vary by equipment type, state, and operational envelope.</p>
+<p><a href="mailto:tripp@inlikeflynn.io">Talk to engineering</a> &middot; <a href="whitepaper.html">Read the whitepaper</a></p>
+</main>
+<hr/>
+<footer>
+<p>Text-only edition, built for terminal browsers, screen readers, and offline reading. No scripts, no images, no stylesheet dependency.<br/>
+Graphical version of this page (needs JavaScript): <a href="https://inlikeflynn.io/pages/industries.html">inlikeflynn.io/pages/industries.html</a></p>
+<p>EntroMorphic &middot; <a href="mailto:tripp@inlikeflynn.io">tripp@inlikeflynn.io</a></p>
+<nav aria-label="Flynn text edition"><p><a href="index.html">Home</a> &middot; <a href="why-flynn.html">Why Flynn</a> &middot; <a href="validation.html">Validation</a> &middot; <a href="whitepaper.html">Whitepaper</a> &middot; <a href="tiers.html">Tiers</a> &middot; <strong>Industries</strong> &middot; <a href="roadmap.html">Roadmap</a> &middot; <a href="team.html">Team</a> &middot; <a href="two-birds-one-stone.html">Two Birds. One Stone.</a></p></nav></footer>
+</body></html>

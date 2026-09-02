@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<title>Why Flynn &mdash; Flynn (text edition)</title>
+<meta name="description" content="The industry adopted predictive tools and downtime rose. Flynn closes both failure modes: alert fatigue and the adaptive baseline."/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="canonical" href="https://inlikeflynn.io/why-flynn.html"/>
+<link rel="stylesheet" href="text.css"/>
+</head><body>
+<p class="skip"><a href="#main">Skip to content</a></p>
+<header>
+<p><strong>FLYNN</strong> &mdash; EntroMorphic &mdash; embedded anomaly detection &mdash; <em>text edition</em></p>
+<nav aria-label="Flynn text edition"><p><a href="index.html">Home</a> &middot; <strong>Why Flynn</strong> &middot; <a href="validation.html">Validation</a> &middot; <a href="whitepaper.html">Whitepaper</a> &middot; <a href="tiers.html">Tiers</a> &middot; <a href="industries.html">Industries</a> &middot; <a href="roadmap.html">Roadmap</a> &middot; <a href="team.html">Team</a> &middot; <a href="two-birds-one-stone.html">Two Birds. One Stone.</a></p></nav></header>
+<hr/>
+<main id="main">
+<h1>Why Flynn</h1>
+<p>Embedded anomaly detection &middot; Patent-pending &middot; 2026</p>
+<p>Flynn catches equipment faults days before they happen &mdash; turning emergency replacements into planned repairs, before the damage compounds.</p>
+<p>Flynn is software that lives on the chip already inside your equipment &mdash; it learns what healthy operation looks like, locks that picture permanently, and flags developing faults before they become failures. Patent-pending. Fully offline. Under 9 KB. Zero false alarms.</p>
+<ul><li>8,480-byte binary</li><li>integer-only &middot; radiation-resilient</li><li>zero dependencies &middot; offline</li><li>&lt;$10 hardware</li><li>deterministic to the bit</li></ul>
+<h4>Contents</h4>
+<ul><li><a href="#verdict">01. The verdict</a></li><li><a href="#failure">02. The failure mode</a></li><li><a href="#inversion">03. The inversion</a></li><li><a href="#differs">04. How it differs</a></li><li><a href="#works">05. How it works</a></li><li><a href="#worlds">06. Many worlds</a></li><li><a href="#evidence">07. The evidence</a></li></ul>
+<h2 id="verdict">01 &middot; The industry&rsquo;s own verdict: tools were adopted, downtime increased</h2>
+<dl>
+<dt>$1.4T</dt><dd>lost every year to unplanned downtime across the Fortune 500 &mdash; up 62% since 2019. <em>Siemens True Cost of Downtime, 2024</em></dd>
+<dt>79%</dt><dd>of teams using AI-powered predictive tools saw unplanned downtime stay the same &mdash; or increase. 58% have already adopted them. <em>MaintainX State of Industrial Maintenance Report, 2026</em></dd>
+<dt>39%</dt><dd>of leaders say each downtime incident is getting more expensive than the year before. <em>MaintainX, 2026</em></dd>
+</dl>
+<p>The dashboards are running. The alerts are firing. The downtime is rising. The tools adopted over the past decade share one architecture: sensors transmit to the cloud, models process remotely, alerts return over a network. The data leaves the equipment &mdash; and by the time the intelligence reaches the fault, the adaptive baseline has absorbed the drift, and the runway is gone.</p>
+<p><strong>The intelligence is in the wrong place.</strong></p>
+<h2 id="failure">02 &middot; Two ways monitoring fails. Flynn closes both.</h2>
+<h3>Failure one &middot; Alert fatigue</h3>
+<p>Conventional monitors cry wolf. When operators &ldquo;find no problems 8 of 10 times, they ignore alert 11 &mdash; the real failure.&rdquo; The dashboard stays live; the trust is already dead.</p>
+<blockquote><p>&mdash; MaintenanceOnline, 2026</p></blockquote>
+<p><strong>Flynn earns the alert.</strong> Zero false positives across 120 hours of healthy-equipment data. Every alert Flynn raises is real &mdash; so the program survives, because the trust survives.</p>
+<h3>Failure two &middot; The adaptive baseline</h3>
+<p>A bearing wears. Slowly. Over six weeks, the vibration roughens and the motor current creeps upward. A conventional monitoring system watches this happen &mdash; and <em>adapts</em>. It absorbs the worsening signal into its picture of &ldquo;normal&rdquo; and quietly raises the threshold to match. The drift that should have triggered an alarm is absorbed into the new baseline.</p>
+<p>Six weeks later: the compressor seizes. Emergency replacement, three days of unplanned downtime. The monitoring system was online the entire time &mdash; trained, by the fault itself, to ignore it.</p>
+<p><strong>Flynn refuses.</strong> Flynn locks its baseline on day one and <em>never moves it</em>. When the bearing starts to wear, Flynn sees the departure immediately &mdash; because its reference point is frozen.</p>
+<p>On NASA IMS run-to-failure data, Flynn flagged the developing fault <strong>17 days before failure</strong>. An adaptive system following that same drift would have flagged nothing.</p>
+<figure>
+<pre>
+ ADAPTIVE BASELINE  --  the band moves with the fault
+  peak amp
+
+      |                                    - - -      &lt;-- band rose with it
+      |
+      |                              - - -  ####
+      |                                     ####
+      |                        - - -  ####  ####
+      |- - - - - - - - - - - -        ####  ####
+      |                         ####  ####  ####
+      |             ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####
+      +------------------------------------------
+         w1    w2    w3    w4    w5    w6    w7
+
+  REPORTS: NOMINAL  --  the fault became the new normal
+
+ LOCKED BASELINE (FLYNN)  --  the band is fixed at enrollment
+  peak amp
+
+      |
+      |
+      |                                     ####      &lt;-- BREACH
+      |                                     ####
+      |                               ####  ####
+      |- - - - - - - - - - - - - - - -#### -#### -    &lt;-- locked band
+      |                         ####  ####  ####
+      |             ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####
+      +------------------------------------------
+         w1    w2    w3    w4    w5    w6    w7
+
+  REPORTS: ANOMALY at w6  --  the same swell breaks the band
+</pre>
+<figcaption>The same fault, two architectures. Both monitors enroll on the same healthy signal. As the fault develops, the adaptive thresholds widen to accommodate the louder wave and the monitor still reports nominal. Flynn&rsquo;s thresholds do not move, so the same swell breaks them.</figcaption>
+</figure>
+<table>
+<caption>The economics of one incident</caption>
+<tbody>
+<tr><th scope="row">Emergency replacement</th><td>$94,000</td><td>+ three days of unplanned downtime</td></tr>
+<tr><th scope="row">Planned swap at first anomaly</th><td>$800</td><td>scheduled into a maintenance window</td></tr>
+<tr><th scope="row">The gap</th><td>$93,200 + 3 days</td><td>per incident</td></tr>
+</tbody>
+</table>
+<h2 id="inversion">03 &middot; The inversion: Flynn detects and categorizes at the source</h2>
+<figure>
+<pre>
+  THE CLOUD MODEL
+      [ sensor ] --&gt; [ gateway ] --&gt; ~~ network ~~ --&gt; [ model ]
+                                                           |
+      [ operator ] &lt;-- [ dashboard ] &lt;-- ~~ network ~~ &lt;---+
+
+      round trip: minutes to hours
+      breaks wherever connectivity, latency, power, or
+      radiation break the chain
+
+  FLYNN
+      +--------------------------------------------------+
+      |  THE EQUIPMENT                                   |
+      |                                                  |
+      |  [ sensor ] --&gt; [ MCU :: Flynn, 8,480 B ] --+    |
+      |                                             |    |
+      |                          [ local alert ] &lt;--+    |
+      +--------------------------------------------------+
+
+      round trip: none
+      microseconds, offline, deterministic, hardware under $10
+</pre>
+<figcaption>The cloud model breaks down wherever connectivity, latency, power, or radiation break the chain. Flynn is self-calibrating, offline, and deterministic &mdash; on hardware under $10, inside equipment already being manufactured. Integer-only math survives the radiation that scrambles ordinary chips.</figcaption>
+</figure>
+<h2 id="differs">04 &middot; How Flynn is different: zero-latency, on-device intelligence</h2>
+<dl>
+<dt>Where it runs</dt><dd><em>Cloud predictive analytics:</em> Remote servers<br/><em>Flynn:</em> On the equipment&rsquo;s own chip</dd>
+<dt>Connectivity</dt><dd><em>Cloud predictive analytics:</em> Required &mdash; always<br/><em>Flynn:</em> Never</dd>
+<dt>Training data</dt><dd><em>Cloud predictive analytics:</em> Labeled fault examples &mdash; expensive, scarce<br/><em>Flynn:</em> Healthy signal only &mdash; abundant, free</dd>
+<dt>Specialized personnel</dt><dd><em>Cloud predictive analytics:</em> Data-science team required<br/><em>Flynn:</em> Self-calibrating &mdash; zero specialized staff</dd>
+<dt>Configuration</dt><dd><em>Cloud predictive analytics:</em> Custom per deployment<br/><em>Flynn:</em> Zero &mdash; same binary, every domain</dd>
+<dt>Slow-developing faults</dt><dd><em>Cloud predictive analytics:</em> Baseline adapts &mdash; fault becomes invisible<br/><em>Flynn:</em> Baseline locks &mdash; fault stays visible</dd>
+<dt>False alarm rate</dt><dd><em>Cloud predictive analytics:</em> High &mdash; programs die from alert fatigue<br/><em>Flynn:</em> Zero false positives across 120 hours</dd>
+<dt>Detection speed</dt><dd><em>Cloud predictive analytics:</em> Minutes to hours (round-trip)<br/><em>Flynn:</em> Microseconds (on-device)</dd>
+<dt>Footprint</dt><dd><em>Cloud predictive analytics:</em> Cloud infrastructure (gigabytes)<br/><em>Flynn:</em> 8,480 bytes (on-chip)</dd>
+</dl>
+<p>The industry identified two options: static thresholds that miss slow faults, or adaptive baselines that absorb them. Flynn is a third option &mdash; learned from the full operating envelope, then locked permanently.</p>
+<p>The critical difference is baseline behavior. <em>An adaptive baseline absorbs the fault it was built to catch.</em> A locked baseline forces it into the open.</p>
+<h2 id="works">05 &middot; How it works: four stages for continuous, autonomous detection</h2>
+<ol>
+<li><strong>Deploy.</strong> Drop a compiled binary onto the chip already inside the equipment.</li>
+<li><strong>Enroll.</strong> Learn the healthy operating envelope &mdash; ~1,700 samples,&dagger; under two seconds.</li>
+<li><strong>Lock.</strong> Freeze the baseline. Permanently.</li>
+<li><strong>Observe.</strong> Score every subsequent reading against the frozen reference. Forever.</li>
+</ol>
+<p>&dagger; Samples required for complete enrollment will vary by equipment type, state, and operational envelope.</p>
+<p>Scheduled maintenance leaves gaps: preventive programs miss 30&ndash;40% of failures between intervals (McKinsey, 2024). Flynn scores every reading, every second &mdash; the gap between visits disappears. The baseline locks. A slow fault can never teach Flynn to accept it. Same input. Same answer. Always.</p>
+<h2 id="worlds">06 &middot; One binary, many worlds: five environments, five failure modes, one 8,480-byte detector</h2>
+<figure>
+<pre>
+      [ ORBIT ]  [ DRONE ]  [ VALVE ]  [ SUBSEA ]  [ IMPLANT ]
+          |          |          |           |           |
+          +----------+----------+-----------+-----------+
+                                 |
+                 (  F L Y N N  ::  8,480 bytes  )
+                            one binary
+                     no domain-specific model
+                     no per-domain retraining
+</pre>
+<figcaption>Validated across five industrial signal domains with zero configuration changes.</figcaption>
+</figure>
+<dl>
+<dt>Orbit</dt><dd>Reaction-wheel bearing wear ended the Kepler, Dawn &amp; SDO missions. Flynn flags bearing-friction anomalies from nominal data alone.</dd>
+<dt>Drone</dt><dd>Motor-bearing failure is the #1 cause of UAV crashes. Flynn watches motor current on the flight controller &mdash; no added sensors, no added weight.</dd>
+<dt>Valve</dt><dd>79% adopted predictive tools; downtime still rose. Flynn&rsquo;s locked baseline catches what adaptive systems absorb &mdash; on the controller already in the line.</dd>
+<dt>Subsea</dt><dd>The next maintenance vessel is days away. Flynn watches between visits &mdash; every sample, zero connectivity required.</dd>
+<dt>Implant</dt><dd>Deterministic, bounded, zero dynamic allocation &mdash; architecturally aligned with IEC 62304 medical-software certification.</dd>
+</dl>
+<p>Flynn enrolls on your equipment&rsquo;s healthy signal, locks the envelope, and watches. The domain is irrelevant &mdash; <em>the signal is what matters</em>.</p>
+<p>Where maintenance access is impossible &mdash; in orbit, subsea, or inside a patient &mdash; the equipment must monitor itself. Flynn is that monitor: deterministic, integer-only, radiation-resilient, IEC 62304-aligned.</p>
+<p><strong>Near-zero SWaP-C.</strong> Every one of these worlds shares the same hard ceiling &mdash; no room, no payload mass, no power, no budget to spare. Flynn adds none of the four: it runs on the silicon already on board.</p>
+<pre>
+  S ize    8,480 B     fits inside existing MCU flash
+  W eight  zero        software on the chip already there
+  P ower   bare-metal  integer-only, zero heap after init
+  C ost    <$10        runs on silicon you already ship
+</pre>
+<h2 id="evidence">07 &middot; The evidence: tested, measured, published</h2>
+<figure>
+<pre>
+ peak amp
+
+      |
+      |
+      |                                           ####      &lt;-- ALERT
+      |                                           ####
+      |                                     ####  ####
+      |- - - - - - - - - - - - - - - - - - -#### -#### -    &lt;-- locked band
+      |                               ####  ####  ####
+      |                         ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####  ####
+      | ####  ####  ####  ####  ####  ####  ####  ####
+      +------------------------------------------------
+         s1    s2    s3    s4    s5    s6    s7    s8
+       |&lt;--- ENROLL ---&gt;|&lt;--------- DETECT ----------&gt;|
+                       LOCK
+</pre>
+<figcaption>Enroll, lock, detect. Flynn enrolls on the healthy signal, locks the baseline, then scores every reading against it. When a developing fault crosses the locked band &mdash; alert.</figcaption>
+</figure>
+<dl>
+<dt>Precision 1.0</dt><dd>Bearing-fault detection, CWRU benchmark, default operating point.</dd>
+<dt>0 false positives</dt><dd>Across 120 hours of healthy-equipment data.</dd>
+<dt>17 days advance warning</dt><dd>On NASA IMS run-to-failure bearing data.</dd>
+<dt>5 signal domains</dt><dd>Validated cross-domain, zero config.</dd>
+</dl>
+<p><a href="validation.html">Full validation set</a> &middot; <a href="whitepaper.html">Read the whitepaper</a></p>
+</main>
+<hr/>
+<footer>
+<p>Text-only edition, built for terminal browsers, screen readers, and offline reading. No scripts, no images, no stylesheet dependency.<br/>
+Graphical version of this page (needs JavaScript): <a href="https://inlikeflynn.io/why-flynn.html">inlikeflynn.io/why-flynn.html</a></p>
+<p>EntroMorphic &middot; <a href="mailto:tripp@inlikeflynn.io">tripp@inlikeflynn.io</a></p>
+<nav aria-label="Flynn text edition"><p><a href="index.html">Home</a> &middot; <strong>Why Flynn</strong> &middot; <a href="validation.html">Validation</a> &middot; <a href="whitepaper.html">Whitepaper</a> &middot; <a href="tiers.html">Tiers</a> &middot; <a href="industries.html">Industries</a> &middot; <a href="roadmap.html">Roadmap</a> &middot; <a href="team.html">Team</a> &middot; <a href="two-birds-one-stone.html">Two Birds. One Stone.</a></p></nav></footer>
+</body></html>

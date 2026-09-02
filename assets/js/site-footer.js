@@ -15,7 +15,7 @@
   var mount = document.getElementById('site-footer');
   if (!mount) return;
 
-  var V = '20260902-0325';
+  var V = '20260902-1354';
   var root = /\/pages\//.test(location.pathname) ? '../' : '';
 
   function li(href, label) { return '<li><a href="' + href + '">' + label + '</a></li>'; }
@@ -46,12 +46,13 @@
           li(root + 'index.html#contact', 'Evaluation access') +
           li(root + 'index.html#contact', 'OEM licensing') +
           li(root + 'index.html#contact', 'Enterprise') +
-          li('mailto:tripp@entromorphic.com', 'tripp@entromorphic.com') +
+          li('mailto:tripp@inlikeflynn.io', 'tripp@inlikeflynn.io') +
         '</ul></div>' +
         '<div><h4>Company</h4><ul>' +
           li(root + 'pages/team.html', 'Team') +
           li(root + 'pages/whitepaper.html#about', 'About EntroMorphic') +
-          li('mailto:tripp@entromorphic.com', 'Contact') +
+          li('mailto:tripp@inlikeflynn.io', 'Contact') +
+          li(root + 'text/index.html', 'Text edition') +
         '</ul></div>' +
       '</div>' +
       '<div class="footer-meta">' +
