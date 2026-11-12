@@ -19,7 +19,7 @@
 <p>Flynn is software that lives on the chip already inside your equipment &mdash; it learns what healthy operation looks like, locks that picture permanently, and flags developing faults before they become failures. Patent-pending. Fully offline. Under 9 KB. Zero false alarms.</p>
 <ul><li>8,480-byte binary</li><li>integer-only &middot; radiation-resilient</li><li>zero dependencies &middot; offline</li><li>&lt;$10 hardware</li><li>deterministic to the bit</li></ul>
 <h4>Contents</h4>
-<ul><li><a href="#verdict">01. The verdict</a></li><li><a href="#failure">02. The failure mode</a></li><li><a href="#inversion">03. The inversion</a></li><li><a href="#differs">04. How it differs</a></li><li><a href="#works">05. How it works</a></li><li><a href="#worlds">06. Many worlds</a></li><li><a href="#evidence">07. The evidence</a></li></ul>
+<ul><li><a href="#verdict">01. The verdict</a></li><li><a href="#failure">02. The failure mode</a></li><li><a href="#inversion">03. The inversion</a></li><li><a href="#differs">04. How it differs</a></li><li><a href="#works">05. How it works</a></li><li><a href="#worlds">06. Many worlds</a></li><li><a href="#evidence">07. The evidence</a></li><li><a href="#changes">08. What changes</a></li></ul>
 <h2 id="verdict">01 &middot; The industry&rsquo;s own verdict: tools were adopted, downtime increased</h2>
 <dl>
 <dt>$1.4T</dt><dd>lost every year to unplanned downtime across the Fortune 500 &mdash; up 62% since 2019. <em>Siemens True Cost of Downtime, 2024</em></dd>
@@ -194,9 +194,34 @@
 <dt>Precision 1.0</dt><dd>Bearing-fault detection, CWRU benchmark, default operating point.</dd>
 <dt>0 false positives</dt><dd>Across 120 hours of healthy-equipment data.</dd>
 <dt>17 days advance warning</dt><dd>On NASA IMS run-to-failure bearing data.</dd>
-<dt>5 signal domains</dt><dd>Validated cross-domain, zero config.</dd>
+<dt>5 signal domains</dt><dd>Validated cross-domain, zero config changes.</dd>
+<dt>8,480 B full footprint</dt><dd>One compiled binary, zero dependencies.</dd>
+<dt>Deterministic</dt><dd>Same signal, same answer &mdash; every time, every platform.</dd>
+</dl>
+<h3>Run-to-failure &middot; NASA IMS bearing: 17-day advance warning</h3>
+<dl>
+<dt>Day 1</dt><dd>Flynn enrollment completed</dd>
+<dt>Day 17</dt><dd>Flynn flags the developing fault</dd>
+<dt>Day 34</dt><dd>Run-to-failure</dd>
 </dl>
 <p><a href="validation.html">Full validation set</a> &middot; <a href="whitepaper.html">Read the whitepaper</a></p>
+<h2 id="changes">08 &middot; What changes: when equipment monitors itself, the economics click</h2>
+<dl>
+<dt>$94,000 &rarr; $800</dt><dd>Emergency replacements become planned swaps. Unplanned downtime becomes a scheduled window.</dd>
+<dt>Fewer technicians, more coverage</dt><dd>Experienced workers are retiring and the talent gap is widening. Flynn watches autonomously &mdash; enrolls in two seconds, needs zero ongoing configuration, and scales with every unit shipped.</dd>
+<dt>Bids won on capability</dt><dd>&ldquo;Our equipment monitors itself &mdash; deterministic, auditable, no cloud dependency.&rdquo; A differentiator that survives procurement scrutiny.</dd>
+<dt>Specified, then respecified</dt><dd>Equipment that calls before it fails earns the next project. The switching cost shifts from price to embedded intelligence.</dd>
+<dt>Warranty claims drop</dt><dd>Faults caught before cascade failure eliminate the highest-cost warranty events. The manufacturer&rsquo;s exposure decreases with every unit that monitors itself.</dd>
+<dt>Dumb equipment, made smart</dt><dd>Equipment that never monitored itself ships with Flynn compiled into its firmware. Self-monitoring becomes a line in the bill of materials &mdash; on every unit, from first power-on.</dd>
+</dl>
+<dl>
+<dt>Predictive maintenance &middot; terrestrial</dt><dd>$10.6B &rarr; $47.8B (2025 &rarr; 2032)</dd>
+<dt>Global space economy</dt><dd>$570B &rarr; $1.8T (2024 &rarr; 2035)</dd>
+</dl>
+<p>Flynn is licensed per unit and recurring &mdash; scaling with every piece of equipment that ships with it. The same binary serves thousands of equipment manufacturers on Earth and a growing number in orbit.</p>
+<p>Eight active prospects &middot; six industries: Flow control &middot; HVAC &middot; Autonomous aviation &middot; Semiconductor &middot; Industrial IoT &middot; Space</p>
+<p><strong>Equipment talks. Flynn listens.</strong></p>
+<p><a href="index.html">See what Flynn hears</a> &middot; EntroMorphic, LLC &middot; Patent-pending</p>
 </main>
 <hr/>
 <footer>
