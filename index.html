@@ -9,7 +9,7 @@
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="theme-color" content="#05080e" />
 <title>Flynn — Equipment talks. Flynn listens.</title>
-<meta name="description" content="Flynn lives on the chip already inside your equipment, watches the sensor data, and catches problems before they become failures — fully offline, in 8,480 bytes, with zero false alarms." />
+<meta name="description" content="Flynn lives on the chip already inside your equipment, watches the sensor data, and catches problems before they become failures — fully offline, in 8,480 bytes, with a low, measured false-alarm rate." />
 <link rel="canonical" href="https://inlikeflynn.io/" />
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16.png" />
@@ -18,7 +18,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Flynn" />
 <meta property="og:title" content="Flynn — Equipment talks. Flynn listens." />
-<meta property="og:description" content="Flynn lives on the chip already inside your equipment, watches the sensor data, and catches problems before they become failures — fully offline, in 8,480 bytes, with zero false alarms." />
+<meta property="og:description" content="Flynn lives on the chip already inside your equipment, watches the sensor data, and catches problems before they become failures — fully offline, in 8,480 bytes, with a low, measured false-alarm rate." />
 <meta property="og:url" content="https://inlikeflynn.io/" />
 <meta property="og:image" content="https://inlikeflynn.io/assets/img/og-flynn.png" />
 <meta property="og:image:width" content="1200" />
@@ -26,13 +26,13 @@
 <meta property="og:image:alt" content="Flynn — embedded anomaly detection. Equipment talks. Flynn listens." />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Flynn — Equipment talks. Flynn listens." />
-<meta name="twitter:description" content="Flynn lives on the chip already inside your equipment, watches the sensor data, and catches problems before they become failures — fully offline, in 8,480 bytes, with zero false alarms." />
+<meta name="twitter:description" content="Flynn lives on the chip already inside your equipment, watches the sensor data, and catches problems before they become failures — fully offline, in 8,480 bytes, with a low, measured false-alarm rate." />
 <meta name="twitter:image" content="https://inlikeflynn.io/assets/img/og-flynn.png" />
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","name":"Flynn","url":"https://inlikeflynn.io/","logo":"https://inlikeflynn.io/assets/img/flynn-logo.png","sameAs":[]},{"@type":"WebSite","name":"Flynn — Equipment talks. Flynn listens.","url":"https://inlikeflynn.io/"}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Orbitron:wght@400;500;600;700;800&family=Chakra+Petch:wght@400;500;600;700&family=Michroma&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/styles.css?v=20260902-1354" />
+<link rel="stylesheet" href="assets/css/styles.css?v=20261117-0228" />
 <style>
   /* page-specific */
   .hero {
@@ -455,9 +455,9 @@
 }
 </style>
 <!-- TRON theme layer loads LAST so it wins on equal specificity -->
-<link rel="stylesheet" href="assets/css/tron.css?v=20260902-1354" />
-<link rel="stylesheet" href="assets/css/install-button.css?v=20260902-1354" />
-<link rel="stylesheet" href="assets/css/site-footer.css?v=20260902-1354" />
+<link rel="stylesheet" href="assets/css/tron.css?v=20261117-0228" />
+<link rel="stylesheet" href="assets/css/install-button.css?v=20261117-0228" />
+<link rel="stylesheet" href="assets/css/site-footer.css?v=20261117-0228" />
 <!-- Baked-in display settings (formerly applied live by the Tweaks panel) -->
 <style>
   :root { --glow: 1.2; }
@@ -481,7 +481,7 @@
   <div class="wrap">
 
     <div class="hero-meta">
-      <a class="chip live" href="pages/whitepaper.html">Whitepaper · Q2 2026</a>
+      <a class="chip live" href="pages/whitepaper.html">Whitepaper · Rev. Nov 2026</a>
       <span class="eyebrow"><span class="dot"></span>Embedded anomaly detection · Bare-metal · 8,480 bytes</span>
     </div>
 
@@ -575,9 +575,9 @@
     <div class="cols-2" style="margin-bottom: 64px;">
       <div>
         <span class="eyebrow"><span class="dot"></span>The Problem</span>
-        <h2 class="h1" style="margin-top: 20px;">Tools were adopted. Downtime increased.</h2>
+        <h2 class="h1" style="margin-top: 20px;">Tools were adopted. Downtime didn’t improve.</h2>
       </div>
-      <p class="lede" style="margin-top: 72px;">Equipment failure costs the Fortune 500 $1.4 trillion a year—up 62% since 2019. Predictive tools are more common than ever. Unplanned downtime is more prevalent than ever.</p>
+      <p class="lede" style="margin-top: 72px;">Downtime still costs the Fortune Global 500 about $1.4 trillion a year (Siemens, 2024), and 79% of maintenance teams report unplanned downtime holding steady or rising (MaintainX, 2026).</p>
     </div>
 
     <div class="cols-4">
@@ -585,7 +585,7 @@
         <div class="num">01</div>
         <h3 class="h3">Alert fatigue</h3>
         <p style="margin-top:12px">False alarms teach operators not to listen.</p>
-        <p style="margin-top:12px">Flynn raises zero false positives.</p>
+        <p style="margin-top:12px">Zero false positives across 120 hours of synthetic soak testing, and under two alerts per day on 336 hours of environmental and process signals.</p>
       </div>
       <div class="gap-card">
         <div class="num">02</div>
@@ -603,7 +603,7 @@
         <div class="num">04</div>
         <h3 class="h3">The interval gap</h3>
         <p style="margin-top:12px">Inspections are snapshots.</p>
-        <p style="margin-top:12px">Flynn observes equipment signals in real time, providing certifiable health and wellness telemetry.</p>
+        <p style="margin-top:12px">Flynn watches equipment signals continuously, providing real-time health telemetry from a certifiable architecture.</p>
       </div>
     </div>
   </div>
@@ -627,7 +627,7 @@
       <div class="swapc-cell"><div class="sw-l"><b>S</b>ize</div><div class="sw-v">8,480 B</div><p class="sw-d">Fits inside existing MCU flash—not 8 MB, not 8 GB.</p></div>
       <div class="swapc-cell"><div class="sw-l"><b>W</b>eight</div><div class="sw-v">Zero</div><p class="sw-d">Software on the chip already there. No additional board, sensor, or radio.</p></div>
       <div class="swapc-cell"><div class="sw-l"><b>P</b>ower</div><div class="sw-v">Bare-metal</div><p class="sw-d">Integer-only. Zero heap after initialization. Runs inside the existing power envelope.</p></div>
-      <div class="swapc-cell"><div class="sw-l"><b>C</b>ost</div><div class="sw-v">&lt;$10</div><p class="sw-d">Runs on silicon you already ship.</p></div>
+      <div class="swapc-cell"><div class="sw-l"><b>C</b>ost</div><div class="sw-v">$0</div><p class="sw-d">Added hardware. Runs on silicon you already ship.</p></div>
     </div>
 
     <div class="spec-grid">
@@ -697,8 +697,8 @@
         <div class="step">Phase 02 · Detection</div>
         <h3 class="h2" style="font-size: clamp(24px, 2.6vw, 36px); margin-bottom: 14px;">Detect the departure as it develops.</h3>
         <p>Flynn evaluates equipment telemetry against the enrolled operating envelope in real time.</p>
-        <p>It can signal as behavior begins trending toward the bounds of its enrolled thresholds—before those bounds have been crossed—and signal again when a threshold breach occurs.</p>
-        <p>The result is certifiable health and wellness reporting and early warning signals before equipment failure.</p>
+        <p>Every reading resolves to one of three states: nominal, inside the enrolled envelope; trend, moving toward the bounds of its enrolled thresholds before they are crossed; or breach, a threshold crossed.</p>
+        <p>The result is real-time health reporting from a certifiable architecture, with early warning before equipment failure. Flynn is built for certification under DO-178C and IEC 61508. It is not yet certified.</p>
         <div class="meter"><span style="width: 70%"></span></div>
       </div>
     </div>
@@ -712,8 +712,8 @@
   <div class="wrap">
     <div class="cols-2" style="margin-bottom: 56px;">
       <div>
-        <span class="eyebrow"><span class="dot"></span>Validated across domains</span>
-        <h2 class="h1" style="margin-top: 20px;">One binary. All domains.</h2>
+        <span class="eyebrow"><span class="dot"></span>Flynn v1 results</span>
+        <h2 class="h1" style="margin-top: 20px;">One binary. Five signal domains.</h2>
       </div>
       <div style="margin-top: 72px;">
         <p class="lede">Equipment degrades. Signals change. Flynn remains.</p>
@@ -729,9 +729,9 @@
           <div class="desc">CWRU benchmark · 27 fault pairs</div>
         </div>
         <div class="metrics">
-          <div class="metric accent"><span class="lbl">Precision</span><span class="val">1.0</span></div>
-          <div class="metric"><span class="lbl">Recall</span><span class="val">1.0</span></div>
-          <div class="metric"><span class="lbl">F1</span><span class="val">1.0</span></div>
+          <div class="metric accent"><span class="lbl">Precision</span><span class="val">0.988</span></div>
+          <div class="metric"><span class="lbl">Recall</span><span class="val">0.996</span></div>
+          <div class="metric"><span class="lbl">F1</span><span class="val">0.992</span></div>
         </div>
       </div>
 
@@ -781,6 +781,8 @@
       </div>
     </div>
 
+    <p style="margin-top: 20px; font-family: var(--font-mono); font-size: 12px; line-height: 1.65; letter-spacing: 0.02em; color: var(--mid); max-width: 88ch;">Results shown are Flynn v1. Version 2 is in testing; results will be published when complete. All results are on public and synthetic data. They have not yet been independently reproduced or validated on customer equipment.</p>
+
     <div style="margin-top: 48px;">
       <a class="btn ghost" href="pages/validation.html">See the full validation set <span class="arrow">→</span></a>
     </div>
@@ -806,14 +808,14 @@
     <div class="road">
       <div class="road-cell now">
         <div class="stage">Stage 01 · The neuron</div>
-        <div class="when">Today · shipping</div>
+        <div class="when">Today · available now</div>
         <h3 class="h3" style="margin-bottom: 14px;">Signal in.<br/>Intelligence out.</h3>
         <p>Flynn is the atomic unit: one compact, deterministic detector operating directly on equipment telemetry.</p>
-        <p style="margin-top:12px">Deployable today for production evaluations and pilot programs.</p>
+        <p style="margin-top:12px">Available now for evaluations and pilot programs.</p>
       </div>
       <div class="road-cell">
         <div class="stage">Stage 02 · The detector fabric</div>
-        <div class="when">2026 · pilots engaging</div>
+        <div class="when">Implemented in code · entering pilots</div>
         <h3 class="h3" style="margin-bottom: 14px;">Local authority. Shared context.</h3>
         <p>Compose multiple Flynn instances across sensors and assets.</p>
         <p style="margin-top:12px">Each detector remains authoritative over what it observes. A coordination layer adds operational context without rewriting the underlying detector’s decision.</p>
@@ -847,12 +849,13 @@
       <div class="tier">
         <div class="tier-head">
           <h3>Pilot program</h3>
-          <span class="price">Priced per engagement</span>
+          <span class="price">Priced per phase</span>
         </div>
-        <p class="muted">A 30–90 day engagement for business units proving Flynn in the lab, on the shop floor, or in the field.</p>
+        <p class="muted">A four-phase program for business units proving Flynn in the lab, on the shop floor, or in the field.</p>
         <ul>
-          <li>Bounded scope</li>
-          <li>30d - 90d Consulting engagement</li>
+          <li>Four phases, priced per phase</li>
+          <li>One representative asset, one critical signal path</li>
+          <li>Success criteria agreed up front</li>
           <li>NDA as required</li>
           <li>Direct engineering contact</li>
         </ul>
@@ -861,13 +864,14 @@
       <div class="tier featured">
         <div class="tier-head">
           <h3>OEM licensing</h3>
-          <span class="price">Per-unit royalty</span>
+          <span class="price">One-time per-unit license</span>
         </div>
         <p class="muted">For manufacturers embedding Flynn directly into commercial equipment at production scale.</p>
         <ul>
           <li>Precompiled binary or source</li>
           <li>Integration support</li>
           <li>Long-term source stability</li>
+          <li>No subscription</li>
           <li>Terms scaled to deployment volume</li>
         </ul>
         <a class="btn" href="#contact" >Start a conversation <span class="arrow">→</span></a>
@@ -916,11 +920,11 @@
       <div class="contact-routes">
         <div class="row">
           <div class="lbl">Pilot program</div>
-          <div>Consulting engagement, bounded scope.</div>
+          <div>Four phases, priced per phase, scoped to one asset and one signal path.</div>
         </div>
         <div class="row">
           <div class="lbl">OEM &amp; Integrator</div>
-          <div>Commercial license, per-unit royalty, integration support.</div>
+          <div>Commercial license, one-time license per unit shipped, no subscription, integration support.</div>
         </div>
         <div class="row">
           <div class="lbl">Enterprise deployment</div>
@@ -939,17 +943,17 @@
 <footer class="footer" id="site-footer"><canvas id="grid-bg"></canvas></footer>
 
 <script>window.FLYNN_WAVE_SPEED = 22;</script>
-<script src="assets/js/hero-waveform.js?v=20260902-1354"></script>
-<script src="assets/js/site-footer.js?v=20260902-1354"></script>
-<script src="assets/js/site-nav.js?v=20260902-1354"></script>
-<script src="assets/js/tron-fx.js?v=20260902-1354"></script>
+<script src="assets/js/hero-waveform.js?v=20261117-0228"></script>
+<script src="assets/js/site-footer.js?v=20261117-0228"></script>
+<script src="assets/js/site-nav.js?v=20261117-0228"></script>
+<script src="assets/js/tron-fx.js?v=20261117-0228"></script>
 
 <!-- Volumetric grid void (three.js) -->
 <script>window.FLYNN_GRID_CONFIG = { variant: 'home' };</script>
-<script src="assets/js/three.min.js?v=20260902-1354" integrity="sha384-RRHfJ6w1mTlKUBMYT/hvnRiOzEB/vyRV3DrQOseb6oYfvaZSfdd0byS4bHps0k2R"></script>
-<script src="assets/js/grid-void.js?v=20260902-1354"></script>
-<script src="assets/js/install-button.js?v=20260902-1354"></script>
-<script src="assets/js/sw-register.js?v=20260902-1354"></script>
+<script src="assets/js/three.min.js?v=20261117-0228" integrity="sha384-RRHfJ6w1mTlKUBMYT/hvnRiOzEB/vyRV3DrQOseb6oYfvaZSfdd0byS4bHps0k2R"></script>
+<script src="assets/js/grid-void.js?v=20261117-0228"></script>
+<script src="assets/js/install-button.js?v=20261117-0228"></script>
+<script src="assets/js/sw-register.js?v=20261117-0228"></script>
 
 <!-- Tweaks panel removed: React + Babel in-browser transformer no longer shipped to production.
      The panel's four defaults are now baked in statically (see <style> in <head> for glow + headline,

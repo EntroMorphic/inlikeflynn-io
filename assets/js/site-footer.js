@@ -15,7 +15,7 @@
   var mount = document.getElementById('site-footer');
   if (!mount) return;
 
-  var V = '20260902-1354';
+  var V = '20261117-0228';
   var root = /\/pages\//.test(location.pathname) ? '../' : '';
 
   function li(href, label) { return '<li><a href="' + href + '">' + label + '</a></li>'; }
@@ -43,7 +43,7 @@
           li(root + 'pages/tiers.html', 'Tiers') +
         '</ul></div>' +
         '<div><h4>Engage</h4><ul>' +
-          li(root + 'index.html#contact', 'Evaluation access') +
+          li(root + 'index.html#contact', 'Pilot program') +
           li(root + 'index.html#contact', 'OEM licensing') +
           li(root + 'index.html#contact', 'Enterprise') +
           li('mailto:tripp@inlikeflynn.io', 'tripp@inlikeflynn.io') +
@@ -56,7 +56,7 @@
         '</ul></div>' +
       '</div>' +
       '<div class="footer-meta">' +
-        '<span>© 2026 EntroMorphic · Flynn is a trademark of EntroMorphic</span>' +
+        '<span>© 2026 EntroMorphic · Flynn is developed by EntroMorphic and licensed exclusively to FlynnComm, LLC. Flynn is a trademark of EntroMorphic.</span>' +
         '<span>v.q2.2026 · audit-ready</span>' +
       '</div>' +
     '</div>';

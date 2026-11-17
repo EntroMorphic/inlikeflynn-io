@@ -23,9 +23,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/site-footer.css?v=20260902-1354" />
-<link rel="stylesheet" href="assets/css/install-button.css?v=20260902-1354" />
-<link rel="stylesheet" href="assets/css/infographic.css?v=20260902-1354" />
+<link rel="stylesheet" href="assets/css/site-footer.css?v=20261117-0228" />
+<link rel="stylesheet" href="assets/css/install-button.css?v=20261117-0228" />
+<link rel="stylesheet" href="assets/css/infographic.css?v=20261117-0228" />
 <style>
 :root {
     --ink: #06090f;
@@ -728,7 +728,7 @@ body.ah-playing .compare-fig, body.ah-playing .scope-anim { visibility: hidden; 
     <div class="mast-top">
       <div class="mast-brand">
         <a href="index.html" style="display:inline-flex;align-items:center;gap:14px;text-decoration:none;color:inherit;">
-          <img src="assets/img/flynn-logo.png?v=20260902-1354" alt="Flynn" onerror="this.style.display='none'" />
+          <img src="assets/img/flynn-logo.png?v=20261117-0228" alt="Flynn" onerror="this.style.display='none'" />
           <div class="pw"><b>EntroMorphic</b><br />Why Flynn</div>
         </a>
       </div>
@@ -737,13 +737,13 @@ body.ah-playing .compare-fig, body.ah-playing .scope-anim { visibility: hidden; 
 
     <h1 class="wordmark">FLYNN<span class="dot">.</span></h1>
     <p class="lede"><span class="accent">Flynn catches equipment faults days before they happen</span> — turning emergency replacements into planned repairs, before the damage compounds.</p>
-    <p class="definition">Flynn is software that lives on the chip already inside your equipment — it learns what healthy operation looks like, locks that picture permanently, and flags developing faults before they become failures. <b>Patent-pending. Fully offline. Under 9 KB. Zero false alarms.</b></p>
+    <p class="definition">Flynn is software that lives on the chip already inside your equipment — it learns what healthy operation looks like, locks that picture permanently, and flags developing faults before they become failures. <b>Patent-pending. Fully offline. Under 9 KB. Low, measured false-alarm rate.</b></p>
 
     <div class="vitals">
       <div class="vital"><b>8,480-byte</b> binary</div>
       <div class="vital"><b>integer-only</b> · radiation-resilient</div>
       <div class="vital"><b>zero</b> dependencies · offline</div>
-      <div class="vital"><b>&lt;$10</b> hardware</div>
+      <div class="vital"><b>$0</b> added hardware</div>
       <div class="vital"><b>deterministic</b> to the bit</div>
     </div>
   </header>
@@ -755,12 +755,12 @@ body.ah-playing .compare-fig, body.ah-playing .scope-anim { visibility: hidden; 
       <span class="slabel">The industry's own verdict</span>
       <span class="sline"></span>
     </div>
-    <h2 class="stitle">Tools were adopted. <span class="hot">Downtime increased.</span></h2>
+    <h2 class="stitle">Tools were adopted. <span class="hot">Downtime didn’t improve.</span></h2>
 
     <div class="verdict">
       <div class="vstat">
         <div class="vv">$1.4T</div>
-        <div class="vd">lost every year to unplanned downtime across the Fortune 500 — up 62% since 2019.</div>
+        <div class="vd">lost every year to unplanned downtime across the Fortune Global 500 — roughly 11% of revenue.</div>
         <div class="vsrc">Siemens True Cost of Downtime, 2024</div>
       </div>
       <div class="vstat">
@@ -775,7 +775,7 @@ body.ah-playing .compare-fig, body.ah-playing .scope-anim { visibility: hidden; 
       </div>
     </div>
 
-    <p class="verdict-body">The dashboards are running. The alerts are firing. The downtime is rising. The tools adopted over the past decade share one architecture: <strong>sensors transmit to the cloud, models process remotely, alerts return over a network.</strong> The data leaves the equipment — and by the time the intelligence reaches the fault, the adaptive baseline has absorbed the drift, and the runway is gone.</p>
+    <p class="verdict-body">The dashboards are running. The alerts are firing. The downtime isn’t falling. The tools adopted over the past decade share one architecture: <strong>sensors transmit to the cloud, models process remotely, alerts return over a network.</strong> The data leaves the equipment — and by the time the intelligence reaches the fault, the adaptive baseline has absorbed the drift, and the runway is gone.</p>
     <p class="verdict-kicker">The intelligence is in the wrong place.</p>
   </section>
 
@@ -796,7 +796,7 @@ body.ah-playing .compare-fig, body.ah-playing .scope-anim { visibility: hidden; 
       </div>
       <div class="scol win">
         <div class="refuse">Flynn earns the alert.</div>
-        <p><strong>Zero false positives</strong> across 120 hours of healthy-equipment data. Every alert Flynn raises is real — so the program survives, <strong>because the trust survives.</strong></p>
+        <p><strong>Zero false positives</strong> across 120 hours of synthetic soak testing, and under two alerts per day on 336 hours of environmental and process signals. Alerts stay rare enough to read — so the program survives, <strong>because the trust survives.</strong></p>
       </div>
     </div>
 
@@ -815,27 +815,27 @@ body.ah-playing .compare-fig, body.ah-playing .scope-anim { visibility: hidden; 
 
     <figure class="compare-fig">
       <div class="compare-frame">
-        <iframe src="assets/anim/flynn-adaptive-vs-locked.html?v=20260902-1354" title="The same developing fault fed to an adaptive monitor and to Flynn: the adaptive thresholds widen and absorb the fault with no alert raised, while Flynn's locked thresholds stay fixed and the fault breaks them" loading="lazy" scrolling="no"></iframe>
+        <iframe src="assets/anim/flynn-adaptive-vs-locked.html?v=20261117-0228" title="The same developing fault fed to an adaptive monitor and to Flynn: the adaptive thresholds widen and absorb the fault with no alert raised, while Flynn's locked thresholds stay fixed and the fault breaks them" loading="lazy" scrolling="no"></iframe>
       </div>
       <figcaption class="compare-cap"><b>The same fault, two architectures.</b> Both monitors enroll on the same healthy signal. As the fault develops, the adaptive thresholds widen to accommodate the louder wave and the monitor still reports nominal. Flynn's thresholds do not move, so the same swell breaks them.</figcaption>
     </figure>
 
     <div class="costdelta">
       <div class="cd-cell before">
-        <div class="cl">Emergency replacement</div>
-        <div class="cv">$94,000</div>
-        <div class="cn">+ three days of unplanned downtime</div>
+        <div class="cl">Run to failure</div>
+        <div class="cv">Breakdown</div>
+        <div class="cn">Emergency parts, overtime labor, expedited freight, and an idle line</div>
       </div>
       <div class="cd-arrow">→</div>
       <div class="cd-cell after">
-        <div class="cl">Planned swap at first anomaly</div>
-        <div class="cv">$800</div>
-        <div class="cn">scheduled into a maintenance window</div>
+        <div class="cl">Caught at first anomaly</div>
+        <div class="cv">Planned swap</div>
+        <div class="cn">One part, scheduled into a maintenance window</div>
       </div>
       <div class="cd-cell gap">
-        <div class="cl">The gap</div>
-        <div class="cv">$93,200<span class="u"> + 3 days</span></div>
-        <div class="cn">per incident</div>
+        <div class="cl">The difference</div>
+        <div class="cv">17 days<span class="u"> of warning</span></div>
+        <div class="cn">measured on NASA IMS run-to-failure data</div>
       </div>
     </div>
   </section>
@@ -865,7 +865,7 @@ body.ah-playing .compare-fig, body.ah-playing .scope-anim { visibility: hidden; 
         <div class="flow">
           <span class="node">On the device</span>
         </div>
-        <div class="note">Self-calibrating, offline, deterministic — on hardware under $10, inside equipment already being manufactured. <b>Integer-only math survives the radiation that scrambles ordinary chips.</b></div>
+        <div class="note">Self-calibrating, offline, deterministic — with no added hardware, inside equipment already being manufactured. <b>Integer-only math survives the radiation that scrambles ordinary chips.</b></div>
       </div>
     </div>
   </section>
@@ -921,7 +921,7 @@ body.ah-playing .compare-fig, body.ah-playing .scope-anim { visibility: hidden; 
         <tr class="decisive">
           <td class="cattr">False alarm rate</td>
           <td class="ccloud">High — programs die from alert fatigue</td>
-          <td class="cflynn cflynn-col">Zero false positives across 120 hours</td>
+          <td class="cflynn cflynn-col">Zero in 120 hours of synthetic soak; under two alerts a day on ambient signals</td>
         </tr>
         <tr>
           <td class="cattr">Detection speed</td>
@@ -1051,7 +1051,7 @@ body.ah-playing .compare-fig, body.ah-playing .scope-anim { visibility: hidden; 
           <span><b>S</b>ize · 8,480 B</span>
           <span><b>W</b>eight · zero</span>
           <span><b>P</b>ower · bare-metal</span>
-          <span><b>C</b>ost · &lt;$10</span>
+          <span><b>C</b>ost · $0 added hardware</span>
         </div>
       </div>
     </div>
@@ -1068,22 +1068,22 @@ body.ah-playing .compare-fig, body.ah-playing .scope-anim { visibility: hidden; 
 
     <figure class="scope">
       <div class="scope-anim">
-        <iframe src="assets/anim/flynn-locked-baseline.html?v=20260902-1354" title="Flynn enrolls a healthy baseline, locks it, then detects a developing fault" loading="lazy" scrolling="no"></iframe>
-        <img class="scope-fallback" src="assets/img/flynn-scope.webp?v=20260902-1354" alt="Flynn detection scope: a sensor stream is learned during calibration, the threshold is locked, and a developing fault crosses it — Flynn raises an alert." />
+        <iframe src="assets/anim/flynn-locked-baseline.html?v=20261117-0228" title="Flynn enrolls a healthy baseline, locks it, then detects a developing fault" loading="lazy" scrolling="no"></iframe>
+        <img class="scope-fallback" src="assets/img/flynn-scope.webp?v=20261117-0228" alt="Flynn detection scope: a sensor stream is learned during calibration, the threshold is locked, and a developing fault crosses it — Flynn raises an alert." />
       </div>
       <figcaption class="scope-cap"><b>Enroll, lock, detect.</b> Flynn enrolls on the healthy signal, locks the baseline, then scores every reading against it. When a developing fault crosses the locked band — alert.</figcaption>
     </figure>
 
     <div class="stats">
       <div class="stat">
-        <div class="sv">1.0</div>
+        <div class="sv">0.988</div>
         <div class="sk">Precision</div>
-        <div class="sx">Bearing-fault detection</div>
+        <div class="sx">Bearing-fault detection · Flynn v1, CWRU</div>
       </div>
       <div class="stat">
         <div class="sv">0</div>
         <div class="sk">False positives</div>
-        <div class="sx">Across 120 hours of healthy-equipment data</div>
+        <div class="sx">Across 120 hours of synthetic soak testing</div>
       </div>
       <div class="stat hotstat">
         <div class="sv">17<span class="u">days</span></div>
@@ -1143,7 +1143,7 @@ body.ah-playing .compare-fig, body.ah-playing .scope-anim { visibility: hidden; 
 
     <div class="outcomes">
       <div class="outcome">
-        <div class="oh"><span class="before">$94,000</span><span class="arr">→</span><span class="after">$800</span></div>
+        <div class="oh"><span class="before">Emergency</span><span class="arr">→</span><span class="after">Planned</span></div>
         <p>Emergency replacements become planned swaps. Unplanned downtime becomes a scheduled window.</p>
       </div>
       <div class="outcome">
@@ -1189,7 +1189,7 @@ body.ah-playing .compare-fig, body.ah-playing .scope-anim { visibility: hidden; 
       </div>
     </div>
 
-    <p class="valnote">Flynn is <b>licensed per unit and recurring</b> — scaling with every piece of equipment that ships with it. The same binary serves thousands of equipment manufacturers on Earth and a growing number in orbit.</p>
+    <p class="valnote">Flynn is <b>licensed once per unit shipped, with no subscription</b> — scaling with every piece of equipment that ships with it. The same binary serves thousands of equipment manufacturers on Earth and a growing number in orbit.</p>
 
     <div class="pipeline">
       <span class="pk">Eight active prospects · six industries:</span>
@@ -1237,14 +1237,14 @@ body.ah-playing .compare-fig, body.ah-playing .scope-anim { visibility: hidden; 
 
 <!-- Volumetric grid void backdrop + install gem (three.js) -->
 <script>window.FLYNN_GRID_CONFIG = { variant: 'home', noGame: true };</script>
-<script src="assets/js/three.min.js?v=20260902-1354" integrity="sha384-RRHfJ6w1mTlKUBMYT/hvnRiOzEB/vyRV3DrQOseb6oYfvaZSfdd0byS4bHps0k2R"></script>
-<script src="assets/js/grid-void.js?v=20260902-1354"></script>
-<script src="assets/js/anim-suspend.js?v=20260902-1354" defer></script>
-<script src="assets/js/site-footer.js?v=20260902-1354"></script>
-<script src="assets/js/site-nav.js?v=20260902-1354"></script>
-<script src="assets/js/tron-fx.js?v=20260902-1354"></script>
-<script src="assets/js/install-button.js?v=20260902-1354"></script>
-<script src="assets/js/sw-register.js?v=20260902-1354"></script>
+<script src="assets/js/three.min.js?v=20261117-0228" integrity="sha384-RRHfJ6w1mTlKUBMYT/hvnRiOzEB/vyRV3DrQOseb6oYfvaZSfdd0byS4bHps0k2R"></script>
+<script src="assets/js/grid-void.js?v=20261117-0228"></script>
+<script src="assets/js/anim-suspend.js?v=20261117-0228" defer></script>
+<script src="assets/js/site-footer.js?v=20261117-0228"></script>
+<script src="assets/js/site-nav.js?v=20261117-0228"></script>
+<script src="assets/js/tron-fx.js?v=20261117-0228"></script>
+<script src="assets/js/install-button.js?v=20261117-0228"></script>
+<script src="assets/js/sw-register.js?v=20261117-0228"></script>
 
 <script>
   /* Floating CONTENTS locator — scroll-spy + progress line. */

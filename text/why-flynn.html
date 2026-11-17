@@ -5,7 +5,7 @@
 <meta name="description" content="The industry adopted predictive tools and downtime rose. Flynn closes both failure modes: alert fatigue and the adaptive baseline."/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <link rel="canonical" href="https://inlikeflynn.io/why-flynn.html"/>
-<link rel="stylesheet" href="text.css?v=20260902-1354"/>
+<link rel="stylesheet" href="text.css?v=20261117-0228"/>
 </head><body>
 <p class="skip"><a href="#main">Skip to content</a></p>
 <header>
@@ -16,23 +16,23 @@
 <h1>Why Flynn</h1>
 <p>Embedded anomaly detection &middot; Patent-pending &middot; 2026</p>
 <p>Flynn catches equipment faults days before they happen &mdash; turning emergency replacements into planned repairs, before the damage compounds.</p>
-<p>Flynn is software that lives on the chip already inside your equipment &mdash; it learns what healthy operation looks like, locks that picture permanently, and flags developing faults before they become failures. Patent-pending. Fully offline. Under 9 KB. Zero false alarms.</p>
-<ul><li>8,480-byte binary</li><li>integer-only &middot; radiation-resilient</li><li>zero dependencies &middot; offline</li><li>&lt;$10 hardware</li><li>deterministic to the bit</li></ul>
+<p>Flynn is software that lives on the chip already inside your equipment &mdash; it learns what healthy operation looks like, locks that picture permanently, and flags developing faults before they become failures. Patent-pending. Fully offline. Under 9 KB. Low, measured false-alarm rate.</p>
+<ul><li>8,480-byte binary</li><li>integer-only &middot; radiation-resilient</li><li>zero dependencies &middot; offline</li><li>$0 added hardware</li><li>deterministic to the bit</li></ul>
 <h4>Contents</h4>
 <ul><li><a href="#verdict">01. The verdict</a></li><li><a href="#failure">02. The failure mode</a></li><li><a href="#inversion">03. The inversion</a></li><li><a href="#differs">04. How it differs</a></li><li><a href="#works">05. How it works</a></li><li><a href="#worlds">06. Many worlds</a></li><li><a href="#evidence">07. The evidence</a></li><li><a href="#changes">08. What changes</a></li></ul>
-<h2 id="verdict">01 &middot; The industry&rsquo;s own verdict: tools were adopted, downtime increased</h2>
+<h2 id="verdict">01 &middot; The industry&rsquo;s own verdict: tools were adopted, downtime didn&rsquo;t improve</h2>
 <dl>
-<dt>$1.4T</dt><dd>lost every year to unplanned downtime across the Fortune 500 &mdash; up 62% since 2019. <em>Siemens True Cost of Downtime, 2024</em></dd>
+<dt>$1.4T</dt><dd>lost every year to unplanned downtime across the Fortune Global 500 &mdash; roughly 11% of revenue. <em>Siemens True Cost of Downtime, 2024</em></dd>
 <dt>79%</dt><dd>of teams using AI-powered predictive tools saw unplanned downtime stay the same &mdash; or increase. 58% have already adopted them. <em>MaintainX State of Industrial Maintenance Report, 2026</em></dd>
 <dt>39%</dt><dd>of leaders say each downtime incident is getting more expensive than the year before. <em>MaintainX, 2026</em></dd>
 </dl>
-<p>The dashboards are running. The alerts are firing. The downtime is rising. The tools adopted over the past decade share one architecture: sensors transmit to the cloud, models process remotely, alerts return over a network. The data leaves the equipment &mdash; and by the time the intelligence reaches the fault, the adaptive baseline has absorbed the drift, and the runway is gone.</p>
+<p>The dashboards are running. The alerts are firing. The downtime isn&rsquo;t falling. The tools adopted over the past decade share one architecture: sensors transmit to the cloud, models process remotely, alerts return over a network. The data leaves the equipment &mdash; and by the time the intelligence reaches the fault, the adaptive baseline has absorbed the drift, and the runway is gone.</p>
 <p><strong>The intelligence is in the wrong place.</strong></p>
 <h2 id="failure">02 &middot; Two ways monitoring fails. Flynn closes both.</h2>
 <h3>Failure one &middot; Alert fatigue</h3>
 <p>Conventional monitors cry wolf. When operators &ldquo;find no problems 8 of 10 times, they ignore alert 11 &mdash; the real failure.&rdquo; The dashboard stays live; the trust is already dead.</p>
 <blockquote><p>&mdash; MaintenanceOnline, 2026</p></blockquote>
-<p><strong>Flynn earns the alert.</strong> Zero false positives across 120 hours of healthy-equipment data. Every alert Flynn raises is real &mdash; so the program survives, because the trust survives.</p>
+<p><strong>Flynn earns the alert.</strong> Zero false positives across 120 hours of synthetic soak testing, and under two alerts per day on 336 hours of environmental and process signals. Alerts stay rare enough to read &mdash; so the program survives, because the trust survives.</p>
 <h3>Failure two &middot; The adaptive baseline</h3>
 <p>A bearing wears. Slowly. Over six weeks, the vibration roughens and the motor current creeps upward. A conventional monitoring system watches this happen &mdash; and <em>adapts</em>. It absorbs the worsening signal into its picture of &ldquo;normal&rdquo; and quietly raises the threshold to match. The drift that should have triggered an alarm is absorbed into the new baseline.</p>
 <p>Six weeks later: the compressor seizes. Emergency replacement, three days of unplanned downtime. The monitoring system was online the entire time &mdash; trained, by the fault itself, to ignore it.</p>
@@ -83,9 +83,9 @@
 <table>
 <caption>The economics of one incident</caption>
 <tbody>
-<tr><th scope="row">Emergency replacement</th><td>$94,000</td><td>+ three days of unplanned downtime</td></tr>
-<tr><th scope="row">Planned swap at first anomaly</th><td>$800</td><td>scheduled into a maintenance window</td></tr>
-<tr><th scope="row">The gap</th><td>$93,200 + 3 days</td><td>per incident</td></tr>
+<tr><th scope="row">Run to failure</th><td>Breakdown</td><td>Emergency parts, overtime labor, expedited freight, and an idle line</td></tr>
+<tr><th scope="row">Caught at first anomaly</th><td>Planned swap</td><td>One part, scheduled into a maintenance window</td></tr>
+<tr><th scope="row">The difference</th><td>17 days of warning</td><td>measured on NASA IMS run-to-failure data</td></tr>
 </tbody>
 </table>
 <h2 id="inversion">03 &middot; The inversion: Flynn detects and categorizes at the source</h2>
@@ -110,9 +110,9 @@
       +--------------------------------------------------+
 
       round trip: none
-      microseconds, offline, deterministic, hardware under $10
+      microseconds, offline, deterministic, no added hardware
 </pre>
-<figcaption>The cloud model breaks down wherever connectivity, latency, power, or radiation break the chain. Flynn is self-calibrating, offline, and deterministic &mdash; on hardware under $10, inside equipment already being manufactured. Integer-only math survives the radiation that scrambles ordinary chips.</figcaption>
+<figcaption>The cloud model breaks down wherever connectivity, latency, power, or radiation break the chain. Flynn is self-calibrating, offline, and deterministic &mdash; with no added hardware, inside equipment already being manufactured. Integer-only math survives the radiation that scrambles ordinary chips.</figcaption>
 </figure>
 <h2 id="differs">04 &middot; How Flynn is different: zero-latency, on-device intelligence</h2>
 <dl>
@@ -122,7 +122,7 @@
 <dt>Specialized personnel</dt><dd><em>Cloud predictive analytics:</em> Data-science team required<br/><em>Flynn:</em> Self-calibrating &mdash; zero specialized staff</dd>
 <dt>Configuration</dt><dd><em>Cloud predictive analytics:</em> Custom per deployment<br/><em>Flynn:</em> Zero &mdash; same binary, every domain</dd>
 <dt>Slow-developing faults</dt><dd><em>Cloud predictive analytics:</em> Baseline adapts &mdash; fault becomes invisible<br/><em>Flynn:</em> Baseline locks &mdash; fault stays visible</dd>
-<dt>False alarm rate</dt><dd><em>Cloud predictive analytics:</em> High &mdash; programs die from alert fatigue<br/><em>Flynn:</em> Zero false positives across 120 hours</dd>
+<dt>False alarm rate</dt><dd><em>Cloud predictive analytics:</em> High &mdash; programs die from alert fatigue<br/><em>Flynn:</em> Zero in 120 hours of synthetic soak; under two alerts a day on ambient signals</dd>
 <dt>Detection speed</dt><dd><em>Cloud predictive analytics:</em> Minutes to hours (round-trip)<br/><em>Flynn:</em> Microseconds (on-device)</dd>
 <dt>Footprint</dt><dd><em>Cloud predictive analytics:</em> Cloud infrastructure (gigabytes)<br/><em>Flynn:</em> 8,480 bytes (on-chip)</dd>
 </dl>
@@ -165,7 +165,7 @@
   S ize    8,480 B     fits inside existing MCU flash
   W eight  zero        software on the chip already there
   P ower   bare-metal  integer-only, zero heap after init
-  C ost    <$10        runs on silicon you already ship
+  C ost    $0          no added hardware; runs on silicon you already ship
 </pre>
 <h2 id="evidence">07 &middot; The evidence: tested, measured, published</h2>
 <figure>
@@ -191,8 +191,8 @@
 <figcaption>Enroll, lock, detect. Flynn enrolls on the healthy signal, locks the baseline, then scores every reading against it. When a developing fault crosses the locked band &mdash; alert.</figcaption>
 </figure>
 <dl>
-<dt>Precision 1.0</dt><dd>Bearing-fault detection, CWRU benchmark, default operating point.</dd>
-<dt>0 false positives</dt><dd>Across 120 hours of healthy-equipment data.</dd>
+<dt>Precision 0.988</dt><dd>Bearing-fault detection, CWRU benchmark, default operating point (Flynn v1).</dd>
+<dt>0 false positives</dt><dd>Across 120 hours of synthetic soak testing.</dd>
 <dt>17 days advance warning</dt><dd>On NASA IMS run-to-failure bearing data.</dd>
 <dt>5 signal domains</dt><dd>Validated cross-domain, zero config changes.</dd>
 <dt>8,480 B full footprint</dt><dd>One compiled binary, zero dependencies.</dd>
@@ -207,7 +207,7 @@
 <p><a href="validation.html">Full validation set</a> &middot; <a href="whitepaper.html">Read the whitepaper</a></p>
 <h2 id="changes">08 &middot; What changes: when equipment monitors itself, the economics click</h2>
 <dl>
-<dt>$94,000 &rarr; $800</dt><dd>Emergency replacements become planned swaps. Unplanned downtime becomes a scheduled window.</dd>
+<dt>Emergency &rarr; planned</dt><dd>Emergency replacements become planned swaps. Unplanned downtime becomes a scheduled window.</dd>
 <dt>Fewer technicians, more coverage</dt><dd>Experienced workers are retiring and the talent gap is widening. Flynn watches autonomously &mdash; enrolls in two seconds, needs zero ongoing configuration, and scales with every unit shipped.</dd>
 <dt>Bids won on capability</dt><dd>&ldquo;Our equipment monitors itself &mdash; deterministic, auditable, no cloud dependency.&rdquo; A differentiator that survives procurement scrutiny.</dd>
 <dt>Specified, then respecified</dt><dd>Equipment that calls before it fails earns the next project. The switching cost shifts from price to embedded intelligence.</dd>
@@ -218,7 +218,7 @@
 <dt>Predictive maintenance &middot; terrestrial</dt><dd>$10.6B &rarr; $47.8B (2025 &rarr; 2032)</dd>
 <dt>Global space economy</dt><dd>$570B &rarr; $1.8T (2024 &rarr; 2035)</dd>
 </dl>
-<p>Flynn is licensed per unit and recurring &mdash; scaling with every piece of equipment that ships with it. The same binary serves thousands of equipment manufacturers on Earth and a growing number in orbit.</p>
+<p>Flynn is licensed once per unit shipped, with no subscription &mdash; scaling with every piece of equipment that ships with it. The same binary serves thousands of equipment manufacturers on Earth and a growing number in orbit.</p>
 <p>Eight active prospects &middot; six industries: Flow control &middot; HVAC &middot; Autonomous aviation &middot; Semiconductor &middot; Industrial IoT &middot; Space</p>
 <p><strong>Equipment talks. Flynn listens.</strong></p>
 <p><a href="index.html">See what Flynn hears</a> &middot; EntroMorphic, LLC &middot; Patent-pending</p>
@@ -227,6 +227,6 @@
 <footer>
 <p>Text-only edition, built for terminal browsers, screen readers, and offline reading. No scripts, no images, no stylesheet dependency.<br/>
 Graphical version of this page (needs JavaScript): <a href="https://inlikeflynn.io/why-flynn.html">inlikeflynn.io/why-flynn.html</a></p>
-<p>EntroMorphic &middot; <a href="mailto:tripp@inlikeflynn.io">tripp@inlikeflynn.io</a></p>
+<p>Flynn is developed by EntroMorphic and licensed exclusively to FlynnComm, LLC.<br/>EntroMorphic &middot; <a href="mailto:tripp@inlikeflynn.io">tripp@inlikeflynn.io</a></p>
 <nav aria-label="Flynn text edition"><p><a href="index.html">Home</a> &middot; <strong>Why Flynn</strong> &middot; <a href="validation.html">Validation</a> &middot; <a href="whitepaper.html">Whitepaper</a> &middot; <a href="tiers.html">Tiers</a> &middot; <a href="industries.html">Industries</a> &middot; <a href="roadmap.html">Roadmap</a> &middot; <a href="team.html">Team</a> &middot; <a href="two-birds-one-stone.html">Two Birds. One Stone.</a></p></nav></footer>
 </body></html>

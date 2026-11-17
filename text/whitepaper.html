@@ -5,7 +5,7 @@
 <meta name="description" content="Equipment talks. Flynn listens. A whitepaper on deterministic, embedded anomaly detection in telemetry, at the edge of the world."/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <link rel="canonical" href="https://inlikeflynn.io/pages/whitepaper.html"/>
-<link rel="stylesheet" href="text.css?v=20260902-1354"/>
+<link rel="stylesheet" href="text.css?v=20261117-0228"/>
 </head><body>
 <p class="skip"><a href="#main">Skip to content</a></p>
 <header>
@@ -14,7 +14,7 @@
 <hr/>
 <main id="main">
 <h1>Equipment talks. Flynn listens.</h1>
-<p>Whitepaper &middot; Q2 2026 &middot; 11 sections</p>
+<p>Whitepaper &middot; Revised November 2026 &middot; 11 sections</p>
 <p>A whitepaper on deterministic, embedded anomaly detection &mdash; in telemetry, at the edge of the world.</p>
 <h4>Contents</h4>
 <ul><li><a href="#summary">Executive summary</a></li><li><a href="#era">The telemetry era</a></li><li><a href="#gaps">The four gaps</a></li><li><a href="#different">Why Flynn is different</a></li><li><a href="#works">How Flynn works</a></li><li><a href="#trust">Architecture of trust</a></li><li><a href="#validated">Validated across domains</a></li><li><a href="#runs">Where Flynn runs</a></li><li><a href="#roadmap">The Flynn roadmap</a></li><li><a href="#tiers">Tiers and engagement</a></li><li><a href="#about">About Flynn</a></li></ul>
@@ -54,7 +54,7 @@
       +--------------------------------------------------+
 
       round trip: none
-      microseconds, offline, deterministic, hardware under $10
+      microseconds, offline, deterministic, no added hardware
 </pre>
 <figcaption>Centralized detection versus detection at the source.</figcaption>
 </figure>
@@ -77,7 +77,7 @@
 <h3>Deterministic</h3>
 <p>Flynn produces bit-identical output for bit-identical input, across runs and across silicon. This determinism is the structural property that allows Flynn to participate in safety-certified voting architectures, to be replayed forensically after an incident, and to be verified against published test vectors.</p>
 <h3>Auditable</h3>
-<p>Flynn is auditable by construction. Because it is deterministic, its behavior is fully reproducible and independently verifiable against published test vectors, and it ships with certification-ready artifacts for safety review. For certifying authorities, the full source is available under NDA or in escrow.</p>
+<p>Flynn is auditable by construction. Because it is deterministic, its behavior is fully reproducible and independently verifiable against published test vectors, and it is built to produce the artifacts a safety review requires. Flynn is built for certification under DO-178C and IEC 61508. It is not yet certified. For certifying authorities, the full source is available under NDA or in escrow.</p>
 <h3>Bare-metal</h3>
 <p>Flynn runs on bare metal. Its only dependency is a basic math library &mdash; no operating system, no network stack, no filesystem, no scheduler.</p>
 <h2 id="works">How Flynn works</h2>
@@ -107,7 +107,7 @@
 <h3>Learning</h3>
 <p>For its first 1,700 samples &dagger;, Flynn watches in silence and builds a statistical model of the signal&rsquo;s normal behavior. At the end of enrollment it commits one detection threshold and locks it. The threshold does not move, adapt, or drift.</p>
 <h3>Detection</h3>
-<p>After enrollment, every sample passes through the detection pipeline. A score below the threshold is normal; a score at or above it is anomalous. The magnitude of the score measures the severity of the deviation.</p>
+<p>After enrollment, every sample passes through the detection pipeline. A score below the threshold is normal; a score at or above it is anomalous. The magnitude of the score measures the severity of the deviation. Flynn reports each reading as one of three states: nominal; trend, as the score approaches the threshold; and breach, once it is crossed.</p>
 <p>The locked threshold is a deliberate design choice. Adaptive thresholds carry a well-documented failure mode: a slow-developing fault gradually drifts the baseline upward, the threshold follows, and the fault dissolves into a new &ldquo;normal.&rdquo; Flynn refuses that by construction.</p>
 <p>&dagger; Samples required for complete enrollment will vary by equipment type, state, and operational envelope.</p>
 <h2 id="trust">The architecture of trust</h2>
@@ -117,15 +117,16 @@
 <p>Flynn&rsquo;s locked-threshold design enforces that separation. After deployment, no feedback path runs from accumulated experience back into the classifier; the judge of each new sample stays isolated from any later influence.</p>
 <p>Once the equipment&rsquo;s nominal signal envelope is learned through enrollment, it&rsquo;s locked in permanently. When the equipment telemetry trends towards a threshold it does not change the enrollment data.</p>
 <h2 id="validated">Validated across domains</h2>
-<p>Flynn has been validated across five distinct industrial signal domains, with zero configuration changes between them.</p>
+<p>Flynn v1 has been validated across five distinct industrial signal domains, with zero configuration changes between them. Version 2 is in testing; results will be published when complete.</p>
 <dl>
-<dt>Bearing vibration &mdash; CWRU benchmark</dt><dd><strong>Precision 1.0 &middot; Recall 1.0 &middot; F1 1.0</strong><br/>27 fault pairs (inner race, ball, outer race &times; 3 severities), default operating point.</dd>
+<dt>Bearing vibration &mdash; CWRU benchmark</dt><dd><strong>Precision 0.988 &middot; Recall 0.996 &middot; F1 0.992</strong><br/>27 fault pairs (inner race, ball, outer race &times; 3 severities), default operating point.</dd>
 <dt>Run-to-failure &mdash; NASA IMS bearing dataset</dt><dd><strong>Lead time ~17 days &middot; failing bearings 2 / 2</strong><br/>30+ days, 4 bearings, 8 channels. Adjacent healthy-bearing channels registered the same developing fault at proportionally lower magnitude &mdash; cross-channel sensitivity with correct severity ranking, not a false positive.</dd>
 <dt>Ambient &amp; diurnal</dt><dd><strong>0.074&ndash;0.080 false positives per hour</strong><br/>336 hours of environmental and process-control signals. Fewer than two alerts per day &mdash; compatible with normal shift-cycle review.</dd>
 <dt>Electrical grid stability</dt><dd><strong>F1 0.532</strong><br/>10,000 instances, 12 features. Same source, same flags, no per-domain configuration.</dd>
 <dt>Soak &mdash; synthetic vibration</dt><dd><strong>0 false positives</strong><br/>120 hours, 5 seeds &times; 24 hours. 95% CI ceiling &lt; 0.025/h.</dd>
 </dl>
-<p>Zero false positives on bearing data. Operationally low on diurnal. <a href="validation.html">Full protocols and metrics</a>.</p>
+<p>All results are on public and synthetic data. They have not yet been independently reproduced or validated on customer equipment.</p>
+<p>Zero false positives in soak testing. Operationally low on diurnal. <a href="validation.html">Full protocols and metrics</a>.</p>
 <h2 id="runs">Where Flynn runs</h2>
 <h3>Any compliant microcontroller</h3>
 <p>Flynn is delivered as a compact binary, compiled for your target from a single C99 codebase. It builds with any C99-compliant toolchain. It has been hardware-validated on commodity 32-bit MCU architectures including both proprietary and open instruction sets.</p>
@@ -151,11 +152,11 @@
 <h2 id="roadmap">The Flynn roadmap</h2>
 <figure>
 <pre>
-  STAGE 01  ::  THE NEURON                 today, shipping
+  STAGE 01  ::  THE NEURON                 available now
       [ signal ] -->  (  Flynn  )  --> [ score ]
       one detector, one signal, one decision
 
-  STAGE 02  ::  THE DETECTOR FABRIC        2026, pilots engaging
+  STAGE 02  ::  THE DETECTOR FABRIC        in code, entering pilots
       (  Flynn  ) --+
       (  Flynn  ) --+--> [ coordination ] --> [ asset state ]
       (  Flynn  ) --+       regime memory
@@ -171,29 +172,29 @@
 <figcaption>From the atomic detector to facility-wide distributed cognition.</figcaption>
 </figure>
 <h3>Today &middot; the neuron</h3>
-<p>The Flynn detector is the foundational unit: one signal in, one score out. It ships today as embedded firmware, validated across five domains.</p>
-<h3>In development &middot; the deterministic, auditable, neural network</h3>
-<p>A coordination layer that composes multiple Flynn detectors on one asset &mdash; three to ten, covering different sensors, with a fabric node that remembers operational regimes. Pilot deployments begin in 2026.</p>
+<p>The Flynn detector is the foundational unit: one signal in, one score out. It is available now as embedded firmware for evaluations and pilot programs, validated across five domains.</p>
+<h3>Implemented in code &middot; the deterministic, auditable, neural network</h3>
+<p>A coordination layer that composes multiple Flynn detectors on one asset &mdash; three to ten, covering different sensors, with a fabric node that remembers operational regimes. Pilots are scheduled for January to June 2027.</p>
 <h3>Beyond &middot; the nervous system</h3>
 <p>A facility-wide distributed cognition. Reflex-class response to sub-millisecond events. Cerebellar memory of operational regimes. Cortical decision-making across the whole site. Long-term memory with forensic replay back to any moment in the equipment&rsquo;s history.</p>
 <h2 id="tiers">Tiers and engagement</h2>
 <p>Flynn supports several engagement models, scaled to the user. Whatever you need, let&rsquo;s talk.</p>
 <ul>
-<li><strong>Evaluation access</strong> &mdash; no-cost, bounded scope, NDA required.</li>
-<li><strong>OEM licensing</strong> &mdash; per-unit royalty, integration support, long-term source stability.</li>
+<li><strong>Pilot program</strong> &mdash; four phases, priced per phase, scoped to one representative asset and one critical signal path, NDA as required.</li>
+<li><strong>OEM licensing</strong> &mdash; one-time license per unit shipped, no subscription, integration support, long-term source stability.</li>
 <li><strong>Enterprise deployment</strong> &mdash; direct support, custom integration, compliance reporting, multi-year maintenance.</li>
 </ul>
 <p><a href="tiers.html">Full tier comparison</a></p>
 <h2 id="about">About Flynn</h2>
-<p>Flynn is built by <strong>EntroMorphic</strong>, an embedded-systems and machine-intelligence company founded on one conviction: the most consequential equipment in the world should stay safe without the cloud. Its engineering leadership brings deep experience in high-performance computing, embedded firmware, and applied machine-intelligence architecture.</p>
+<p>Flynn is developed by <strong>EntroMorphic</strong> and licensed exclusively to <strong>FlynnComm, LLC</strong>. EntroMorphic is an embedded-systems and machine-intelligence company founded on one conviction: the most consequential equipment in the world should stay safe without the cloud. Its engineering leadership brings deep experience in high-performance computing, embedded firmware, and applied machine-intelligence architecture.</p>
 <p>Flynn proves a principle: small, deterministic, auditable, structurally-separated detectors serve industrial equipment better than the centralized analytics that have dominated the past decade.</p>
 <h3>Next steps</h3>
-<p>For evaluation access, OEM licensing, or enterprise deployment conversations: <a href="mailto:tripp@inlikeflynn.io">tripp@inlikeflynn.io</a></p>
+<p>For pilot programs, OEM licensing, or enterprise deployment conversations: <a href="mailto:tripp@inlikeflynn.io">tripp@inlikeflynn.io</a></p>
 </main>
 <hr/>
 <footer>
 <p>Text-only edition, built for terminal browsers, screen readers, and offline reading. No scripts, no images, no stylesheet dependency.<br/>
 Graphical version of this page (needs JavaScript): <a href="https://inlikeflynn.io/pages/whitepaper.html">inlikeflynn.io/pages/whitepaper.html</a></p>
-<p>EntroMorphic &middot; <a href="mailto:tripp@inlikeflynn.io">tripp@inlikeflynn.io</a></p>
+<p>Flynn is developed by EntroMorphic and licensed exclusively to FlynnComm, LLC.<br/>EntroMorphic &middot; <a href="mailto:tripp@inlikeflynn.io">tripp@inlikeflynn.io</a></p>
 <nav aria-label="Flynn text edition"><p><a href="index.html">Home</a> &middot; <a href="why-flynn.html">Why Flynn</a> &middot; <a href="validation.html">Validation</a> &middot; <strong>Whitepaper</strong> &middot; <a href="tiers.html">Tiers</a> &middot; <a href="industries.html">Industries</a> &middot; <a href="roadmap.html">Roadmap</a> &middot; <a href="team.html">Team</a> &middot; <a href="two-birds-one-stone.html">Two Birds. One Stone.</a></p></nav></footer>
 </body></html>

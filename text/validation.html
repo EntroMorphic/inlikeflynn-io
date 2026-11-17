@@ -5,7 +5,7 @@
 <meta name="description" content="Flynn validated across five industrial signal domains with zero configuration changes. Protocols, metrics, and reproduction."/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <link rel="canonical" href="https://inlikeflynn.io/pages/validation.html"/>
-<link rel="stylesheet" href="text.css?v=20260902-1354"/>
+<link rel="stylesheet" href="text.css?v=20261117-0228"/>
 </head><body>
 <p class="skip"><a href="#main">Skip to content</a></p>
 <header>
@@ -13,8 +13,9 @@
 <nav aria-label="Flynn text edition"><p><a href="index.html">Home</a> &middot; <a href="why-flynn.html">Why Flynn</a> &middot; <strong>Validation</strong> &middot; <a href="whitepaper.html">Whitepaper</a> &middot; <a href="tiers.html">Tiers</a> &middot; <a href="industries.html">Industries</a> &middot; <a href="roadmap.html">Roadmap</a> &middot; <a href="team.html">Team</a> &middot; <a href="two-birds-one-stone.html">Two Birds. One Stone.</a></p></nav></header>
 <hr/>
 <main id="main">
-<h1>One binary. Infinite telemetry.</h1>
-<p>Validated across five domains &middot; Same source &middot; Same flags</p>
+<h1>One binary. Five signal domains.</h1>
+<p>Flynn v1 results &middot; Five domains &middot; Same source &middot; Same flags</p>
+<p>Results shown are Flynn v1. Version 2 is in testing; results will be published when complete. All results are on public and synthetic data. They have not yet been independently reproduced or validated on customer equipment.</p>
 <h2 id="spec">The specification</h2>
 <dl>
 <dt>Footprint &mdash; 8,480 bytes</dt><dd>One compact detector small enough to live on the microcontroller native to the equipment.</dd>
@@ -68,7 +69,7 @@
 <figcaption>Why a locked baseline changes the result. The run-to-failure telemetry in Domain 02 below, fed to two architectures. A self-tuning threshold widens as the fault grows and never reports it. Flynn&rsquo;s threshold is fixed at enrollment, so the same signal crosses it.</figcaption>
 </figure>
 <h2 id="d01">Domain 01 &middot; Bearing vibration: the industry-standard bearing benchmark</h2>
-<p>The CWRU bearing dataset spans 27 fault pairs across inner-race, ball, and outer-race faults at three severity levels. The recommended operating point produces the deployed numbers below, with no oracle threshold and no per-fault tuning.</p>
+<p>The CWRU bearing dataset spans 27 fault pairs across inner-race, ball, and outer-race faults at three severity levels. The recommended operating point produces the v1 results below, with no oracle threshold and no per-fault tuning.</p>
 <h4>Protocol</h4>
 <dl>
 <dt>Dataset</dt><dd>Case Western Reserve University bearing data</dd>
@@ -79,9 +80,9 @@
 <h4>Result</h4>
 <table>
 <tbody>
-<tr><th scope="row">Precision</th><td>1.0</td><td>of alarms raised, share correct</td></tr>
-<tr><th scope="row">Recall</th><td>1.0</td><td>share of real faults caught</td></tr>
-<tr><th scope="row">F1 score</th><td>1.0</td><td>harmonic mean</td></tr>
+<tr><th scope="row">Precision</th><td>0.988</td><td>of alarms raised, share correct</td></tr>
+<tr><th scope="row">Recall</th><td>0.996</td><td>share of real faults caught</td></tr>
+<tr><th scope="row">F1 score</th><td>0.992</td><td>harmonic mean</td></tr>
 </tbody>
 </table>
 <h2 id="d02">Domain 02 &middot; Run-to-failure: caught both failing bearings, seventeen days early</h2>
@@ -148,7 +149,7 @@
 <tr><th scope="row">95% CI bound</th><td>&lt; 0.025/h</td><td>false-positive rate</td></tr>
 </tbody>
 </table>
-<p>Zero false positives on bearing data. Operationally low on diurnal. The numbers operators actually care about.</p>
+<p>Zero false positives in soak testing. Operationally low on diurnal. The numbers operators actually care about.</p>
 <h2 id="reproduce">Reproduce these numbers: benchmarks, source, reproduction</h2>
 <p>Flynn&rsquo;s empirical claims are reproducible from committed benchmarks and committed source code. Artifacts and reproduction instructions are available to evaluation licensees.</p>
 <dl>
@@ -162,6 +163,6 @@
 <footer>
 <p>Text-only edition, built for terminal browsers, screen readers, and offline reading. No scripts, no images, no stylesheet dependency.<br/>
 Graphical version of this page (needs JavaScript): <a href="https://inlikeflynn.io/pages/validation.html">inlikeflynn.io/pages/validation.html</a></p>
-<p>EntroMorphic &middot; <a href="mailto:tripp@inlikeflynn.io">tripp@inlikeflynn.io</a></p>
+<p>Flynn is developed by EntroMorphic and licensed exclusively to FlynnComm, LLC.<br/>EntroMorphic &middot; <a href="mailto:tripp@inlikeflynn.io">tripp@inlikeflynn.io</a></p>
 <nav aria-label="Flynn text edition"><p><a href="index.html">Home</a> &middot; <a href="why-flynn.html">Why Flynn</a> &middot; <strong>Validation</strong> &middot; <a href="whitepaper.html">Whitepaper</a> &middot; <a href="tiers.html">Tiers</a> &middot; <a href="industries.html">Industries</a> &middot; <a href="roadmap.html">Roadmap</a> &middot; <a href="team.html">Team</a> &middot; <a href="two-birds-one-stone.html">Two Birds. One Stone.</a></p></nav></footer>
 </body></html>
