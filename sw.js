@@ -12,7 +12,7 @@
    ========================================================================== */
 'use strict';
 
-var VERSION = '20261117-0228';
+var VERSION = '20261117-0259';
 var CACHE = 'flynn-' + VERSION;
 
 // Offline app shell — every LOCAL asset the home page needs to render the full

@@ -15,7 +15,7 @@
   var mount = document.getElementById('site-footer');
   if (!mount) return;
 
-  var V = '20261117-0228';
+  var V = '20261117-0259';
   var root = /\/pages\//.test(location.pathname) ? '../' : '';
 
   function li(href, label) { return '<li><a href="' + href + '">' + label + '</a></li>'; }
@@ -57,7 +57,7 @@
       '</div>' +
       '<div class="footer-meta">' +
         '<span>© 2026 EntroMorphic · Flynn is developed by EntroMorphic and licensed exclusively to FlynnComm, LLC. Flynn is a trademark of EntroMorphic.</span>' +
-        '<span>v.q2.2026 · audit-ready</span>' +
+        '<span>rev. Nov 2026 · audit-ready</span>' +
       '</div>' +
     '</div>';
 
